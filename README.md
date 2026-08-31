@@ -170,7 +170,7 @@ O Portal de Projetos Elétricos é uma solução desenvolvida pela equipe **Neof
 * **Artefatos de Planejamento (Stakeholders):** O planejamento incluiu o mapeamento de engajamento da matriz de stakeholders (Sponsor Executivo, Product Manager, Engenharia/DevOps, UX/Research, Times Piloto, Segurança/Compliance e Suporte/CS).
 * **Protótipo Lo-Fi (Figma):** [🎨 Acessar Protótipo no Figma](https://www.figma.com/design/MYT7u40LX8F6TngwXPeniZ/Sem-t%C3%ADtulo?node-id=0-1&t=r8Gwz42SnUNSLBvr-1)
   * O protótipo contempla as jornadas descritas no backlog (cobrindo no mínimo 5 histórias).
-  * 
+
 * **Screencast de Apresentação:** [▶️ Assistir no YouTube](https://youtu.be/2EkI06RKYJc)
   * Vídeo demonstrando a navegação no protótipo Figma, com a explicação de cada história implementada.
 
