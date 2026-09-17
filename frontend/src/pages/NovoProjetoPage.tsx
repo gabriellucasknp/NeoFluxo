@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   FolderPlus,
@@ -83,6 +83,8 @@ const serviceCategoryOptions = [
   { value: 'outros', label: 'Outras Cargas' },
 ];
 
+const DRAFT_KEY = 'neofluxo_novo_projeto_draft';
+
 let idCounter = 0;
 const genId = (prefix: string) => `${prefix}-${Date.now()}-${idCounter++}`;
 
@@ -109,6 +111,34 @@ export function NovoProjetoPage() {
   const [serviceLoads, setServiceLoads] = useState<ServiceLoad[]>([]);
   const [subestacao, setSubestacao] = useState<SubestacaoConfig | undefined>(undefined);
   const [calcResult, setCalcResult] = useState<CalcResult | null>(null);
+
+  // Carrega rascunho do localStorage no mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const draft = JSON.parse(raw);
+        if (draft.projectData) setProjectData(draft.projectData);
+        if (Array.isArray(draft.units)) setUnits(draft.units);
+        if (Array.isArray(draft.serviceLoads)) setServiceLoads(draft.serviceLoads);
+        if (draft.subestacao !== undefined) setSubestacao(draft.subestacao);
+        if (draft.calcResult !== undefined) setCalcResult(draft.calcResult);
+        if (typeof draft.step === 'number') setStep(draft.step);
+      }
+    } catch {
+      // ignora erro de parse
+    }
+  }, []);
+
+  // Salva o objeto do formulário no localStorage toda vez que ele mudar
+  useEffect(() => {
+    try {
+      const draft = { projectData, units, serviceLoads, subestacao, calcResult, step };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      // ignora erro de quota
+    }
+  }, [projectData, units, serviceLoads, subestacao, calcResult, step]);
 
   const liveCalc = useMemo(() => {
     if (units.length === 0 && serviceLoads.length === 0) return null;
@@ -270,6 +300,11 @@ export function NovoProjetoPage() {
     setSubmittedProjectCode(projectCode);
     setSubmitSuccess(true);
     setShowSubmitModal(false);
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch {
+      // ignora erro
+    }
   };
 
   // ---- Render steps ----
@@ -1082,6 +1117,7 @@ export function NovoProjetoPage() {
             </Button>
           </div>
         )}
+        <p className="mt-4 text-center text-xs text-slate-400">Rascunho salvo localmente</p>
       </Card>
 
       {/* Submit confirmation modal */}

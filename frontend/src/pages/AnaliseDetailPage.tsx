@@ -43,6 +43,8 @@ export function AnaliseDetailPage() {
   const [rejectReason, setRejectReason] = useState('');
   const [rejectObs, setRejectObs] = useState('');
   const [showApproveModal, setShowApproveModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   if (!project) {
     return (
@@ -60,52 +62,69 @@ export function AnaliseDetailPage() {
   const now = new Date().toISOString().split('T')[0];
 
   const handleApprove = () => {
-    const atestadoCode = `AT-2026-${String(Math.floor(Math.random() * 999)).padStart(3, '0')}`;
-    const uniqueId = `NEO-AT-2026-${String(Math.floor(Math.random() * 999)).padStart(3, '0')}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setTimeout(() => {
+      const atestadoCode = `AT-2026-${String(Math.floor(Math.random() * 999)).padStart(3, '0')}`;
+      const uniqueId = `NEO-AT-2026-${String(Math.floor(Math.random() * 999)).padStart(3, '0')}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 
-    const updated: Partial<Project> = {
-      status: 'aprovado',
-      analyzedAt: now,
-      approvedAt: now,
-      atestado: {
-        id: `a-${Date.now()}`,
-        code: atestadoCode,
-        projectId: project.id,
-        issueDate: now,
-        uniqueIdentifier: uniqueId,
-      },
-      history: [
-        ...project.history,
-        { id: `h-${Date.now()}`, date: now, action: 'Projeto aprovado', user: user?.name || '', detail: `Atestado: ${atestadoCode}` },
-      ],
-    };
-    updateProject(project.id, updated);
-    setShowApproveModal(false);
-    navigate('/app/analise');
+      const updated: Partial<Project> = {
+        status: 'aprovado',
+        analyzedAt: now,
+        approvedAt: now,
+        atestado: {
+          id: `a-${Date.now()}`,
+          code: atestadoCode,
+          projectId: project.id,
+          issueDate: now,
+          uniqueIdentifier: uniqueId,
+        },
+        history: [
+          ...project.history,
+          { id: `h-${Date.now()}`, date: now, action: 'Projeto aprovado', user: user?.name || '', detail: `Atestado: ${atestadoCode}` },
+        ],
+      };
+      updateProject(project.id, updated);
+      setSuccessMessage('Projeto aprovado com sucesso!');
+      setShowApproveModal(false);
+      setIsSubmitting(false);
+      setTimeout(() => navigate('/app/analise'), 1000);
+    }, 1500);
   };
 
   const handleReject = () => {
-    const updated: Partial<Project> = {
-      status: 'reprovado',
-      analyzedAt: now,
-      rejection: {
-        reason: rejectReason,
-        observations: rejectObs,
-        analyst: user?.name || '',
-        date: now,
-      },
-      history: [
-        ...project.history,
-        { id: `h-${Date.now()}`, date: now, action: 'Projeto reprovado', user: user?.name || '', detail: rejectReason },
-      ],
-    };
-    updateProject(project.id, updated);
-    setShowRejectModal(false);
-    navigate('/app/analise');
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setTimeout(() => {
+      const updated: Partial<Project> = {
+        status: 'reprovado',
+        analyzedAt: now,
+        rejection: {
+          reason: rejectReason,
+          observations: rejectObs,
+          analyst: user?.name || '',
+          date: now,
+        },
+        history: [
+          ...project.history,
+          { id: `h-${Date.now()}`, date: now, action: 'Projeto reprovado', user: user?.name || '', detail: rejectReason },
+        ],
+      };
+      updateProject(project.id, updated);
+      setSuccessMessage('Projeto reprovado com sucesso!');
+      setShowRejectModal(false);
+      setIsSubmitting(false);
+      setTimeout(() => navigate('/app/analise'), 1000);
+    }, 1500);
   };
 
   return (
     <div className="space-y-6">
+      {successMessage && (
+        <Alert type="success" title={successMessage}>
+          <p>Redirecionando para a lista de análises...</p>
+        </Alert>
+      )}
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
@@ -305,12 +324,12 @@ export function AnaliseDetailPage() {
       {/* Approve modal */}
       <Modal
         open={showApproveModal}
-        onClose={() => setShowApproveModal(false)}
+        onClose={() => { if (!isSubmitting) setShowApproveModal(false); }}
         title="Confirmar aprovação"
         footer={
           <>
-            <Button variant="outline" onClick={() => setShowApproveModal(false)}>Cancelar</Button>
-            <Button variant="success" icon={<CheckCircle2 className="h-4 w-4" />} onClick={handleApprove}>Confirmar Aprovação</Button>
+            <Button variant="outline" onClick={() => setShowApproveModal(false)} disabled={isSubmitting}>Cancelar</Button>
+            <Button variant="success" icon={<CheckCircle2 className="h-4 w-4" />} onClick={handleApprove} disabled={isSubmitting}>{isSubmitting ? 'Processando...' : 'Confirmar Aprovação'}</Button>
           </>
         }
       >
@@ -328,12 +347,12 @@ export function AnaliseDetailPage() {
       {/* Reject modal */}
       <Modal
         open={showRejectModal}
-        onClose={() => setShowRejectModal(false)}
+        onClose={() => { if (!isSubmitting) setShowRejectModal(false); }}
         title="Motivo da reprovação"
         footer={
           <>
-            <Button variant="outline" onClick={() => setShowRejectModal(false)}>Cancelar</Button>
-            <Button variant="danger" icon={<XCircle className="h-4 w-4" />} onClick={handleReject} disabled={!rejectReason}>Confirmar Reprovação</Button>
+            <Button variant="outline" onClick={() => setShowRejectModal(false)} disabled={isSubmitting}>Cancelar</Button>
+            <Button variant="danger" icon={<XCircle className="h-4 w-4" />} onClick={handleReject} disabled={!rejectReason || rejectObs.trim().length < 10 || isSubmitting}>{isSubmitting ? 'Processando...' : 'Confirmar Reprovação'}</Button>
           </>
         }
       >
