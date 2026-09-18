@@ -174,9 +174,8 @@ O Portal de Projetos Elétricos é uma solução desenvolvida pela equipe **Neof
 * **Screencast de Apresentação:** [▶️ Assistir no YouTube](https://youtu.be/2EkI06RKYJc)
   * Vídeo demonstrando a navegação no protótipo Figma, com a explicação de cada história implementada.
 
-### Entrega 02: Implementação Inicial *(Em Breve)*
-*(Links e artefatos serão adicionados nesta seção durante a respectiva sprint)*
-
+### Entrega 02: Implementação Inicial *Implementação das Histórias de Usuário 4 e 6 com foco em otimização de UX e funcionalidades, Screencast:*
+ https://drive.google.com/file/d/1QXp-rNCKwJaxHQiTJ5CekDQ2omMbBI22/view?usp=sharing
 ---
 
 ## ⚙️ Como rodar o projeto
