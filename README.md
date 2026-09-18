@@ -174,8 +174,98 @@ O Portal de Projetos Elétricos é uma solução desenvolvida pela equipe **Neof
 * **Screencast de Apresentação:** [▶️ Assistir no YouTube](https://youtu.be/2EkI06RKYJc)
   * Vídeo demonstrando a navegação no protótipo Figma, com a explicação de cada história implementada.
 
-### Entrega 02: Implementação Inicial *Implementação das Histórias de Usuário 4 e 6 com foco em otimização de UX e funcionalidades, Screencast:*
- https://drive.google.com/file/d/1QXp-rNCKwJaxHQiTJ5CekDQ2omMbBI22/view?usp=sharing
+### Entrega 02: Implementação Inicial
+
+#### 1. Priorização das histórias (matriz esforço × impacto)
+
+A priorização das histórias foi realizada utilizando a **matriz esforço × impacto**, com o objetivo de maximizar o valor entregue ao usuário com o menor esforço de desenvolvimento. As histórias foram organizadas conforme sua importância estratégica e sua complexidade de implementação:
+
+| Prioridade | Impacto | Esforço | Descrição |
+| :---: | :---: | :---: | :--- |
+| 🔴 **Alta** | Alto | Baixo | Histórias essenciais para o funcionamento inicial do MVP e com maior retorno para o usuário. |
+| 🟡 **Média** | Relevante | Moderado | Funcionalidades importantes para melhoria da experiência, porém com menor urgência que as prioritárias. |
+| 🟢 **Baixa** | Baixo | Alto | Itens que podem ser realizados em sprints futuras, após a consolidação das funcionalidades principais. |
+
+Com isso, foi possível focar nas entregas que geram maior valor para o produto e para o usuário final no Sprint 1.
+
+#### Histórias de Usuário — Visão Geral (Post-its)
+
+![Histórias de Usuário — Quadro de Post-its](docs/images/historias_usuario.png)
+
+#### Histórias Implementadas
+
+![Histórias Implementadas — Post-its](docs/images/historias_implementadas.png)
+
+As duas histórias selecionadas e implementadas nesta entrega foram:
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+> 🟧 **POST-IT 1 — US-04: Assistente de projeto (6 passos)**
+>
+> **Como** projetista, **quero** cadastrar o projeto em um assistente de 6 passos que salva rascunhos **para** montar o memorial de uma vez, sem perder o trabalho.
+>
+> | | |
+> |---|---|
+> | **Impacto** | 🔴 Alto |
+> | **Esforço** | 🟡 Médio (21 SP) |
+> | **Status** | ✅ Implementada |
+
+</td>
+<td width="50%" valign="top">
+
+> 🟧 **POST-IT 2 — US-06: Análise e parecer técnico**
+>
+> **Como** usuário, **quero** enviar projetos para análise e receber pareceres (aprovação/reprovação) registrados no sistema **para** ter uma decisão técnica rastreável e justificada.
+>
+> | | |
+> |---|---|
+> | **Impacto** | 🔴 Alto |
+> | **Esforço** | 🟡 Médio (13 SP) |
+> | **Status** | ✅ Implementada |
+
+</td>
+</tr>
+</table>
+
+Essas histórias representam os primeiros passos do desenvolvimento do MVP e validam a proposta inicial do produto com foco em usabilidade, clareza e entrega de valor ao usuário.
+
+---
+
+#### 2. Ambiente de versionamento atuante
+
+O projeto foi mantido em um ambiente de versionamento ativo, com commits frequentes e realizados diretamente na branch principal (`main`), conforme as boas práticas de desenvolvimento e exigência da entrega. A utilização do Git foi constante ao longo do sprint, garantindo rastreabilidade, organização e evolução do código de forma segura e colaborativa.
+
+- ✅ Commits realizados com frequência semanal;
+- ✅ Histórico de desenvolvimento acessível e documentado;
+- ✅ Versionamento centralizado no repositório principal;
+- ✅ Evolução contínua do código ao longo do Sprint 1.
+
+---
+
+#### 3. Issue/bug tracker
+
+O acompanhamento de problemas, melhorias e pendências foi realizado por meio do **GitHub Issues**, que foi atualizado e utilizado semanalmente durante a entrega. A ferramenta foi empregada para registrar bugs, priorizar correções e acompanhar o andamento das atividades do projeto, contribuindo para a organização e manutenção da qualidade do desenvolvimento.
+
+- ✅ Registro de issues e bugs no GitHub;
+- ✅ Acompanhamento semanal das pendências;
+- ✅ Priorização de correções e melhorias;
+- ✅ Organização do fluxo de desenvolvimento e resolução de problemas.
+
+---
+
+#### 4. Screencast da Entrega 02
+
+* **Screencast de Apresentação:** [▶️ Assistir no Google Drive](https://drive.google.com/file/d/1QXp-rNCKwJaxHQiTJ5CekDQ2omMbBI22/view?usp=sharing)
+  * Vídeo demonstrando a navegação nas funcionalidades implementadas (US-04 e US-06) no front-end da aplicação.
+
+---
+
+#### 5. Considerações finais
+
+A Entrega 02 consolidou a estrutura inicial do MVP, com a priorização das histórias mais relevantes, implementação das primeiras funcionalidades essenciais e organização do processo de desenvolvimento por meio de versionamento e gestão de tarefas. O resultado é uma base sólida para as próximas entregas, com foco em evolução contínua do produto e melhoria da experiência do usuário.
+
 ---
 
 ## ⚙️ Como rodar o projeto
