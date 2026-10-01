@@ -1,0 +1,2 @@
+package com.neoenergia.cesar.neofluxo.controller; import com.neoenergia.cesar.neofluxo.dto.*; import com.neoenergia.cesar.neofluxo.service.AuthService; import jakarta.validation.Valid; import org.springframework.web.bind.annotation.*;
+@RestController @RequestMapping("/auth") public class AuthController { private final AuthService s; public AuthController(AuthService s){this.s=s;} @PostMapping("/login") public LoginResponse login(@Valid @RequestBody LoginRequest r){return s.login(r);} }

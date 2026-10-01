@@ -1,0 +1,5 @@
+package com.neoenergia.cesar.neofluxo.service;
+import com.neoenergia.cesar.neofluxo.dto.*; import com.neoenergia.cesar.neofluxo.entity.User; import com.neoenergia.cesar.neofluxo.repository.UserRepository; import com.neoenergia.cesar.neofluxo.security.JwtService; import org.springframework.security.authentication.*; import org.springframework.security.crypto.password.PasswordEncoder; import org.springframework.stereotype.Service;
+@Service public class AuthService { private final UserRepository users; private final PasswordEncoder encoder; private final JwtService jwt; public AuthService(UserRepository u,PasswordEncoder e,JwtService j){users=u;encoder=e;jwt=j;}
+ public LoginResponse login(LoginRequest r){User u=users.findByEmailIgnoreCase(r.email()).orElseThrow(()->new BadCredentialsException("Credenciais inválidas")); if(!u.isActive()||!encoder.matches(r.password(),u.getPasswordHash())) throw new BadCredentialsException("Credenciais inválidas"); return new LoginResponse(jwt.generate(u.getId(),u.getEmail(),u.getRole().name()),new LoginResponse.UserView(u.getId(),u.getName(),u.getEmail(),u.getRole().name(),u.getDepartment()));}
+}
