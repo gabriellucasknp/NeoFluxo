@@ -12,19 +12,23 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+
     setLoading(true);
-    setTimeout(() => {
-      const success = login(email, password);
+
+    try {
+      const success = await login(email, password);
+
       if (success) {
         navigate('/app/dashboard');
       } else {
-        setError('Credenciais inválidas. Verifique seu e-mail e senha.');
-        setLoading(false);
+        setError('E-mail ou senha inválidos.');
       }
-    }, 600);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fillDemo = (demoEmail: string) => {
