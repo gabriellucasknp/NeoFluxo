@@ -81,6 +81,14 @@ export function ProjetoDetailPage() {
           </div>
         </div>
         <div className="flex gap-2">
+          {(project.status === 'rascunho' || project.status === 'reprovado') && (
+            <Button
+              variant="primary"
+              onClick={() => navigate(`/app/novo-projeto?id=${project.id}&step=${project.currentStep || 1}`)}
+            >
+              Continuar Edição
+            </Button>
+          )}
           {isApproved && (
             <Button icon={<FileCheck className="h-4 w-4" />} onClick={() => setShowAtestado(true)}>
               Gerar Atestado

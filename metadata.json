@@ -1,0 +1,6 @@
+{
+  "name": "Portal de Projetos Elétricos — Neoenergia Pernambuco",
+  "description": "Portal corporativo para dimensionamento de demanda elétrica, enquadramento normativo (DIS-NOR-030 e DIS-NOR-053), fluxo de análise técnica e emissão de atestados digitais com QR Code.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

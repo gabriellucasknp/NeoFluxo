@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Power, History } from 'lucide-react';
 import { mockDemandFactors, mockNormVersions } from '@/data/mockData';
+import { demandFactorService } from '@/services/api';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -13,6 +14,18 @@ export function DisNor030Page() {
   const [editing, setEditing] = useState<DemandFactor | null>(null);
   const [showHistory, setShowHistory] = useState(false);
 
+  const fetchFactors = () => {
+    demandFactorService.getAll().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setFactors(data);
+      }
+    }).catch(() => {});
+  };
+
+  useEffect(() => {
+    fetchFactors();
+  }, []);
+
   const openCreate = () => {
     setEditing({ id: '', category: 'iluminacao', label: '', minPower: 0, maxPower: 0, factor: 1.0, active: true });
     setShowModal(true);
@@ -23,12 +36,20 @@ export function DisNor030Page() {
     setShowModal(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editing) return;
-    if (editing.id) {
-      setFactors(factors.map((f) => (f.id === editing.id ? editing : f)));
-    } else {
-      setFactors([...factors, { ...editing, id: `df-${Date.now()}` }]);
+    try {
+      if (editing.id) {
+        await demandFactorService.update(editing.id, editing);
+      }
+      fetchFactors();
+    } catch (err) {
+      console.error('Erro ao salvar fator:', err);
+      if (editing.id) {
+        setFactors(factors.map((f) => (f.id === editing.id ? editing : f)));
+      } else {
+        setFactors([...factors, { ...editing, id: `df-${Date.now()}` }]);
+      }
     }
     setShowModal(false);
     setEditing(null);

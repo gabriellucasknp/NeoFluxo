@@ -1,0 +1,129 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Perfil de usuário corporativo do sistema NeoFluxo",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 120 },
+        "email": { "type": "string", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["projetista", "analista", "admin"] },
+        "department": { "type": "string", "maxLength": 100 },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "AdminDoc": {
+      "title": "AdminDoc",
+      "description": "Registro de autoridade de administrador para controle ABAC",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 150 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["uid"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "Projeto elétrico predial / comercial / residencial no NeoFluxo",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "code": { "type": "string", "maxLength": 30 },
+        "status": {
+          "type": "string",
+          "enum": ["rascunho", "enviado_analise", "em_analise", "aprovado", "reprovado"]
+        },
+        "currentStep": { "type": "number" },
+        "projetistaId": { "type": "string", "maxLength": 128 },
+        "projetistaName": { "type": "string", "maxLength": 120 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 },
+        "submittedAt": { "type": "string", "maxLength": 50 },
+        "analyzedAt": { "type": "string", "maxLength": 50 },
+        "approvedAt": { "type": "string", "maxLength": 50 },
+        "rejectedAt": { "type": "string", "maxLength": 50 },
+        "rejectionReason": { "type": "string", "maxLength": 200 },
+        "rejectionObservations": { "type": "string", "maxLength": 2000 },
+        "certificateCode": { "type": "string", "maxLength": 50 },
+        "normaVersion": { "type": "string", "maxLength": 20 }
+      },
+      "required": ["id", "code", "status", "projetistaId"]
+    },
+    "Certificate": {
+      "title": "Certificate",
+      "description": "Atestado digital de conformidade técnica emitido após aprovação",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "code": { "type": "string", "maxLength": 50 },
+        "projectId": { "type": "string", "maxLength": 128 },
+        "projectCode": { "type": "string", "maxLength": 30 },
+        "issueDate": { "type": "string", "maxLength": 50 },
+        "uniqueIdentifier": { "type": "string", "maxLength": 100 },
+        "analystId": { "type": "string", "maxLength": 128 },
+        "analystName": { "type": "string", "maxLength": 120 },
+        "validationUrl": { "type": "string", "maxLength": 255 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "code", "projectId", "uniqueIdentifier"]
+    },
+    "Transformer": {
+      "title": "Transformer",
+      "description": "Catálogo de transformadores padronizados Neoenergia",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "label": { "type": "string", "maxLength": 150 },
+        "powerKva": { "type": "number" },
+        "voltage": { "type": "string", "maxLength": 50 },
+        "active": { "type": "boolean" }
+      },
+      "required": ["id", "label", "powerKva"]
+    },
+    "DemandFactor": {
+      "title": "DemandFactor",
+      "description": "Fatores de demanda normativos (DIS-NOR-030 e DIS-NOR-053)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "category": { "type": "string", "maxLength": 50 },
+        "label": { "type": "string", "maxLength": 150 },
+        "minPower": { "type": "number" },
+        "maxPower": { "type": "number" },
+        "factor": { "type": "number" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["id", "category", "factor"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Perfis dos usuários do sistema com controle de função (RBAC)"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminDoc",
+      "description": "Lista de administradores autorizados para verificação de regras de segurança"
+    },
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "Projetos elétricos, rascunhos, unidades consumidoras, cargas e cálculos"
+    },
+    "/certificates/{certificateId}": {
+      "schema": "Certificate",
+      "description": "Atestados técnicos digitais emitidos, consultáveis publicamente por código"
+    },
+    "/transformers/{transformerId}": {
+      "schema": "Transformer",
+      "description": "Parâmetros dos transformadores padronizados para projetos MT"
+    },
+    "/demandFactors/{factorId}": {
+      "schema": "DemandFactor",
+      "description": "Fatores de demanda normativos da concessionária"
+    }
+  }
+}

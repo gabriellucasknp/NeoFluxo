@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Power } from 'lucide-react';
 import { mockTransformers } from '@/data/mockData';
+import { transformerService } from '@/services/api';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -12,28 +13,59 @@ export function TransformadoresPage() {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<TransformerModel | null>(null);
 
+  const fetchTransformers = () => {
+    transformerService.getAll().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setTransformers(data);
+      }
+    }).catch(() => {});
+  };
+
+  useEffect(() => {
+    fetchTransformers();
+  }, []);
+
   const openCreate = () => {
     setEditing({ id: '', label: '', powerKva: 0, voltage: '13.8kV / 380V', active: true });
     setShowModal(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editing) return;
-    if (editing.id) {
-      setTransformers(transformers.map((t) => (t.id === editing.id ? editing : t)));
-    } else {
-      setTransformers([...transformers, { ...editing, id: `t-${Date.now()}` }]);
+    try {
+      if (editing.id) {
+        await transformerService.update(editing.id, editing);
+      } else {
+        await transformerService.create(editing);
+      }
+      fetchTransformers();
+    } catch (err) {
+      console.error('Erro ao salvar transformador:', err);
     }
     setShowModal(false);
     setEditing(null);
   };
 
-  const toggleActive = (id: string) => {
-    setTransformers(transformers.map((t) => (t.id === id ? { ...t, active: !t.active } : t)));
+  const toggleActive = async (id: string) => {
+    const item = transformers.find((t) => t.id === id);
+    if (!item) return;
+    const updated = { ...item, active: !item.active };
+    try {
+      await transformerService.update(id, updated);
+      fetchTransformers();
+    } catch {
+      setTransformers(transformers.map((t) => (t.id === id ? updated : t)));
+    }
   };
 
-  const deleteTransformer = (id: string) => {
-    setTransformers(transformers.filter((t) => t.id !== id));
+  const deleteTransformer = async (id: string) => {
+    if (!window.confirm('Excluir este módulo de transformador padronizado?')) return;
+    try {
+      await transformerService.delete(id);
+      fetchTransformers();
+    } catch (err: any) {
+      alert(err.message || 'Erro ao excluir transformador');
+    }
   };
 
   return (

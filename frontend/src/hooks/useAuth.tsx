@@ -12,7 +12,8 @@ import { authService } from '@/services/api';
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ success: boolean; user?: User; error?: string }>;
+  register: (name: string, email: string, password: string, role?: string, department?: string) => Promise<{ success: boolean; user?: User; error?: string }>;
   logout: () => void;
   hasRole: (...roles: UserRole[]) => boolean;
 }
@@ -24,58 +25,99 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   /*
-   * Recupera a sessão salva anteriormente.
+   * Recupera a sessão salva anteriormente e valida com /auth/me
    */
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    const initAuth = async () => {
+      const token = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
 
-    if (token && storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
+      if (token && storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          const normalizedUser: User = {
+            ...parsedUser,
+            role: parsedUser.role.toLowerCase() as UserRole,
+          };
+          setUser(normalizedUser);
 
-        const normalizedUser: User = {
-          ...parsedUser,
-          role: parsedUser.role.toLowerCase() as UserRole,
-        };
-
-        setUser(normalizedUser);
-      } catch (error) {
-        console.error('Erro ao recuperar usuário:', error);
-
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+          // Silent verify with backend
+          authService.me().then((me) => {
+            const freshUser: User = {
+              ...me,
+              role: me.role.toLowerCase() as UserRole,
+            };
+            setUser(freshUser);
+            localStorage.setItem('user', JSON.stringify(freshUser));
+          }).catch(() => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            setUser(null);
+          });
+        } catch (error) {
+          console.error('Erro ao recuperar usuário:', error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
       }
-    }
+      setLoading(false);
+    };
 
-    setLoading(false);
+    initAuth();
   }, []);
 
   /*
-   * Login real através do Spring Boot.
+   * Login real através da API.
    */
-      const login = async (
-        email: string,
-        password: string,
-  ): Promise<boolean> => {
+  const login = async (
+    email: string,
+    password: string,
+  ): Promise<{ success: boolean; user?: User; error?: string }> => {
     try {
       const response = await authService.login(email, password);
 
-     const loggedUser: User = {
-       ...response.user,
-       role: response.user.role.toLowerCase() as UserRole,
-     };
+      const loggedUser: User = {
+        ...response.user,
+        role: response.user.role.toLowerCase() as UserRole,
+      };
 
-     localStorage.setItem('token', response.token);
-     localStorage.setItem('user', JSON.stringify(loggedUser));
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(loggedUser));
 
-     setUser(loggedUser);
+      setUser(loggedUser);
+      return { success: true, user: loggedUser };
+    } catch (error: any) {
+      console.warn('Tentativa de login falhou:', error?.message || error);
+      return { success: false, error: error.message || 'E-mail ou senha inválidos.' };
+    }
+  };
 
-      return true;
-    } catch (error) {
-      console.error('Erro no login:', error);
+  /*
+   * Cadastro real através da API (US-01).
+   */
+  const register = async (
+    name: string,
+    email: string,
+    password: string,
+    role: string = 'projetista',
+    department: string = 'Projetos Elétricos',
+  ): Promise<{ success: boolean; user?: User; error?: string }> => {
+    try {
+      const response = await authService.register({ name, email, password, role, department });
 
-      return false;
+      const loggedUser: User = {
+        ...response.user,
+        role: response.user.role.toLowerCase() as UserRole,
+      };
+
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(loggedUser));
+
+      setUser(loggedUser);
+      return { success: true, user: loggedUser };
+    } catch (error: any) {
+      console.error('Erro no cadastro:', error);
+      return { success: false, error: error.message || 'Erro ao realizar cadastro.' };
     }
   };
 
@@ -85,7 +127,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-
     setUser(null);
   };
 
@@ -94,7 +135,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    */
   const hasRole = (...roles: UserRole[]) => {
     if (!user) return false;
-
     return roles.includes(user.role);
   };
 
@@ -104,6 +144,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         loading,
         login,
+        register,
         logout,
         hasRole,
       }}

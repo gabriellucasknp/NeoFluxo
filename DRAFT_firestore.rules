@@ -1,0 +1,126 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all unknown collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email == 'admin@example.com' && request.auth.token.email_verified == true)
+      );
+    }
+
+    function isAnalyst() {
+      return isSignedIn() && (
+        isAdmin() ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['analista', 'admin'])
+      );
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Admins registry
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Users collection (RBAC isolation & anti-privilege escalation)
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAnalyst() || isAdmin();
+      allow list: if isAnalyst() || isAdmin();
+      allow create: if isOwner(userId) && isValidId(userId) &&
+        (!('role' in incoming()) || incoming().role == 'projetista') &&
+        incoming().id == userId;
+      allow update: if (
+        isOwner(userId) &&
+        !incoming().diff(existing()).affectedKeys().hasAny(['role', 'id'])
+      ) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Projects collection (Drafts, Units, Loads, Demand & Audit Memory)
+    match /projects/{projectId} {
+      allow get: if isSignedIn() && (
+        isAnalyst() ||
+        isAdmin() ||
+        (resource.data.projetistaId == request.auth.uid)
+      );
+      allow list: if isSignedIn() && (
+        isAnalyst() ||
+        isAdmin() ||
+        (resource.data.projetistaId == request.auth.uid)
+      );
+      allow create: if isSignedIn() && isValidId(projectId) &&
+        incoming().projetistaId == request.auth.uid &&
+        incoming().status in ['rascunho', 'enviado_analise'];
+      allow update: if isSignedIn() && isValidId(projectId) && (
+        isAdmin() ||
+        // Designer editing their own project (cannot self-approve, cannot edit after approval)
+        (
+          resource.data.projetistaId == request.auth.uid &&
+          resource.data.status != 'aprovado' &&
+          incoming().projetistaId == resource.data.projetistaId &&
+          !incoming().diff(existing()).affectedKeys().hasAny(['approvedAt', 'certificateCode']) &&
+          (incoming().status in ['rascunho', 'enviado_analise'])
+        ) ||
+        // Technical Analyst evaluation
+        (
+          isAnalyst() &&
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'status', 'analyzedAt', 'approvedAt', 'rejectedAt',
+            'rejectionReason', 'rejectionObservations', 'certificateCode',
+            'atestado', 'history', 'updatedAt'
+          ]) &&
+          (incoming().status != 'reprovado' || (incoming().rejectionReason is string && incoming().rejectionReason.size() > 0))
+        )
+      );
+      allow delete: if isAdmin() || (
+        isSignedIn() && resource.data.projetistaId == request.auth.uid && resource.data.status == 'rascunho'
+      );
+    }
+
+    // Digital Certificates (Public read for QR-Code validation, Analyst/Admin creation)
+    match /certificates/{certificateId} {
+      allow read: if true;
+      allow create: if isAnalyst() || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // Transformers catalog (Read-only for users, Admin manage)
+    match /transformers/{transformerId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Demand Factors catalog (Read-only for users, Admin manage)
+    match /demandFactors/{factorId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -76,15 +76,37 @@ export interface ProjectData {
   observations: string;
 }
 
+export interface CalculationMemoryItem {
+  group: string;
+  category: string;
+  description: string;
+  unitsAffected: number;
+  individualPowerW: number;
+  totalPowerKw: number;
+  demandFactor: number;
+  ruleReference: string;
+  resultDemandKw: number;
+}
+
 export interface CalcResult {
   totalInstalledPower: number; // kW
+  totalInstalledKva?: number; // kVA
   calculatedDemand: number; // kW
+  demandKva?: number; // kVA
   unitCount: number;
   unitDemand: number; // kW
+  unitDemandKva?: number; // kVA
   serviceDemand: number; // kW
+  serviceDemandKva?: number; // kVA
+  powerFactor?: number;
+  simultaneityFactor?: number;
+  recommendedTransformerKva?: number | null;
   enquadramento: Enquadramento;
   normaAplicada: NormaAplicada;
   needsSubstation: boolean;
+  calculationMemory?: CalculationMemoryItem[];
+  calculatedAt?: string;
+  demandLimitKw?: number;
 }
 
 export interface HistoryEntry {
@@ -108,11 +130,15 @@ export interface Atestado {
   projectId: string;
   issueDate: string;
   uniqueIdentifier: string;
+  analystId?: string;
+  analystName?: string;
+  validationUrl?: string;
 }
 
 export interface Project {
   id: string;
   code: string;
+  currentStep?: number;
   data: ProjectData;
   units: ConsumerUnitGroup[];
   serviceLoads: ServiceLoad[];
@@ -120,14 +146,17 @@ export interface Project {
   calcResult: CalcResult;
   status: ProjectStatus;
   createdAt: string;
+  updatedAt?: string;
   submittedAt?: string;
   analyzedAt?: string;
   approvedAt?: string;
   rejection?: RejectionInfo;
   history: HistoryEntry[];
   atestado?: Atestado;
+  certificateCode?: string;
   projetistaId: string;
   projetistaName: string;
+  projetistaEmail?: string;
   normaVersion: string;
 }
 

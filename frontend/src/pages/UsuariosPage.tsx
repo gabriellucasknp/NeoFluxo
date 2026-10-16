@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { mockUsers } from '@/data/mockData';
+import { userService } from '@/services/api';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -18,24 +19,47 @@ export function UsuariosPage() {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<User | null>(null);
 
+  const fetchUsers = () => {
+    userService.getAll().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setUsers(data);
+      }
+    }).catch(() => {});
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   const openCreate = () => {
     setEditing({ id: '', name: '', email: '', role: 'projetista', department: '' });
     setShowModal(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editing) return;
-    if (editing.id) {
-      setUsers(users.map((u) => (u.id === editing.id ? editing : u)));
-    } else {
-      setUsers([...users, { ...editing, id: `u-${Date.now()}` }]);
+    try {
+      if (editing.id) {
+        await userService.update(editing.id, editing);
+      } else {
+        await userService.create(editing);
+      }
+      fetchUsers();
+    } catch (err) {
+      console.error('Erro ao salvar usuário:', err);
     }
     setShowModal(false);
     setEditing(null);
   };
 
-  const deleteUser = (id: string) => {
-    setUsers(users.filter((u) => u.id !== id));
+  const deleteUser = async (id: string) => {
+    if (!window.confirm('Tem certeza que deseja desativar/excluir este usuário?')) return;
+    try {
+      await userService.delete(id);
+      fetchUsers();
+    } catch (err: any) {
+      alert(err.message || 'Erro ao excluir usuário');
+    }
   };
 
   return (

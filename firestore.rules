@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function for ID and payload safety
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Default deny unknown paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Test collection for connectivity check and health monitor
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+
+    // Users collection (RBAC profiles, accounts, registration)
+    match /users/{userId} {
+      allow get, list: if true;
+      allow write: if isValidId(userId);
+    }
+
+    // Projects collection (Drafts in 6 steps, Units, Loads, Real-time calculations & Technical Review)
+    match /projects/{projectId} {
+      allow get, list: if true;
+      allow write: if isValidId(projectId);
+    }
+
+    // Digital Certificates (Public verification via QR Code & emission)
+    match /certificates/{certificateId} {
+      allow get, list: if true;
+      allow write: if isValidId(certificateId);
+    }
+
+    // Transformers catalog (Padronização DIS-NOR-053)
+    match /transformers/{transformerId} {
+      allow get, list: if true;
+      allow write: if isValidId(transformerId);
+    }
+
+    // Demand Factors catalog (DIS-NOR-030)
+    match /demandFactors/{factorId} {
+      allow get, list: if true;
+      allow write: if isValidId(factorId);
+    }
+
+    // Admins registry
+    match /admins/{adminId} {
+      allow get, list: if true;
+      allow write: if isValidId(adminId);
+    }
+  }
+}

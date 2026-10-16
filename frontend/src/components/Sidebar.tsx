@@ -26,11 +26,11 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { to: '/app/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-4.5 w-4.5" />, roles: ['projetista', 'analista', 'admin'] },
+  { to: '/app/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-4.5 w-4.5" />, roles: ['projetista'] },
   { to: '/app/novo-projeto', label: 'Novo Projeto', icon: <FolderPlus className="h-4.5 w-4.5" />, roles: ['projetista'] },
   { to: '/app/meus-projetos', label: 'Meus Projetos', icon: <FolderOpen className="h-4.5 w-4.5" />, roles: ['projetista'] },
-  { to: '/app/analise', label: 'Análise de Projetos', icon: <ClipboardCheck className="h-4.5 w-4.5" />, roles: ['analista', 'admin'] },
-  { to: '/app/analise/dashboard', label: 'Painel do Analista', icon: <ScrollText className="h-4.5 w-4.5" />, roles: ['analista', 'admin'] },
+  { to: '/app/analise', label: 'Fila de Análise', icon: <ClipboardCheck className="h-4.5 w-4.5" />, roles: ['analista', 'admin'] },
+  { to: '/validar', label: 'Validar Atestado', icon: <ShieldCheck className="h-4.5 w-4.5" />, roles: ['projetista', 'analista', 'admin'] },
   { to: '/app/admin/dashboard', label: 'Painel Administrativo', icon: <LayoutDashboard className="h-4.5 w-4.5" />, roles: ['admin'] },
   { to: '/app/admin/dis-nor-030', label: 'DIS-NOR-030', icon: <FileText className="h-4.5 w-4.5" />, roles: ['admin'] },
   { to: '/app/admin/dis-nor-053', label: 'DIS-NOR-053', icon: <FileText className="h-4.5 w-4.5" />, roles: ['admin'] },
@@ -50,14 +50,16 @@ export function Sidebar() {
 
   const groups: { label: string; items: NavItem[] }[] = [
     { label: 'Projetista', items: visibleItems.filter((i) => ['/app/dashboard', '/app/novo-projeto', '/app/meus-projetos'].includes(i.to)) },
-    { label: 'Análise', items: visibleItems.filter((i) => ['/app/analise', '/app/analise/dashboard'].includes(i.to)) },
+    { label: 'Análise Técnica', items: visibleItems.filter((i) => ['/app/analise', '/validar'].includes(i.to)) },
     { label: 'Administração', items: visibleItems.filter((i) => i.to.startsWith('/app/admin')) },
   ];
+
+  const homeLink = user?.role === 'analista' ? '/app/analise' : user?.role === 'admin' ? '/app/admin/dashboard' : '/app/dashboard';
 
   const sidebarContent = (
     <div className="flex h-full flex-col">
       <div className="flex h-16 items-center border-b border-slate-200 px-5">
-        <NavLink to="/app/dashboard">
+        <NavLink to={homeLink}>
           <div className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neo-600">
               <ShieldCheck className="h-5 w-5 text-white" />

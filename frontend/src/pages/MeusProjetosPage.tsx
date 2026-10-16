@@ -30,7 +30,7 @@ export function MeusProjetosPage() {
   const [filter, setFilter] = useState(initialFilter);
 
   const myProjects = useMemo(
-    () => projects.filter((p) => p.projetistaId === user?.id),
+    () => projects.filter((p) => user?.role === 'admin' || p.projetistaId === user?.id || p.projetistaEmail === user?.email),
     [projects, user],
   );
 
@@ -136,9 +136,24 @@ export function MeusProjetosPage() {
                     <td className="px-5 py-3"><EnquadramentoBadge enquadramento={p.calcResult.enquadramento} /></td>
                     <td className="px-5 py-3"><StatusBadge status={p.status} /></td>
                     <td className="px-5 py-3 text-right">
-                      <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); navigate(`/app/projeto/${p.id}`); }}>
-                        Abrir
-                      </Button>
+                      <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+                        {(p.status === 'rascunho' || p.status === 'reprovado') && (
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => navigate(`/app/novo-projeto?id=${p.id}&step=${p.currentStep || 1}`)}
+                          >
+                            Continuar Edição
+                          </Button>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => navigate(`/app/projeto/${p.id}`)}
+                        >
+                          Detalhes
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -24,21 +24,35 @@ import type { UserRole } from '@/types';
 function ProtectedRoute({ children, roles }: { children: ReactNode; roles?: UserRole[] }) {
   const { user } = useAuth();
   if (!user) return <Navigate to="/" replace />;
-  if (roles && !roles.includes(user.role)) return <Navigate to="/app/dashboard" replace />;
+  if (roles && !roles.includes(user.role)) {
+    const fallback = user.role === 'analista' ? '/app/analise' : user.role === 'admin' ? '/app/admin/dashboard' : '/app/dashboard';
+    return <Navigate to={fallback} replace />;
+  }
   return <AppLayout>{children}</AppLayout>;
 }
 
 function AppRoutes() {
+  const { user } = useAuth();
+
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/validar" element={<ValidarAtestadoPage />} />
-      <Route path="/app/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-      <Route path="/app/novo-projeto" element={<ProtectedRoute roles={['projetista']}><NovoProjetoPage /></ProtectedRoute>} />
-      <Route path="/app/meus-projetos" element={<ProtectedRoute roles={['projetista']}><MeusProjetosPage /></ProtectedRoute>} />
+      <Route
+        path="/app/dashboard"
+        element={
+          user?.role === 'analista' ? (
+            <Navigate to="/app/analise" replace />
+          ) : (
+            <ProtectedRoute roles={['projetista', 'admin']}><DashboardPage /></ProtectedRoute>
+          )
+        }
+      />
+      <Route path="/app/novo-projeto" element={<ProtectedRoute roles={['projetista', 'admin']}><NovoProjetoPage /></ProtectedRoute>} />
+      <Route path="/app/meus-projetos" element={<ProtectedRoute roles={['projetista', 'admin']}><MeusProjetosPage /></ProtectedRoute>} />
       <Route path="/app/projeto/:id" element={<ProtectedRoute><ProjetoDetailPage /></ProtectedRoute>} />
       <Route path="/app/analise" element={<ProtectedRoute roles={['analista', 'admin']}><AnaliseListPage /></ProtectedRoute>} />
-      <Route path="/app/analise/dashboard" element={<ProtectedRoute roles={['analista', 'admin']}><AnalistaDashboardPage /></ProtectedRoute>} />
+      <Route path="/app/analise/dashboard" element={<ProtectedRoute roles={['analista', 'admin']}><AnaliseListPage /></ProtectedRoute>} />
       <Route path="/app/analise/:id" element={<ProtectedRoute roles={['analista', 'admin']}><AnaliseDetailPage /></ProtectedRoute>} />
       <Route path="/app/admin/dashboard" element={<ProtectedRoute roles={['admin']}><AdminDashboardPage /></ProtectedRoute>} />
       <Route path="/app/admin/dis-nor-030" element={<ProtectedRoute roles={['admin']}><DisNor030Page /></ProtectedRoute>} />
