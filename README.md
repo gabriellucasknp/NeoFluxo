@@ -323,10 +323,110 @@ A Entrega 03 fechou o ciclo de desenvolvimento do MVP com foco em valor técnico
 
 ---
 
-## ⚙️ Como rodar o projeto
-*(Esta seção será preenchida a partir da Entrega 02, detalhando passos de instalação, scripts do Docker e variáveis de ambiente)*
+## ## ⚙️ Como rodar o projeto
 
-1. Clone o repositório: `git clone https://github.com/FelipeUCAA/Projeto_NeoEnergia_CesarSchool.git`
-2. *(Em breve: comandos do docker-compose e execução do Front/Back)*
+### 1. Pré-requisitos
 
----
+Antes de iniciar, instale:
+
+- [Git](https://git-scm.com/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+### 2. Clonar o repositório
+
+Abra o terminal e execute:
+
+```bash
+git clone https://github.com/FelipeUCAA/Projeto_NeoEnergia_CesarSchool.git
+cd Projeto_NeoEnergia_CesarSchool
+```
+
+### 3. Subir a aplicação com Docker
+
+Na raiz do projeto, onde está localizado o arquivo `docker-compose.yml`, execute:
+
+```bash
+docker compose up --build -d
+```
+
+Esse comando constrói as imagens e inicia os três serviços da aplicação:
+
+- **Frontend:** interface desenvolvida com React e Vite.
+- **Backend:** API desenvolvida com Java e Spring Boot.
+- **Banco de dados:** MySQL 8.0.
+
+O banco de dados é configurado automaticamente pelo Docker Compose, e o Back-end aguarda sua inicialização antes de iniciar.
+
+### 4. Acessar a aplicação
+
+Após a inicialização, acesse:
+
+| Serviço | Endereço |
+|---|---|
+| Front-end | http://localhost:5173 |
+| Back-end | http://localhost:8081 |
+| MySQL | `localhost:3307` |
+
+### 5. Verificar os containers
+
+Para verificar o estado dos serviços:
+
+```bash
+docker compose ps
+```
+
+Para acompanhar os logs de todos os serviços:
+
+```bash
+docker compose logs -f
+```
+
+Para acompanhar somente os logs do Back-end:
+
+```bash
+docker compose logs -f backend
+```
+
+### 6. Executar os testes do Back-end
+
+Com o Java e o Maven instalados, execute na raiz do projeto:
+
+```bash
+mvn test
+```
+
+Para compilar o projeto:
+
+```bash
+mvn clean compile
+```
+
+### 7. Encerrar a aplicação
+
+Para parar e remover os containers:
+
+```bash
+docker compose down
+```
+
+Para iniciar novamente sem reconstruir as imagens:
+
+```bash
+docker compose up -d
+```
+
+Os dados do MySQL são armazenados no volume Docker `db_data` e são preservados ao executar `docker compose down`. Para apagar também os dados persistidos, seria necessário executar `docker compose down -v`.
+
+### 8. Configurações do banco de dados
+
+As configurações utilizadas no ambiente Docker são:
+
+| Configuração | Valor |
+|---|---|
+| SGBD | MySQL 8.0 |
+| Banco de dados | `neofluxo_db` |
+| Usuário | `neofluxo` |
+| Porta externa | `3307` |
+| Porta interna | `3306` |
+
+As credenciais acima são destinadas ao ambiente de desenvolvimento. Em ambientes de produção, utilize senhas seguras e variáveis de ambiente protegidas.
