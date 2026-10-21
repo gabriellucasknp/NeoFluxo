@@ -42,25 +42,28 @@ O Portal de Projetos Elétricos é uma solução desenvolvida pela equipe **Neof
 
 ---
 
-## US-01 — Entrar com credenciais Neoenergia
-**Como** projetista, analista ou administrador cadastrado no portal corporativo da Neoenergia  
-**Eu quero** entrar no Portal de Projetos Elétricos usando o mesmo e-mail e senha já utilizados  
-**Para que** eu acesse diretamente a área do meu perfil, sem gerenciar mais uma senha.
+### US-01 — Acesso ao portal e direcionamento por perfil
 
-* **Cenário 1: Projetista entra e cai no painel dele**
-  * **Dado** que estou na tela de login
-  * **E** tenho conta ativa com perfil projetista no Portal de Projetos
-  * **Quando** preencho e-mail e senha corretos e clico em "Entrar"
-  * **Então** sou levado para o painel do projetista com o menu lateral habilitado.
+**Como** projetista, analista ou administrador cadastrado no Portal de Projetos Elétricos da Neoenergia  
+**Eu quero** acessar o sistema com minhas credenciais e ser direcionado para uma área exclusiva de acordo com meu perfil  
+**Para que** eu tenha acesso às funcionalidades e informações correspondentes às minhas responsabilidades dentro do portal.
 
-* **Cenário 2: Analista cai na fila de análise**
-  * **Dado** que estou na tela de login
-  * **E** minha conta tem perfil analista
-  * **Quando** autentico com sucesso
-  * **Então** sou levado para o "Painel do Analista", e não para o dashboard de projetista.
+* **Cenário 1: Projetista acessa sua área exclusiva**
+  * **Dado** que possuo uma conta ativa com perfil de projetista
+  * **Quando** informo meu e-mail e senha corretamente na tela de login
+  * **Então** sou direcionado ao painel do projetista, com acesso às funcionalidades disponíveis para meu perfil.
+
+* **Cenário 2: Analista acessa sua área exclusiva**
+  * **Dado** que possuo uma conta ativa com perfil de analista
+  * **Quando** realizo a autenticação com sucesso
+  * **Então** sou direcionado ao painel do analista, com acesso às funcionalidades de análise de projetos.
+
+* **Cenário 3: Administrador acessa sua área exclusiva**
+  * **Dado** que possuo uma conta ativa com perfil de administrador
+  * **Quando** realizo a autenticação com sucesso
+  * **Então** sou direcionado à área administrativa, com acesso às funcionalidades de gerenciamento do portal.
 
 ---
-
 ## US-02 — Recuperar o acesso / senha
 **Como** projetista que acessa o portal poucas vezes por mês e esqueceu a senha  
 **Eu quero** solicitar um link de redefinição pelo e-mail corporativo e cadastrar uma nova senha  
