@@ -267,45 +267,71 @@ A Entrega 02 consolidou a estrutura inicial do MVP, com a priorização das hist
 
 ---
 
-Entrega 03: Implementação das funcionalidades de cálculo e validação
-1. Evolução do MVP
+### Entrega 03: Implementação das funcionalidades de cálculo e validação
+
+#### 1. Evolução do MVP
+
 A Entrega 03 teve como objetivo aprimorar o Portal de Projetos Elétricos da Neoenergia, implementando funcionalidades importantes para facilitar o acesso dos usuários e tornar o processo de elaboração e análise dos projetos mais eficiente.
 
 Nesta etapa, foram trabalhadas as funcionalidades de autenticação por credenciais corporativas e cálculo automático da demanda elétrica, buscando reduzir tarefas manuais, melhorar a experiência dos projetistas e garantir maior confiabilidade nas informações apresentadas pelo sistema.
 
 Com isso, o MVP evoluiu para uma solução que facilita tanto o acesso ao portal quanto a tomada de decisões técnicas durante a elaboração dos projetos.
-2. Funcionalidades priorizadas
+
+#### 2. Funcionalidades priorizadas
+
 As funcionalidades contempladas nesta etapa foram:
-- 🟢 US-01: Acesso ao portal utilizando as credenciais da Neoenergia, direcionando o usuário para a área correspondente ao seu perfil.
-- 🟢 US-05: Cálculo automatizado da demanda elétrica e enquadramento do projeto em Baixa Tensão (BT) ou Média Tensão (MT).
-- 🟢 Melhoria da experiência: Redução de etapas manuais e apresentação mais clara das informações necessárias ao projetista.
-3. Post-its de destaque
-🟧 POST-IT 1 — US-01: Entrar com credenciais Neoenergia
-Como projetista, analista ou administrador cadastrado no portal corporativo da Neoenergia,
 
-Quero entrar no Portal de Projetos Elétricos utilizando o mesmo e-mail e senha já utilizados,
+- 🟡 **US-01:** Acesso ao portal utilizando as credenciais da Neoenergia, direcionando o usuário para a área correspondente ao seu perfil.
+- 🔴 **US-05:** Cálculo automatizado da demanda elétrica e enquadramento do projeto em Baixa Tensão (BT) ou Média Tensão (MT).
 
-Para que eu consiga acessar diretamente a área correspondente ao meu perfil, sem precisar gerenciar outra senha.
-Critério	Classificação
-Impacto	🟡 Médio
-Esforço	🟡 Médio
-Status	✅ Implementada
+#### 3. Post-its de destaque
 
-🟧 POST-IT 2 — US-05: Cálculo de demanda e enquadramento
-Como projetista que atualmente calcula a demanda em planilhas,
+<table>
+<tr>
+<td width="50%" valign="top">
 
-Quero visualizar a demanda total e o enquadramento do projeto (BT/MT) calculados pelo sistema com base nas regras definidas,
+> 🟧 **POST-IT 1 — US-01: Entrar com credenciais Neoenergia**
+>
+> **Como** projetista, analista ou administrador cadastrado no portal corporativo da Neoenergia,
+>
+> **Quero** entrar no Portal de Projetos Elétricos utilizando o mesmo e-mail e senha já utilizados,
+>
+> **Para que** eu consiga acessar diretamente a área correspondente ao meu perfil, sem precisar gerenciar outra senha.
+>
+> | Critério | Classificação |
+> |---|---|
+> | **Impacto** | 🟡 Médio |
+> | **Esforço** | 🟡 Médio |
+> | **Status** | ✅ Implementada |
 
-Para que eu tenha mais segurança na classificação do projeto antes de enviá-lo para análise.
-Critério	Classificação
-Impacto	🟡 Médio
-Esforço	🟡 Médio
-Status	✅ Implementada
+</td>
+<td width="50%" valign="top">
 
-4. Considerações finais
-A Entrega 03 contribuiu para a evolução do Portal de Projetos Elétricos ao priorizar duas funcionalidades relevantes para o fluxo de trabalho dos usuários. A US-01 facilita o acesso ao sistema conforme o perfil de cada usuário, enquanto a US-05 automatiza o cálculo da demanda e auxilia no enquadramento técnico dos projetos.
+> 🟧 **POST-IT 2 — US-05: Cálculo de demanda e enquadramento**
+>
+> **Como** projetista que atualmente calcula a demanda em planilhas,
+>
+> **Quero** visualizar a demanda total e o enquadramento do projeto (BT/MT) calculados pelo sistema com base nas regras definidas,
+>
+> **Para que** eu tenha mais segurança na classificação do projeto antes de enviá-lo para análise.
+>
+> | Critério | Classificação |
+> |---|---|
+> | **Impacto** | 🔴 Alto |
+> | **Esforço** | 🟡 Médio |
+> | **Status** | ✅ Implementada |
 
-As duas histórias foram classificadas com impacto médio, considerando sua contribuição para a melhoria do processo. Dessa forma, a entrega fortalece a proposta do MVP de oferecer uma plataforma mais prática, organizada e confiável para os profissionais envolvidos na elaboração e análise de projetos elétricos.
+</td>
+</tr>
+</table>
+
+#### 4. Considerações finais
+
+A Entrega 03 contribuiu para a evolução do Portal de Projetos Elétricos ao implementar duas funcionalidades relevantes para o fluxo de trabalho dos usuários. A US-01 facilita o acesso ao sistema conforme o perfil de cada usuário, enquanto a US-05 automatiza o cálculo da demanda e auxilia no enquadramento técnico dos projetos.
+
+A US-01 foi classificada com impacto médio, enquanto a US-05 apresenta impacto alto por contribuir diretamente para a precisão dos cálculos e para a tomada de decisões técnicas. Dessa forma, a entrega fortalece a proposta do MVP de oferecer uma plataforma mais prática, organizada e confiável para os profissionais envolvidos na elaboração e análise de projetos elétricos.
+
+---
 
 ## ## ⚙️ Como rodar o projeto
 
