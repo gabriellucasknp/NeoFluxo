@@ -115,31 +115,31 @@ export function ProjetoDetailPage() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           <div className="rounded-lg border border-slate-200 p-4">
             <p className="text-xs text-slate-500">Potência instalada total</p>
-            <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(project.calcResult.totalInstalledPower)}</p>
+            <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(project.calcResult?.totalInstalledPower)}</p>
           </div>
           <div className="rounded-lg border border-neo-200 bg-neo-50 p-4">
             <p className="text-xs text-neo-600">Demanda calculada</p>
-            <p className="mt-1 text-xl font-bold text-neo-700">{formatKw(project.calcResult.calculatedDemand)}</p>
+            <p className="mt-1 text-xl font-bold text-neo-700">{formatKw(project.calcResult?.calculatedDemand)}</p>
           </div>
           <div className="rounded-lg border border-slate-200 p-4">
             <p className="text-xs text-slate-500">Nº de unidades</p>
-            <p className="mt-1 text-xl font-bold text-slate-800">{project.calcResult.unitCount}</p>
+            <p className="mt-1 text-xl font-bold text-slate-800">{project.calcResult?.unitCount}</p>
           </div>
           <div className="rounded-lg border border-slate-200 p-4">
             <p className="text-xs text-slate-500">Demanda das unidades</p>
-            <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(project.calcResult.unitDemand)}</p>
+            <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(project.calcResult?.unitDemand)}</p>
           </div>
           <div className="rounded-lg border border-slate-200 p-4">
             <p className="text-xs text-slate-500">Demanda das áreas comuns</p>
-            <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(project.calcResult.serviceDemand)}</p>
+            <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(project.calcResult?.serviceDemand)}</p>
           </div>
           <div className="rounded-lg border border-slate-200 p-4">
             <p className="text-xs text-slate-500">Norma aplicada</p>
-            <p className="mt-1 text-lg font-bold text-slate-800">{project.calcResult.normaAplicada}</p>
+            <p className="mt-1 text-lg font-bold text-slate-800">{project.calcResult?.normaAplicada}</p>
           </div>
           <div className="rounded-lg border border-slate-200 p-4">
             <p className="text-xs text-slate-500">Enquadramento</p>
-            <div className="mt-1"><EnquadramentoBadge enquadramento={project.calcResult.enquadramento} /></div>
+            <div className="mt-1"><EnquadramentoBadge enquadramento={project.calcResult?.enquadramento} /></div>
           </div>
           <div className="rounded-lg border border-slate-200 p-4">
             <p className="text-xs text-slate-500">Versão da norma</p>
@@ -147,7 +147,7 @@ export function ProjetoDetailPage() {
           </div>
         </div>
 
-        {project.calcResult.needsSubstation && project.subestacao && (
+        {project.calcResult?.needsSubstation && project.subestacao && (
           <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
             <div className="flex items-center gap-2">
               <Building2 className="h-5 w-5 text-amber-600" />
@@ -360,19 +360,19 @@ export function ProjetoDetailPage() {
                 </div>
                 <div>
                   <p className="text-xs text-slate-500">Potência Instalada</p>
-                  <p className="font-medium text-slate-800">{formatKw(project.calcResult.totalInstalledPower)}</p>
+                  <p className="font-medium text-slate-800">{formatKw(project.calcResult?.totalInstalledPower)}</p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500">Demanda Calculada</p>
-                  <p className="font-medium text-slate-800">{formatKw(project.calcResult.calculatedDemand)}</p>
+                  <p className="font-medium text-slate-800">{formatKw(project.calcResult?.calculatedDemand)}</p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500">Enquadramento</p>
-                  <p className="font-medium text-slate-800">{project.calcResult.enquadramento === 'baixa_tensao' ? 'Baixa Tensão' : 'Média Tensão'}</p>
+                  <p className="font-medium text-slate-800">{project.calcResult?.enquadramento === 'baixa_tensao' ? 'Baixa Tensão' : 'Média Tensão'}</p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500">Norma Utilizada</p>
-                  <p className="font-medium text-slate-800">{project.calcResult.normaAplicada} — {project.normaVersion}</p>
+                  <p className="font-medium text-slate-800">{project.calcResult?.normaAplicada} — {project.normaVersion}</p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500">Data de Emissão</p>

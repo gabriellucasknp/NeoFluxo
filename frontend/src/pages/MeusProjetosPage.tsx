@@ -130,10 +130,10 @@ export function MeusProjetosPage() {
                     <td className="px-5 py-3">
                       <span className="inline-flex items-center gap-1 font-medium text-slate-800">
                         <Zap className="h-3.5 w-3.5 text-amber-500" />
-                        {formatKw(p.calcResult.calculatedDemand)}
+                        {formatKw(p.calcResult?.calculatedDemand)}
                       </span>
                     </td>
-                    <td className="px-5 py-3"><EnquadramentoBadge enquadramento={p.calcResult.enquadramento} /></td>
+                    <td className="px-5 py-3"><EnquadramentoBadge enquadramento={p.calcResult?.enquadramento} /></td>
                     <td className="px-5 py-3"><StatusBadge status={p.status} /></td>
                     <td className="px-5 py-3 text-right">
                       <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>

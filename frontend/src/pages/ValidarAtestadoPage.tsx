@@ -168,17 +168,17 @@ export function ValidarAtestadoPage() {
                 </div>
                 <div>
                   <p className="text-xs text-slate-500">Demanda Homologada</p>
-                  <p className="font-extrabold text-neo-800">{formatKw(result.calcResult.calculatedDemand)}</p>
+                  <p className="font-extrabold text-neo-800">{formatKw(result.calcResult?.calculatedDemand)}</p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500">Enquadramento Normativo</p>
                   <p className="font-medium text-slate-800">
-                    {result.calcResult.enquadramento === 'baixa_tensao' ? 'Baixa Tensão (BT)' : 'Média Tensão (MT)'}
+                    {result.calcResult?.enquadramento === 'baixa_tensao' ? 'Baixa Tensão (BT)' : 'Média Tensão (MT)'}
                   </p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500">Norma Aplicada</p>
-                  <p className="font-medium text-slate-800">{result.calcResult.normaAplicada}</p>
+                  <p className="font-medium text-slate-800">{result.calcResult?.normaAplicada}</p>
                 </div>
               </div>
 

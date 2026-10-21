@@ -19,7 +19,8 @@ export function StatusBadge({ status }: { status: ProjectStatus }) {
   );
 }
 
-export function EnquadramentoBadge({ enquadramento }: { enquadramento: string }) {
+export function EnquadramentoBadge({ enquadramento }: { enquadramento?: string }) {
+  if (!enquadramento) return <span className="text-xs text-slate-400">—</span>; // projeto ainda sem cálculo
   const isBaixa = enquadramento === 'baixa_tensao';
   return (
     <span

@@ -81,6 +81,13 @@ export const authService = {
         password,
       }),
     }),
+  me: () => fetchApi<LoginResponse['user']>('/auth/me'),
+  register: (data: { name: string; email: string; password: string; role?: string; department?: string }) =>
+    fetchApi<LoginResponse>('/auth/register', { method: 'POST', body: JSON.stringify({ ...data, role: data.role?.toUpperCase() }) }),
+  forgotPassword: (email: string) =>
+    fetchApi<{ message: string }>('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) }),
+  verifyGoogleAuth: (_data: any): Promise<any> => Promise.reject(new Error('Login com Google indisponível no back Java')),
+  completeGoogleProfile: (_data: any): Promise<any> => Promise.reject(new Error('Login com Google indisponível no back Java')),
 };
 
 // =====================================================
@@ -88,6 +95,9 @@ export const authService = {
 // =====================================================
 
 export const projectService = {
+  saveStep: (id: string, step: number, data: any) =>
+    fetchApi<any>(`/projects/${id}/steps/${step}`, { method: 'PUT', body: JSON.stringify(data) }),
+
   getAll: () =>
     fetchApi<any[]>('/projects'),
 
@@ -202,4 +212,8 @@ export const transformerService = {
 export const certificateService = {
   validate: (code: string) =>
     fetchApi<any>(`/certificates/validate/${code}`),
+};
+// Usado pela ConfiguracoesPage (status da integração Firebase)
+export const firebaseBackendService = {
+  getStatus: () => fetchApi<any>('/firebase/status'),
 };

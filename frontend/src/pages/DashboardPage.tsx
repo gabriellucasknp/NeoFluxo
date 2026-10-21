@@ -136,11 +136,11 @@ export function DashboardPage() {
                     <td className="px-5 py-3">
                       <span className="inline-flex items-center gap-1 font-medium text-slate-800">
                         <Zap className="h-3.5 w-3.5 text-amber-500" />
-                        {formatKw(p.calcResult.calculatedDemand)}
+                        {formatKw(p.calcResult?.calculatedDemand)}
                       </span>
                     </td>
                     <td className="px-5 py-3">
-                      <EnquadramentoBadge enquadramento={p.calcResult.enquadramento} />
+                      <EnquadramentoBadge enquadramento={p.calcResult?.enquadramento} />
                     </td>
                     <td className="px-5 py-3">
                       <StatusBadge status={p.status} />

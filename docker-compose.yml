@@ -45,8 +45,8 @@ services:
   # ===================== FRONTEND (React/Vite) =====================
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
     container_name: neofluxo-frontend
     restart: on-failure
     ports:

@@ -123,7 +123,8 @@ export function calculateProjectDemand(
   };
 }
 
-export function formatKw(kw: number): string {
+export function formatKw(kw: number | null | undefined): string {
+  if (kw == null || Number.isNaN(kw)) return '—'; // projeto ainda sem cálculo
   return `${kw.toFixed(1).replace('.', ',')} kW`;
 }
 

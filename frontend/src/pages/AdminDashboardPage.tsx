@@ -41,8 +41,8 @@ export function AdminDashboardPage() {
   ].filter((d) => d.value > 0);
 
   const enqData = [
-    { name: 'Baixa Tensão', value: projects.filter((p) => p.calcResult.enquadramento === 'baixa_tensao').length },
-    { name: 'Média Tensão', value: projects.filter((p) => p.calcResult.enquadramento === 'media_tensao').length },
+    { name: 'Baixa Tensão', value: projects.filter((p) => p.calcResult?.enquadramento === 'baixa_tensao').length },
+    { name: 'Média Tensão', value: projects.filter((p) => p.calcResult?.enquadramento === 'media_tensao').length },
   ].filter((d) => d.value > 0);
 
   const approvedRejected = [

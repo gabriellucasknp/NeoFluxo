@@ -22,7 +22,8 @@ import { ConfiguracoesPage } from '@/pages/ConfiguracoesPage';
 import type { UserRole } from '@/types';
 
 function ProtectedRoute({ children, roles }: { children: ReactNode; roles?: UserRole[] }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  if (loading) return null; // espera o useAuth restaurar a sessão antes de mandar pro login (F5)
   if (!user) return <Navigate to="/" replace />;
   if (roles && !roles.includes(user.role)) {
     const fallback = user.role === 'analista' ? '/app/analise' : user.role === 'admin' ? '/app/admin/dashboard' : '/app/dashboard';

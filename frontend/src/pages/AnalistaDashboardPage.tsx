@@ -84,9 +84,9 @@ export function AnalistaDashboardPage() {
                     <td className="px-5 py-3 font-medium text-neo-700">{p.code}</td>
                     <td className="px-5 py-3 text-slate-700">{p.data.name}</td>
                     <td className="px-5 py-3 text-slate-600">{p.projetistaName}</td>
-                    <td className="px-5 py-3 text-slate-600">{formatKw(p.calcResult.calculatedDemand)}</td>
-                    <td className="px-5 py-3"><EnquadramentoBadge enquadramento={p.calcResult.enquadramento} /></td>
-                    <td className="px-5 py-3 text-slate-600">{p.calcResult.normaAplicada}</td>
+                    <td className="px-5 py-3 text-slate-600">{formatKw(p.calcResult?.calculatedDemand)}</td>
+                    <td className="px-5 py-3"><EnquadramentoBadge enquadramento={p.calcResult?.enquadramento} /></td>
+                    <td className="px-5 py-3 text-slate-600">{p.calcResult?.normaAplicada}</td>
                     <td className="px-5 py-3 text-slate-600">{new Date(p.createdAt).toLocaleDateString('pt-BR')}</td>
                     <td className="px-5 py-3"><StatusBadge status={p.status} /></td>
                     <td className="px-5 py-3 text-right">

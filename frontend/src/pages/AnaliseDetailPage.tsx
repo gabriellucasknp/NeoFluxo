@@ -461,8 +461,8 @@ export function AnaliseDetailPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {project.calcResult?.calculationMemory && project.calcResult.calculationMemory.length > 0 ? (
-                  project.calcResult.calculationMemory.map((item, idx) => (
+                {project.calcResult?.calculationMemory && project.calcResult?.calculationMemory.length > 0 ? (
+                  project.calcResult?.calculationMemory.map((item, idx) => (
                     <tr key={idx} className="hover:bg-slate-50">
                       <td className="px-4 py-2.5 font-medium text-slate-800">{item.group}</td>
                       <td className="px-4 py-2.5 text-slate-600">{item.description}</td>
