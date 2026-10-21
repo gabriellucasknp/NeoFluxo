@@ -345,6 +345,101 @@ A Entrega 03 contribuiu para a evolução do Portal de Projetos Elétricos ao im
 A US-01 foi classificada com impacto médio, enquanto a US-05 apresenta impacto alto por contribuir diretamente para a precisão dos cálculos e para a tomada de decisões técnicas. Dessa forma, a entrega fortalece a proposta do MVP de oferecer uma plataforma mais prática, organizada e confiável para os profissionais envolvidos na elaboração e análise de projetos elétricos.
 
 ---
+### Entrega 04: Implementação das funcionalidades de recuperação de acesso, gerenciamento de usuários e validação de atestados
+
+#### 1. Evolução do MVP
+
+A Entrega 04 teve como objetivo ampliar as funcionalidades do Portal de Projetos Elétricos da Neoenergia, contemplando a recuperação de acesso, o gerenciamento de usuários e a validação digital de atestados.
+
+Nesta etapa, foram consideradas funcionalidades que facilitam a administração do portal, permitem que os usuários recuperem suas credenciais sem depender diretamente do suporte e oferecem mais segurança para terceiros que precisam verificar a autenticidade dos documentos emitidos.
+
+Com isso, o MVP passou a contemplar melhorias tanto para os usuários internos quanto para o público externo, tornando o processo de acesso, gerenciamento e consulta de documentos mais prático e confiável.
+
+#### 2. Funcionalidades priorizadas
+
+As funcionalidades contempladas nesta etapa foram:
+
+- 🟢 **US-02:** Recuperação de acesso por meio de link enviado ao e-mail corporativo para redefinição de senha.
+- 🟢 **US-03:** Cadastro e gerenciamento de usuários, com definição de perfis, departamentos e permissões de acesso.
+- 🔴 **US-07:** Validação da autenticidade de atestados digitais por meio de QR Code ou código de identificação.
+
+#### 3. Post-its de destaque
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+> 🟧 **POST-IT 1 — US-02: Recuperar o acesso / senha**
+>
+> **Como** projetista que acessa o portal poucas vezes por mês e esqueceu a senha,
+>
+> **Quero** solicitar um link de redefinição pelo e-mail corporativo e cadastrar uma nova senha,
+>
+> **Para que** eu volte a submeter projetos no mesmo dia, sem precisar abrir chamado no suporte.
+>
+> | Critério | Classificação |
+> |---|---|
+> | **Impacto** | 🟢 Baixo |
+> | **Esforço** | 🟡 Médio |
+> | **Status** | ✅ Implementada |
+
+</td>
+<td width="50%" valign="top">
+
+> 🟧 **POST-IT 2 — US-03: Provisionar novo usuário**
+>
+> **Como** administrador do Portal de Projetos Elétricos,
+>
+> **Quero** cadastrar novos usuários informando nome, e-mail corporativo, perfil e departamento,
+>
+> **Para que** cada profissional tenha acesso ao sistema com as permissões adequadas às suas responsabilidades.
+>
+> | Critério | Classificação |
+> |---|---|
+> | **Impacto** | 🟢 Baixo |
+> | **Esforço** | 🟡 Médio |
+> | **Status** | ✅ Implementada |
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+> 🟧 **POST-IT 3 — US-07: Atestado digital e validação**
+>
+> **Como** consumidor, construtora, prefeitura ou cartório,
+>
+> **Quero** conferir a autenticidade do atestado de projeto escaneando o QR Code ou digitando o código de identificação,
+>
+> **Para que** eu possa confiar no documento sem precisar entrar em contato diretamente com a Neoenergia.
+>
+> | Critério | Classificação |
+> |---|---|
+> | **Impacto** | 🔴 Alto |
+> | **Esforço** | 🟡 Médio |
+> | **Status** | ✅ Implementada |
+
+</td>
+</tr>
+</table>
+
+#### 4. Considerações finais
+
+A Entrega 04 ampliou a abrangência do Portal de Projetos Elétricos ao contemplar funcionalidades voltadas à recuperação de acesso, à administração dos usuários e à validação de documentos digitais. A US-02 facilita a recuperação de credenciais, enquanto a US-03 permite organizar o acesso ao sistema de acordo com os perfis profissionais. Já a US-07 se destaca pelo impacto alto, pois permite que terceiros verifiquem a autenticidade dos atestados de maneira independente, aumentando a confiabilidade dos documentos emitidos.
+
+Dessa forma, a entrega fortalece a proposta do MVP ao reunir recursos que melhoram a experiência dos usuários, simplificam tarefas administrativas e ampliam a segurança e a transparência no processo de validação documental.
+
+---
+
+#### 5. Screencast da Entrega 04
+
+- **Screencast de Apresentação — Front-end:** [▶️ Assistir no YouTube](LINK AQUI)
+  - Vídeo demonstrando a navegação e o funcionamento das funcionalidades implementadas (US-02, US-03 e US-07) na interface do Portal de Projetos Elétricos.
+
+- **Screencast de Apresentação — Back-end:** [▶️ Assistir no YouTube](LINK AQUI)
+  - Vídeo demonstrando o funcionamento das funcionalidades implementadas (US-02, US-03 e US-07) no back-end da aplicação, incluindo as regras de negócio e o processamento das operações.
+
+
 
 ## ## ⚙️ Como rodar o projeto
 
