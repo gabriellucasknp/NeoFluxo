@@ -303,13 +303,13 @@ As funcionalidades entregues nesta etapa refletem os pontos mais críticos do pr
 </td>
 <td width="50%" valign="top">
 
-> 🟧 **POST-IT 2 — US-07: Atestado digital e validação**
+> 🟧 **POST-IT 2 — US-01: Registro e Autenticação Local**
 >
-> **Como** consumidor, construtora, prefeitura ou cartório, **quero** conferir a autenticidade do atestado digital por QR Code ou código de validação **para** garantir a confiabilidade do documento sem depender de contato manual com a Neoenergia.
+> **Como** projetista, analista ou administrador cadastrado no portal corporativo da Neoenergia, **quero** entrar no Portal de Projetos Elétricos usando o mesmo e-mail e senha já utilizados **para** que eu acesse diretamente a área do meu perfil, sem gerenciar mais uma senha.
 >
 > | | |
 > |---|---|
-> | **Impacto** | 🔴 Alto |
+> | **Impacto** | 🟡 Médio |
 > | **Esforço** | 🟡 Médio (16 SP) |
 > | **Status** | ✅ Implementada |
 
