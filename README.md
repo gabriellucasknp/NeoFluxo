@@ -325,7 +325,17 @@ As funcionalidades contempladas nesta etapa foram:
 </tr>
 </table>
 
-#### 4. Considerações finais
+#### 4. Screencast da Entrega 03
+
+* **Screencast de Apresentação:** [▶️ Assistir no Youtube](LINK AQUI)
+  * Vídeo demonstrando a navegação nas funcionalidades implementadas (US-01 e US-05) no front-end da aplicação.
+ 
+* **Screencast de Apresentação:** [▶️ Assistir no Youtube](LINK AQUI)
+  * Vídeo demonstrando a navegação nas funcionalidades implementadas (US-01 e US-05) no back-end da aplicação.
+
+---
+
+#### 5. Considerações finais
 
 A Entrega 03 contribuiu para a evolução do Portal de Projetos Elétricos ao implementar duas funcionalidades relevantes para o fluxo de trabalho dos usuários. A US-01 facilita o acesso ao sistema conforme o perfil de cada usuário, enquanto a US-05 automatiza o cálculo da demanda e auxilia no enquadramento técnico dos projetos.
 
