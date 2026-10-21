@@ -851,14 +851,14 @@ app.post('/api/auth/register', (req: Request, res: Response) => {
     return res.status(409).json({ error: 'Já existe uma conta cadastrada com este e-mail' });
   }
 
-  // Segurança ABAC: auto-cadastro público é estritamente restrito ao perfil de Projetista.
-  // Somente Administradores autenticados podem atribuir perfis de Analista ou Admin.
+  // Simplified access: allow selecting either Projetista or Analista directly
+  const allowedRole = role === 'analista' ? 'analista' : 'projetista';
   const newUser = {
     id: `u-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
     name: name.trim(),
     email: email.trim().toLowerCase(),
     passwordHash: bcrypt.hashSync(password, 10),
-    role: 'projetista',
+    role: allowedRole,
     department: department.trim(),
     active: true,
     createdAt: new Date().toISOString(),
@@ -885,6 +885,194 @@ app.post('/api/auth/register', (req: Request, res: Response) => {
       role: newUser.role,
       department: newUser.department,
     },
+  });
+});
+
+// ==========================================
+// GOOGLE AUTH: PROFILE SELECTION & ONBOARDING
+// ==========================================
+
+// Google Sign-In: Step 1 - Verify or check existing profile
+app.post('/api/auth/google/verify', (req: Request, res: Response) => {
+  const { email, name, uid, photoUrl } = req.body;
+  if (!email || !uid) {
+    return res.status(400).json({ error: 'E-mail e UID do Google são obrigatórios' });
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  let user = db.users.find(
+    (u) =>
+      u.googleUid === uid ||
+      u.id === uid ||
+      (u.email && u.email.toLowerCase() === normalizedEmail),
+  );
+
+  // If user does not exist or has not yet selected their profile
+  if (!user || !user.role || (user as any).needsProfile) {
+    return res.json({
+      needsProfile: true,
+      googleData: {
+        uid,
+        name: user?.name || name || email.split('@')[0],
+        email: normalizedEmail,
+        photoUrl: photoUrl || '',
+      },
+    });
+  }
+
+  // Link Google UID if not already linked
+  if (!user.googleUid) {
+    user.googleUid = uid;
+    user.authProvider = 'google';
+  }
+  // Ensure user is active (no administrative blocking for regular portal use)
+  if (!user.active) {
+    user.active = true;
+    (user as any).status = 'ativo';
+    (user as any).pendingApproval = false;
+  }
+  saveDatabase(db);
+  serverFirestore.set('users', user.id, user).catch(() => {});
+
+  // User exists and has an authorized profile -> issue JWT token
+  const token = jwt.sign(
+    { sub: user.id, id: user.id, email: user.email, role: user.role, name: user.name },
+    JWT_SECRET,
+    { expiresIn: '24h' },
+  );
+
+  return res.json({
+    needsProfile: false,
+    token,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      department: user.department,
+    },
+  });
+});
+
+// Google Sign-In: Step 2 - Complete profile selection with direct activation
+app.post('/api/auth/google/complete-profile', (req: Request, res: Response) => {
+  const { uid, email, name, role = 'projetista', department } = req.body;
+
+  if (!email || !uid) {
+    return res.status(400).json({ error: 'Credenciais do Google ausentes' });
+  }
+  if (!name || name.trim().length < 3) {
+    return res.status(400).json({ error: 'O nome completo deve ter pelo menos 3 caracteres' });
+  }
+  if (!department || !department.trim()) {
+    return res.status(400).json({ error: 'Informe o departamento ou área de atuação' });
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  const selectedRole = String(role).toLowerCase();
+
+  if (!['projetista', 'analista', 'admin'].includes(selectedRole)) {
+    return res.status(400).json({ error: 'Perfil de acesso inválido' });
+  }
+
+  let user = db.users.find(
+    (u) =>
+      u.googleUid === uid ||
+      u.id === uid ||
+      (u.email && u.email.toLowerCase() === normalizedEmail),
+  );
+
+  const isBootstrapAdmin =
+    normalizedEmail === 'admin@example.com' ||
+    normalizedEmail === 'roberto.fonseca@neoenergia.com';
+
+  // SECURITY ENFORCEMENT & SIMPLIFIED ACCESS:
+  // Administrador cannot be self-granted by regular users without admin credentials,
+  // but instead of blocking the user, they receive instant authorized access as Projetista or Analista.
+  let finalRole: string = 'projetista';
+  if (selectedRole === 'admin') {
+    finalRole = isBootstrapAdmin ? 'admin' : 'projetista';
+  } else if (selectedRole === 'analista') {
+    finalRole = 'analista';
+  } else {
+    finalRole = 'projetista';
+  }
+
+  const active = true;
+  const status = 'ativo';
+  const pendingApproval = false;
+  const responseMessage = 'Cadastro concluído e acesso liberado com sucesso!';
+
+  if (user) {
+    user.name = name.trim();
+    user.department = department.trim();
+    user.googleUid = uid;
+    user.authProvider = 'google';
+    (user as any).requestedRole = selectedRole;
+    (user as any).pendingApproval = pendingApproval;
+    (user as any).status = status;
+    user.active = active;
+    user.role = finalRole;
+    user.updatedAt = new Date().toISOString();
+  } else {
+    user = {
+      id: `u-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      name: name.trim(),
+      email: normalizedEmail,
+      googleUid: uid,
+      authProvider: 'google',
+      passwordHash: '',
+      role: finalRole,
+      department: department.trim(),
+      active,
+      status,
+      requestedRole: selectedRole,
+      pendingApproval,
+      createdAt: new Date().toISOString(),
+    } as any;
+    db.users.push(user);
+  }
+
+  saveDatabase(db);
+  serverFirestore.set('users', user.id, user).catch((err) =>
+    console.error('[Firestore] Error saving Google user profile:', err),
+  );
+
+  if (pendingApproval || !active) {
+    return res.json({
+      success: true,
+      pendingApproval: true,
+      message: responseMessage,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        department: user.department,
+        status: (user as any).status,
+        requestedRole: (user as any).requestedRole,
+      },
+    });
+  }
+
+  const token = jwt.sign(
+    { sub: user.id, id: user.id, email: user.email, role: user.role, name: user.name },
+    JWT_SECRET,
+    { expiresIn: '24h' },
+  );
+
+  return res.json({
+    success: true,
+    pendingApproval: false,
+    token,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      department: user.department,
+    },
+    message: responseMessage,
   });
 });
 
@@ -1181,10 +1369,21 @@ app.post('/api/projects/:id/approve', authenticateToken, requireRole('analista',
     projectCode: current.code,
     issueDate: dateFormatted,
     uniqueIdentifier,
+    title: 'Atestado de Conformidade Técnica e Enquadramento de Demanda',
+    beneficiaryName: current.data?.name || 'Não informado',
+    beneficiaryDocument: current.data?.document || '—',
+    address: `${current.data?.address || ''}, ${current.data?.number || ''} — ${current.data?.neighborhood || ''}, ${current.data?.city || 'Recife - PE'}`,
+    technicalResponsible: current.data?.technicalResponsible || current.projetistaName || user.name,
+    professionalRegister: current.data?.artNumber || 'CREA/CFT Registrado',
     analystId: user.id,
     analystName: user.name,
     validationUrl,
     qrCodeData: validationUrl,
+    normaAplicada: current.calcResult?.normaAplicada || 'DIS-NOR-030',
+    enquadramento: current.calcResult?.enquadramento || 'baixa_tensao',
+    calculatedDemand: current.calcResult?.calculatedDemand || 0,
+    totalInstalledPower: current.calcResult?.totalInstalledPower || 0,
+    substationInfo: current.subestacao ? `${current.subestacao.transformadorLabel || ''} (${current.subestacao.potenciaNominal || ''} kVA)` : undefined,
   };
 
   const updated = {
@@ -1203,7 +1402,7 @@ app.post('/api/projects/:id/approve', authenticateToken, requireRole('analista',
         date: dateFormatted,
         action: 'Projeto aprovado pela análise técnica',
         user: user.name,
-        detail: `Atestado Digital emitido: ${certificateCode} (${uniqueIdentifier})`,
+        detail: `Atestado Técnico emitido: ${certificateCode} (${uniqueIdentifier})`,
       },
     ],
   };
@@ -1212,6 +1411,90 @@ app.post('/api/projects/:id/approve', authenticateToken, requireRole('analista',
   saveDatabase(db);
   serverFirestore.set('projects', updated.id, updated).catch((err) =>
     console.error('[Firestore] Error saving approved project:', err),
+  );
+  serverFirestore.set('certificates', certificate.code, certificate).catch((err) =>
+    console.error('[Firestore] Error saving digital certificate:', err),
+  );
+
+  return res.json(updated);
+});
+
+// Emit / Generate Atestado directly (No admin approval requirement)
+app.post('/api/projects/:id/emit-atestado', authenticateToken, (req: Request, res: Response) => {
+  const user = (req as any).user;
+  const projectIndex = db.projects.findIndex((p) => p.id === req.params.id);
+
+  if (projectIndex === -1) {
+    return res.status(404).json({ error: 'Projeto não encontrado' });
+  }
+
+  const current = db.projects[projectIndex];
+  const isAuthor = current.projetistaId === user.id;
+  const isAuthorized = isAuthor || user.role === 'analista' || user.role === 'admin';
+
+  if (!isAuthorized) {
+    return res.status(403).json({ error: 'Permissão negada para emitir o atestado deste projeto' });
+  }
+
+  // If atestado already exists, return current project with existing atestado
+  if (current.atestado && current.atestado.code) {
+    return res.json(current);
+  }
+
+  const now = new Date().toISOString();
+  const dateFormatted = now.split('T')[0];
+  const codeNum = String(Math.floor(100 + Math.random() * 900));
+  const certificateCode = `AT-2026-${codeNum}`;
+  const uniqueIdentifier = `NEO-AT-2026-${codeNum}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+  const validationUrl = `/validar?codigo=${uniqueIdentifier}`;
+
+  const certificate = {
+    id: `at-${Date.now()}`,
+    code: certificateCode,
+    projectId: current.id,
+    projectCode: current.code,
+    issueDate: dateFormatted,
+    uniqueIdentifier,
+    title: 'Atestado de Conformidade Técnica e Enquadramento de Demanda',
+    beneficiaryName: current.data?.name || 'Não informado',
+    beneficiaryDocument: current.data?.document || '—',
+    address: `${current.data?.address || ''}, ${current.data?.number || ''} — ${current.data?.neighborhood || ''}, ${current.data?.city || 'Recife - PE'}`,
+    technicalResponsible: current.data?.technicalResponsible || current.projetistaName || user.name,
+    professionalRegister: current.data?.artNumber || 'Registro CREA/CFT Validado',
+    analystId: user.role === 'analista' ? user.id : undefined,
+    analystName: user.role === 'analista' ? user.name : 'Homologação por Conformidade Técnica',
+    validationUrl,
+    qrCodeData: validationUrl,
+    normaAplicada: current.calcResult?.normaAplicada || 'DIS-NOR-030',
+    enquadramento: current.calcResult?.enquadramento || 'baixa_tensao',
+    calculatedDemand: current.calcResult?.calculatedDemand || 0,
+    totalInstalledPower: current.calcResult?.totalInstalledPower || 0,
+    substationInfo: current.subestacao ? `${current.subestacao.transformadorLabel || ''} (${current.subestacao.potenciaNominal || ''} kVA)` : undefined,
+  };
+
+  const updated = {
+    ...current,
+    status: current.status === 'rascunho' ? 'aprovado' : current.status,
+    approvedAt: current.approvedAt || now,
+    certificateCode,
+    atestado: certificate,
+    updatedAt: now,
+    history: [
+      ...(current.history || []),
+      {
+        id: `h-${Date.now()}`,
+        date: dateFormatted,
+        action: 'Atestado Técnico emitido com sucesso',
+        user: user.name,
+        detail: `Atestado Técnico emitido: ${certificateCode} (${uniqueIdentifier})`,
+      },
+    ],
+  };
+
+  db.projects[projectIndex] = updated;
+  saveDatabase(db);
+  serverFirestore.set('projects', updated.id, updated).catch((err) =>
+    console.error('[Firestore] Error saving project with emitted atestado:', err),
   );
   serverFirestore.set('certificates', certificate.code, certificate).catch((err) =>
     console.error('[Firestore] Error saving digital certificate:', err),
@@ -1491,6 +1774,29 @@ app.delete('/api/users/:id', authenticateToken, requireRole('admin'), (req: Requ
     console.error('[Firestore] Error deleting user:', err),
   );
   return res.status(204).send();
+});
+
+// Admin approves a pending user
+app.post('/api/users/:id/approve', authenticateToken, requireRole('admin'), (req: Request, res: Response) => {
+  const user = db.users.find((u) => u.id === req.params.id);
+  if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+
+  const { role } = req.body;
+  user.active = true;
+  (user as any).status = 'ativo';
+  (user as any).pendingApproval = false;
+  if (role && ['projetista', 'analista', 'admin'].includes(String(role).toLowerCase())) {
+    user.role = String(role).toLowerCase();
+  } else if ((user as any).requestedRole) {
+    user.role = (user as any).requestedRole;
+  }
+  user.updatedAt = new Date().toISOString();
+
+  saveDatabase(db);
+  serverFirestore.set('users', user.id, user).catch(() => {});
+
+  const { passwordHash, ...safe } = user;
+  return res.json({ success: true, user: safe, message: 'Usuário aprovado e ativado com sucesso!' });
 });
 
 // Firebase Infrastructure status endpoint

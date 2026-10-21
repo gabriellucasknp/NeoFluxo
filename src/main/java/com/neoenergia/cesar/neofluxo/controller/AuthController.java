@@ -45,4 +45,9 @@ public class AuthController {
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> body) {
         return ResponseEntity.ok(Map.of("message", "Se o e-mail estiver cadastrado, o link de recuperação foi enviado"));
     }
+
+    @GetMapping("/corporate/status")
+    public ResponseEntity<Map<String, Object>> corporateProviderStatus() {
+        return ResponseEntity.ok(service.getCorporateProviderInfo());
+    }
 }

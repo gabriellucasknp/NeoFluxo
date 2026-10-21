@@ -13,6 +13,7 @@ import com.neoenergia.cesar.neofluxo.security.JwtFilter; import org.springframew
                   .requestMatchers(
                           "/auth/**",
                           "/certificates/validate/**",
+                          "/calc/rules",
                           "/error"
                   ).permitAll()
                   .anyRequest().authenticated()

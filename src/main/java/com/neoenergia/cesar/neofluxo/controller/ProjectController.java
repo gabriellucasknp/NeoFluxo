@@ -1,11 +1,15 @@
 package com.neoenergia.cesar.neofluxo.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.neoenergia.cesar.neofluxo.dto.CalculationResponse;
+import com.neoenergia.cesar.neofluxo.dto.ProjectApproveRequest;
 import com.neoenergia.cesar.neofluxo.dto.ProjectRejectRequest;
 import com.neoenergia.cesar.neofluxo.dto.ProjectResponse;
 import com.neoenergia.cesar.neofluxo.dto.ProjectStepRequest;
+import com.neoenergia.cesar.neofluxo.dto.TechnicalReviewResponse;
 import com.neoenergia.cesar.neofluxo.service.ProjectService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +50,8 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ProjectResponse create(@RequestBody JsonNode data, Authentication authentication) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProjectResponse create(@RequestBody(required = false) JsonNode data, Authentication authentication) {
         return service.create(uid(authentication), data);
     }
 
@@ -56,6 +61,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id, Authentication authentication) {
         service.delete(id, uid(authentication), admin(authentication));
     }
@@ -75,14 +81,36 @@ public class ProjectController {
         return service.saveStep(id, uid(authentication), admin(authentication), request);
     }
 
+    @PutMapping("/{id}/draft")
+    public ProjectResponse draft(
+            @PathVariable UUID id,
+            @RequestBody ProjectStepRequest body,
+            Authentication authentication) {
+        int step = (body.step() != null && body.step() >= 1 && body.step() <= 6) ? body.step() : 1;
+        return service.saveStep(id, uid(authentication), admin(authentication), body);
+    }
+
+    @PostMapping("/{id}/calculate")
+    public CalculationResponse calculateAndAssociate(@PathVariable UUID id, Authentication authentication) {
+        return service.calculateAndAssociate(id, uid(authentication), analystOrAdmin(authentication));
+    }
+
+    @GetMapping("/{id}/calculation-memory")
+    public JsonNode calculationMemory(@PathVariable UUID id, Authentication authentication) {
+        return service.getCalculationMemory(id, uid(authentication), analystOrAdmin(authentication));
+    }
+
     @PostMapping("/{id}/submit")
     public ProjectResponse submit(@PathVariable UUID id, Authentication authentication) {
         return service.submit(id, uid(authentication));
     }
 
     @PostMapping("/{id}/approve")
-    public ProjectResponse approve(@PathVariable UUID id, Authentication authentication) {
-        return service.approve(id, uid(authentication));
+    public ProjectResponse approve(
+            @PathVariable UUID id,
+            @RequestBody(required = false) ProjectApproveRequest request,
+            Authentication authentication) {
+        return service.approve(id, uid(authentication), request);
     }
 
     @PostMapping("/{id}/reject")
@@ -91,5 +119,15 @@ public class ProjectController {
             @Valid @RequestBody ProjectRejectRequest request,
             Authentication authentication) {
         return service.reject(id, uid(authentication), request);
+    }
+
+    @GetMapping("/{id}/reviews")
+    public List<TechnicalReviewResponse> reviews(@PathVariable UUID id, Authentication authentication) {
+        return service.getReviews(id, uid(authentication), analystOrAdmin(authentication));
+    }
+
+    @PostMapping("/{id}/emit-atestado")
+    public ProjectResponse emitAtestado(@PathVariable UUID id, Authentication authentication) {
+        return service.emitAtestado(id, uid(authentication), analystOrAdmin(authentication));
     }
 }

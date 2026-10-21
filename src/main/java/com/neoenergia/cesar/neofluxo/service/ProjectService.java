@@ -4,12 +4,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.neoenergia.cesar.neofluxo.dto.CalculationResponse;
+import com.neoenergia.cesar.neofluxo.dto.ProjectApproveRequest;
 import com.neoenergia.cesar.neofluxo.dto.ProjectRejectRequest;
 import com.neoenergia.cesar.neofluxo.dto.ProjectResponse;
 import com.neoenergia.cesar.neofluxo.dto.ProjectStepRequest;
+import com.neoenergia.cesar.neofluxo.dto.TechnicalReviewResponse;
 import com.neoenergia.cesar.neofluxo.entity.Project;
+import com.neoenergia.cesar.neofluxo.entity.TechnicalReview;
 import com.neoenergia.cesar.neofluxo.entity.User;
 import com.neoenergia.cesar.neofluxo.repository.ProjectRepository;
+import com.neoenergia.cesar.neofluxo.repository.TechnicalReviewRepository;
 import com.neoenergia.cesar.neofluxo.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,11 +30,19 @@ import java.util.UUID;
 public class ProjectService {
     private final ProjectRepository projects;
     private final UserRepository users;
+    private final TechnicalReviewRepository reviews;
+    private final CalculationService calculationService;
     private final ObjectMapper objectMapper;
 
-    public ProjectService(ProjectRepository projects, UserRepository users, ObjectMapper objectMapper) {
+    public ProjectService(ProjectRepository projects,
+                          UserRepository users,
+                          TechnicalReviewRepository reviews,
+                          CalculationService calculationService,
+                          ObjectMapper objectMapper) {
         this.projects = projects;
         this.users = users;
+        this.reviews = reviews;
+        this.calculationService = calculationService;
         this.objectMapper = objectMapper;
     }
 
@@ -45,7 +58,9 @@ public class ProjectService {
         p.setProjetista(owner(userId));
         p.setStatus(Project.Status.RASCUNHO);
         p.setCurrentStep(1);
-        p.setData(data);
+        p.setData(data != null ? data : objectMapper.createObjectNode());
+        
+        addHistory(p, "Rascunho do projeto criado", owner(userId).getName(), "Etapa 1 iniciada");
         return ProjectResponse.from(projects.save(p));
     }
 
@@ -85,7 +100,11 @@ public class ProjectService {
         checkOwner(p, userId, admin);
 
         if (p.getStatus() != Project.Status.RASCUNHO && p.getStatus() != Project.Status.REPROVADO) {
-            throw new IllegalStateException("Somente projetos em rascunho/reprovados podem ser editados");
+            throw new IllegalStateException("Somente projetos em rascunho ou reprovados podem ser editados");
+        }
+
+        if (r.step() < 1 || r.step() > 6) {
+            throw new IllegalArgumentException("A etapa deve estar entre 1 e 6");
         }
 
         if (r.data() != null) p.setData(r.data());
@@ -96,6 +115,8 @@ public class ProjectService {
         if (r.review() != null) p.setReview(r.review());
         p.setCurrentStep(r.step());
 
+        addHistory(p, "Etapa " + r.step() + " salva", owner(userId).getName(), "Salvamento de rascunho");
+
         return ProjectResponse.from(projects.save(p));
     }
 
@@ -105,10 +126,15 @@ public class ProjectService {
         checkOwner(p, userId, false);
 
         if (p.getStatus() != Project.Status.RASCUNHO && p.getStatus() != Project.Status.REPROVADO) {
-            throw new IllegalStateException("Somente rascunhos ou projetos reprovados podem ser enviados");
+            throw new IllegalStateException("Somente rascunhos ou projetos reprovados podem ser enviados para análise");
         }
-        if (p.getData() == null) {
-            throw new IllegalStateException("Dados do projeto não preenchidos");
+        if (p.getData() == null || p.getData().isNull() || p.getData().isEmpty()) {
+            throw new IllegalStateException("Dados de identificação do projeto não preenchidos (Etapa 1)");
+        }
+
+        // Auto-calcular demanda se ainda não calculada
+        if (p.getCalcResult() == null || p.getCalcResult().isNull() || !p.getCalcResult().has("calculatedDemand")) {
+            calculationService.calculateForProject(p);
         }
 
         boolean resubmission = p.getStatus() == Project.Status.REPROVADO;
@@ -117,14 +143,11 @@ public class ProjectService {
         p.setSubmittedAt(Instant.now());
         p.setAnalyzedAt(null);
         p.setApprovedAt(null);
-        p.setRejection(null);
-        p.setCertificate(null);
-        p.setCertificateCode(null);
 
         addHistory(p,
-                resubmission ? "Projeto reenviado para análise" : "Projeto enviado para análise",
+                resubmission ? "Projeto reenviado para análise técnica" : "Projeto enviado para análise técnica",
                 owner(userId).getName(),
-                null);
+                "Aguardando parecer da equipe de engenharia");
 
         return ProjectResponse.from(projects.save(p));
     }
@@ -148,7 +171,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectResponse approve(UUID id, UUID analystId) {
+    public ProjectResponse approve(UUID id, UUID analystId, ProjectApproveRequest request) {
         Project p = get(id);
         User analyst = owner(analystId);
         requireAnalystOrAdmin(analyst);
@@ -161,7 +184,7 @@ public class ProjectService {
         String year = String.valueOf(Year.now().getValue());
         String code = generateCertificateCode(year);
         String uniqueIdentifier = "NEO-AT-" + year + "-" + UUID.randomUUID().toString().substring(0, 12).toUpperCase();
-        String validationUrl = "/api/certificates/validate/" + code;
+        String validationUrl = "/certificates/validate/" + code;
 
         ObjectNode certificate = objectMapper.createObjectNode();
         certificate.put("id", UUID.randomUUID().toString());
@@ -182,7 +205,23 @@ public class ProjectService {
         p.setCertificateCode(code);
         p.setRejection(null);
 
-        addHistory(p, "Projeto aprovado", analyst.getName(), "Atestado: " + code);
+        String justification = (request != null) ? request.getEffectiveJustification() : "Projeto aprovado com parecer favorável de viabilidade técnica.";
+        String observations = (request != null && request.observations() != null) ? request.observations() : "";
+
+        // Persistência da entidade TechnicalReview
+        TechnicalReview review = new TechnicalReview(
+                null,
+                p,
+                analyst,
+                TechnicalReview.Decision.APROVADO,
+                justification,
+                observations,
+                code,
+                now
+        );
+        reviews.save(review);
+
+        addHistory(p, "Projeto aprovado", analyst.getName(), "Parecer Técnico Favorável — Atestado: " + code);
 
         return ProjectResponse.from(projects.save(p));
     }
@@ -197,10 +236,14 @@ public class ProjectService {
             throw new IllegalStateException("Somente projetos enviados ou em análise podem ser reprovados");
         }
 
+        if (request.reason() == null || request.reason().trim().isEmpty()) {
+            throw new IllegalArgumentException("O motivo da reprovação é obrigatório");
+        }
+
         Instant now = Instant.now();
         ObjectNode rejection = objectMapper.createObjectNode();
-        rejection.put("reason", request.reason());
-        rejection.put("observations", request.observations() == null ? "" : request.observations());
+        rejection.put("reason", request.reason().trim());
+        rejection.put("observations", request.observations() == null ? "" : request.observations().trim());
         rejection.put("analyst", analyst.getName());
         rejection.put("analystId", analyst.getId().toString());
         rejection.put("date", now.toString());
@@ -212,9 +255,97 @@ public class ProjectService {
         p.setCertificate(null);
         p.setCertificateCode(null);
 
-        addHistory(p, "Projeto reprovado", analyst.getName(), request.reason());
+        // Persistência da entidade TechnicalReview
+        TechnicalReview review = new TechnicalReview(
+                null,
+                p,
+                analyst,
+                TechnicalReview.Decision.REPROVADO,
+                request.reason().trim(),
+                request.observations() != null ? request.observations().trim() : "",
+                null,
+                now
+        );
+        reviews.save(review);
+
+        addHistory(p, "Projeto reprovado", analyst.getName(), "Parecer Técnico Desfavorável: " + request.reason().trim());
 
         return ProjectResponse.from(projects.save(p));
+    }
+
+    public List<TechnicalReviewResponse> getReviews(UUID id, UUID userId, boolean canReview) {
+        Project p = get(id);
+        checkOwner(p, userId, canReview);
+        return reviews.findByProjectIdOrderByCreatedAtDesc(id).stream()
+                .map(TechnicalReviewResponse::from)
+                .toList();
+    }
+
+    @Transactional
+    public ProjectResponse emitAtestado(UUID id, UUID userId, boolean canReview) {
+        Project p = get(id);
+        User user = owner(userId);
+        boolean isOwner = p.getProjetista().getId().equals(userId);
+        if (!isOwner && !canReview) {
+            throw new AccessDeniedException("Permissão negada para emitir o atestado deste projeto");
+        }
+
+        if (p.getCertificateCode() != null && p.getCertificate() != null) {
+            return ProjectResponse.from(p);
+        }
+
+        if (p.getCalcResult() == null || !p.getCalcResult().has("calculatedDemand")) {
+            calculationService.calculateForProject(p);
+        }
+
+        Instant now = Instant.now();
+        String year = String.valueOf(Year.now().getValue());
+        String code = generateCertificateCode(year);
+        String uniqueIdentifier = "NEO-AT-" + year + "-" + UUID.randomUUID().toString().substring(0, 12).toUpperCase();
+        String validationUrl = "/certificates/validate/" + code;
+
+        ObjectNode certificate = objectMapper.createObjectNode();
+        certificate.put("id", UUID.randomUUID().toString());
+        certificate.put("code", code);
+        certificate.put("projectId", p.getId().toString());
+        certificate.put("projectCode", p.getCode());
+        certificate.put("issueDate", now.toString());
+        certificate.put("uniqueIdentifier", uniqueIdentifier);
+        certificate.put("analystId", user.getId().toString());
+        certificate.put("analystName", user.getName());
+        certificate.put("validationUrl", validationUrl);
+        certificate.put("qrCodeData", validationUrl);
+
+        if (p.getStatus() == Project.Status.RASCUNHO) {
+            p.setStatus(Project.Status.APROVADO);
+        }
+        p.setApprovedAt(now);
+        p.setCertificate(certificate);
+        p.setCertificateCode(code);
+
+        addHistory(p, "Atestado Técnico emitido com sucesso", user.getName(), "Atestado: " + code);
+        return ProjectResponse.from(projects.save(p));
+    }
+
+    @Transactional
+    public CalculationResponse calculateAndAssociate(UUID id, UUID userId, boolean canReview) {
+        Project p = get(id);
+        checkOwner(p, userId, canReview);
+
+        CalculationResponse response = calculationService.calculateForProject(p);
+        projects.save(p);
+        return response;
+    }
+
+    public JsonNode getCalculationMemory(UUID id, UUID userId, boolean canReview) {
+        Project p = get(id);
+        checkOwner(p, userId, canReview);
+        if (p.getCalcResult() != null && p.getCalcResult().has("calculationMemory")) {
+            return p.getCalcResult().get("calculationMemory");
+        }
+        CalculationResponse response = calculationService.calculateForProject(p);
+        projects.save(p);
+        return objectMapper.valueToTree(response.calculationMemory());
     }
 
     private String generateCertificateCode(String year) {

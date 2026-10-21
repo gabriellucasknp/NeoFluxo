@@ -7,6 +7,11 @@ export interface User {
   role: UserRole;
   avatar?: string;
   department?: string;
+  status?: 'ativo' | 'pendente' | 'inativo' | 'rejeitado';
+  active?: boolean;
+  googleUid?: string;
+  requestedRole?: UserRole;
+  pendingApproval?: boolean;
 }
 
 export type ProjectStatus =
@@ -128,11 +133,25 @@ export interface Atestado {
   id: string;
   code: string;
   projectId: string;
+  projectCode?: string;
   issueDate: string;
   uniqueIdentifier: string;
+  title?: string;
+  beneficiaryName?: string;
+  beneficiaryDocument?: string;
+  address?: string;
+  technicalResponsible?: string;
+  professionalRegister?: string;
   analystId?: string;
   analystName?: string;
   validationUrl?: string;
+  qrCodeData?: string;
+  normaAplicada?: string;
+  enquadramento?: string;
+  calculatedDemand?: number;
+  totalInstalledPower?: number;
+  substationInfo?: string;
+  notes?: string;
 }
 
 export interface Project {

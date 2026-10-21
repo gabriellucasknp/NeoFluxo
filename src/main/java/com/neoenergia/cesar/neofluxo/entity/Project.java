@@ -6,6 +6,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -71,6 +73,10 @@ public class Project {
 
     @Column(unique = true, length = 40)
     private String certificateCode;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OrderBy("createdAt DESC")
+    private List<TechnicalReview> technicalReviews = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
@@ -162,6 +168,9 @@ public class Project {
     public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
     public Instant getSubmittedAt() { return submittedAt; }
     public void setSubmittedAt(Instant submittedAt) { this.submittedAt = submittedAt; }
+
+    public List<TechnicalReview> getTechnicalReviews() { return technicalReviews; }
+    public void setTechnicalReviews(List<TechnicalReview> technicalReviews) { this.technicalReviews = technicalReviews; }
 
     public enum Status { RASCUNHO, ENVIADO_ANALISE, EM_ANALISE, APROVADO, REPROVADO }
 }

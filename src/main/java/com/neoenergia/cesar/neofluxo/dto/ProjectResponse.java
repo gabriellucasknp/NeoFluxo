@@ -23,6 +23,7 @@ public record ProjectResponse(
         JsonNode history,
         JsonNode certificate,
         JsonNode atestado,
+        String certificateCode,
         Instant createdAt,
         Instant updatedAt,
         Instant submittedAt,
@@ -34,7 +35,9 @@ public record ProjectResponse(
                 p.getId(), p.getCode(), p.getProjetista().getId(), p.getProjetista().getName(),
                 p.getStatus().name().toLowerCase(), p.getCurrentStep(), p.getData(), p.getUnits(),
                 p.getServiceLoads(), p.getCalcResult(), p.getSubestacao(), p.getReview(),
-                p.getRejection(), p.getHistory(), p.getCertificate(), p.getCertificate(), p.getCreatedAt(),
+                p.getRejection(), p.getHistory(), p.getCertificate(), p.getCertificate(),
+                p.getCertificateCode(),
+                p.getCreatedAt(),
                 p.getUpdatedAt(), p.getSubmittedAt(), p.getAnalyzedAt(), p.getApprovedAt()
         );
     }
