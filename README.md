@@ -355,7 +355,7 @@ As credenciais acima são destinadas ao ambiente de desenvolvimento. Em ambiente
 
 A Entrega 03 contribuiu para a evolução do Portal de Projetos Elétricos ao implementar duas funcionalidades relevantes para o fluxo de trabalho dos usuários. A US-01 facilita o acesso ao sistema conforme o perfil de cada usuário, enquanto a US-05 automatiza o cálculo da demanda e auxilia no enquadramento técnico dos projetos.
 
-A US-01 foi classificada com impacto médio, enquanto a US-05 apresenta impacto alto por contribuir diretamente para a precisão dos cálculos e para a tomada de decisões técnicas. Dessa forma, a entrega fortalece a proposta do MVP de oferecer uma plataforma mais prática, organizada e confiável para os profissionais envolvidos na elaboração e análise de projetos elétricos.
+A US-01 teve impacto médio, enquanto a US-05 teve impacto alto por melhorar a precisão dos cálculos e apoiar decisões técnicas, tornando o MVP mais prático e confiável para projetos elétricos.
 ---
 ### Entrega 04: Implementação das funcionalidades de recuperação de acesso, gerenciamento de usuários e validação de atestados
 
