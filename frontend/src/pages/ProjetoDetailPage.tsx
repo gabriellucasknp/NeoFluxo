@@ -211,8 +211,13 @@ export function ProjetoDetailPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {project.units.map((u) => {
-                const installed = u.loads.reduce((s, l) => s + l.quantity * l.powerPerUnit * u.unitCount, 0) / 1000;
+              {(project.units ?? []).length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-5 py-6 text-center text-sm text-slate-500">Nenhuma unidade cadastrada.</td>
+                </tr>
+              )}
+              {(project.units ?? []).map((u) => {
+                const installed = (u.loads ?? []).reduce((s, l) => s + l.quantity * l.powerPerUnit * u.unitCount, 0) / 1000;
                 return (
                   <tr key={u.id}>
                     <td className="px-5 py-3 font-medium text-slate-700">{u.name}</td>
@@ -228,7 +233,7 @@ export function ProjetoDetailPage() {
       </Card>
 
       {/* Service loads */}
-      {project.serviceLoads.length > 0 && (
+      {(project.serviceLoads ?? []).length > 0 && (
         <Card padding="none">
           <div className="border-b border-slate-200 px-5 py-4">
             <div className="flex items-center gap-2.5">
@@ -249,7 +254,7 @@ export function ProjetoDetailPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {project.serviceLoads.map((s) => (
+                {(project.serviceLoads ?? []).map((s) => (
                   <tr key={s.id}>
                     <td className="px-5 py-3 font-medium text-slate-700">{s.name}</td>
                     <td className="px-5 py-3 text-slate-600 capitalize">{s.category.replace('_', ' ')}</td>
@@ -275,7 +280,7 @@ export function ProjetoDetailPage() {
         </div>
         <div className="p-5">
           <div className="space-y-4">
-            {project.history.map((h, idx) => (
+            {(project.history ?? []).map((h, idx) => (
               <div key={h.id} className="flex gap-3">
                 <div className="flex flex-col items-center">
                   <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold ${
