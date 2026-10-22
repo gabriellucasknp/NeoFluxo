@@ -337,13 +337,25 @@ As funcionalidades contempladas nesta etapa foram:
   * Vídeo demonstrando a navegação nas funcionalidades implementadas (US-01 e US-05) no back-end da aplicação.
 
 ---
+## Bug Tracker
+
+O projeto utiliza o GitHub Issues para registrar e acompanhar os bugs identificados durante o desenvolvimento, facilitando a organização das correções e o acompanhamento das tarefas.
+
+### Evidência do Bug Tracker
+
+![Bug Tracker do NeoFluxo](docs/images/bug-tracker.png)
+
+**Issues registradas:**
+- Correção de erro no banco de dados.
+- Correção de erro na redefinição de senha.
+  
+As credenciais acima são destinadas ao ambiente de desenvolvimento. Em ambientes de produção, utilize senhas seguras e variáveis de ambiente protegidas.
 
 #### 5. Considerações finais
 
 A Entrega 03 contribuiu para a evolução do Portal de Projetos Elétricos ao implementar duas funcionalidades relevantes para o fluxo de trabalho dos usuários. A US-01 facilita o acesso ao sistema conforme o perfil de cada usuário, enquanto a US-05 automatiza o cálculo da demanda e auxilia no enquadramento técnico dos projetos.
 
 A US-01 foi classificada com impacto médio, enquanto a US-05 apresenta impacto alto por contribuir diretamente para a precisão dos cálculos e para a tomada de decisões técnicas. Dessa forma, a entrega fortalece a proposta do MVP de oferecer uma plataforma mais prática, organizada e confiável para os profissionais envolvidos na elaboração e análise de projetos elétricos.
-
 ---
 ### Entrega 04: Implementação das funcionalidades de recuperação de acesso, gerenciamento de usuários e validação de atestados
 
@@ -546,18 +558,3 @@ As configurações utilizadas no ambiente Docker são:
 | Usuário | `neofluxo` |
 | Porta externa | `3307` |
 | Porta interna | `3306` |
-
-## Bug Tracker
-
-O projeto utiliza o GitHub Issues para registrar e acompanhar os bugs identificados durante o desenvolvimento, facilitando a organização das correções e o acompanhamento das tarefas.
-
-### Evidência do Bug Tracker
-
-![Bug Tracker do NeoFluxo](docs/images/bug-tracker.png)
-
-**Issues registradas:**
-- Correção de erro no banco de dados.
-- Correção de erro na redefinição de senha.
-- Correção do auto-save após recarregar a página.
-
-As credenciais acima são destinadas ao ambiente de desenvolvimento. Em ambientes de produção, utilize senhas seguras e variáveis de ambiente protegidas.
