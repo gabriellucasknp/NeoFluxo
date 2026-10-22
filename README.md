@@ -547,4 +547,17 @@ As configurações utilizadas no ambiente Docker são:
 | Porta externa | `3307` |
 | Porta interna | `3306` |
 
+## Bug Tracker
+
+O projeto utiliza o GitHub Issues para registrar e acompanhar os bugs identificados durante o desenvolvimento, facilitando a organização das correções e o acompanhamento das tarefas.
+
+### Evidência do Bug Tracker
+
+![Bug Tracker do NeoFluxo](docs/images/bug-tracker.png)
+
+**Issues registradas:**
+- Correção de erro no banco de dados.
+- Correção de erro na redefinição de senha.
+- Correção do auto-save após recarregar a página.
+
 As credenciais acima são destinadas ao ambiente de desenvolvimento. Em ambientes de produção, utilize senhas seguras e variáveis de ambiente protegidas.
