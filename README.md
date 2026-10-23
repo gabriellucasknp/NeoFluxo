@@ -330,10 +330,10 @@ As funcionalidades contempladas nesta etapa foram:
 
 #### 4. Screencast da Entrega 03
 
-* **Screencast de Apresentação:** [▶️ Assistir no Youtube](LINK AQUI)
+* **Screencast de Apresentação:** [▶️ Assistir no Youtube]([LINK AQUI](https://youtu.be/C50VbSFp52g))
   * Vídeo demonstrando a navegação nas funcionalidades implementadas (US-01 e US-05) no front-end da aplicação.
  
-* **Screencast de Apresentação:** [▶️ Assistir no Youtube](LINK AQUI)
+* **Screencast de Apresentação:** [▶️ Assistir no Youtube]([LINK AQUI](https://youtu.be/zbJfV4twGQU))
   * Vídeo demonstrando a navegação nas funcionalidades implementadas (US-01 e US-05) no back-end da aplicação.
 
 ---
