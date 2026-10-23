@@ -11,11 +11,11 @@ export function Input({ label, error, required, className = '', ...rest }: Input
     <div>
       {label && (
         <label className="label-base">
-          {label} {required && <span className="text-danger-500">*</span>}
+          {label} {required && <span className="text-danger-fg">*</span>}
         </label>
       )}
-      <input className={`input-base ${error ? 'border-danger-500 ring-danger-100' : ''} ${className}`} {...rest} />
-      {error && <p className="mt-1 text-xs text-danger-600">{error}</p>}
+      <input className={`input-base ${error ? 'border-danger ring-danger/30' : ''} ${className}`} {...rest} />
+      {error && <p className="mt-1 text-xs text-danger-fg">{error}</p>}
     </div>
   );
 }
@@ -31,11 +31,11 @@ export function Textarea({ label, error, required, className = '', ...rest }: Te
     <div>
       {label && (
         <label className="label-base">
-          {label} {required && <span className="text-danger-500">*</span>}
+          {label} {required && <span className="text-danger-fg">*</span>}
         </label>
       )}
-      <textarea className={`input-base ${error ? 'border-danger-500' : ''} ${className}`} {...rest} />
-      {error && <p className="mt-1 text-xs text-danger-600">{error}</p>}
+      <textarea className={`input-base ${error ? 'border-danger' : ''} ${className}`} {...rest} />
+      {error && <p className="mt-1 text-xs text-danger-fg">{error}</p>}
     </div>
   );
 }
@@ -52,13 +52,13 @@ export function Select({ label, error, required, className = '', children, ...re
     <div>
       {label && (
         <label className="label-base">
-          {label} {required && <span className="text-danger-500">*</span>}
+          {label} {required && <span className="text-danger-fg">*</span>}
         </label>
       )}
-      <select className={`input-base ${error ? 'border-danger-500' : ''} ${className}`} {...rest}>
+      <select className={`input-base ${error ? 'border-danger' : ''} ${className}`} {...rest}>
         {children}
       </select>
-      {error && <p className="mt-1 text-xs text-danger-600">{error}</p>}
+      {error && <p className="mt-1 text-xs text-danger-fg">{error}</p>}
     </div>
   );
 }

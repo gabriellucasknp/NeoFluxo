@@ -9,12 +9,12 @@ export function Logo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const s = sizes[size];
   return (
     <div className="flex items-center gap-2.5">
-      <div className={`flex ${s.box} items-center justify-center rounded-lg bg-neo-600`}>
-        <Zap className="text-white" size={s.icon} fill="white" />
+      <div className={`flex ${s.box} items-center justify-center rounded-lg bg-primary`}>
+        <Zap className="text-on-primary" size={s.icon} fill="white" />
       </div>
       <div className="leading-tight">
-        <div className={`font-bold ${s.text} text-slate-800`}>Neoenergia</div>
-        <div className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
+        <div className={`font-bold ${s.text} text-fg`}>Neoenergia</div>
+        <div className="text-[10px] font-medium uppercase tracking-wider text-subtle">
           Pernambuco
         </div>
       </div>

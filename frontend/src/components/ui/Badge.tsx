@@ -1,11 +1,11 @@
 import type { ProjectStatus } from '@/types';
 
 const statusConfig: Record<ProjectStatus, { label: string; className: string }> = {
-  rascunho: { label: 'Rascunho', className: 'bg-slate-100 text-slate-600' },
-  enviado_analise: { label: 'Enviado para análise', className: 'bg-blue-100 text-blue-700' },
-  em_analise: { label: 'Em análise', className: 'bg-amber-100 text-amber-700' },
-  aprovado: { label: 'Aprovado', className: 'bg-success-100 text-success-700' },
-  reprovado: { label: 'Reprovado', className: 'bg-danger-100 text-danger-700' },
+  rascunho: { label: 'Rascunho', className: 'bg-surface-2 text-muted' },
+  enviado_analise: { label: 'Enviado para análise', className: 'bg-info-soft text-info-fg' },
+  em_analise: { label: 'Em análise', className: 'bg-warning-soft text-warning-fg' },
+  aprovado: { label: 'Aprovado', className: 'bg-success-soft text-success-fg' },
+  reprovado: { label: 'Reprovado', className: 'bg-danger-soft text-danger-fg' },
 };
 
 export function StatusBadge({ status }: { status: ProjectStatus }) {
@@ -20,12 +20,12 @@ export function StatusBadge({ status }: { status: ProjectStatus }) {
 }
 
 export function EnquadramentoBadge({ enquadramento }: { enquadramento?: string }) {
-  if (!enquadramento) return <span className="text-xs text-slate-400">—</span>; // projeto ainda sem cálculo
+  if (!enquadramento) return <span className="text-xs text-subtle">—</span>; // projeto ainda sem cálculo
   const isBaixa = enquadramento === 'baixa_tensao';
   return (
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
-        isBaixa ? 'bg-neo-50 text-neo-700' : 'bg-purple-50 text-purple-700'
+        isBaixa ? 'bg-accent-soft text-accent-fg' : 'bg-accent-soft text-accent-fg'
       }`}
     >
       {isBaixa ? 'Baixa Tensão' : 'Média Tensão'}

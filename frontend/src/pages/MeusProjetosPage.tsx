@@ -50,8 +50,8 @@ export function MeusProjetosPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Meus Projetos</h1>
-          <p className="text-sm text-slate-500">Gerencie todos os seus projetos elétricos.</p>
+          <h1 className="text-2xl font-bold text-fg">Meus Projetos</h1>
+          <p className="text-sm text-muted">Gerencie todos os seus projetos elétricos.</p>
         </div>
         <Button icon={<FolderPlus className="h-4 w-4" />} onClick={() => navigate('/app/novo-projeto')}>
           Novo Projeto
@@ -62,7 +62,7 @@ export function MeusProjetosPage() {
       <Card padding="sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
             <input
               type="text"
               placeholder="Buscar por código, nome ou endereço..."
@@ -72,15 +72,15 @@ export function MeusProjetosPage() {
             />
           </div>
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-thin">
-            <Filter className="h-4 w-4 shrink-0 text-slate-400" />
+            <Filter className="h-4 w-4 shrink-0 text-subtle" />
             {statusFilters.map((f) => (
               <button
                 key={f.value}
                 onClick={() => setFilter(f.value)}
                 className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                   filter === f.value
-                    ? 'bg-neo-600 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-primary text-on-primary'
+                    : 'bg-surface-2 text-muted hover:bg-surface-3'
                 }`}
               >
                 {f.label}
@@ -103,33 +103,33 @@ export function MeusProjetosPage() {
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/50">
-                  <th className="px-5 py-3 font-semibold text-slate-600">Código</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Projeto</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Endereço</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Data</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Demanda</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Enquadramento</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Status</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600 text-right">Ações</th>
+                <tr className="border-b border-line bg-surface-2/50">
+                  <th className="px-5 py-3 font-semibold text-muted">Código</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Projeto</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Endereço</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Data</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Demanda</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Enquadramento</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Status</th>
+                  <th className="px-5 py-3 font-semibold text-muted text-right">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-line">
                 {filtered.map((p) => (
-                  <tr key={p.id} className="cursor-pointer transition-colors hover:bg-slate-50/70" onClick={() => navigate(`/app/projeto/${p.id}`)}>
-                    <td className="px-5 py-3 font-medium text-neo-700">{p.code}</td>
-                    <td className="px-5 py-3 text-slate-700">
+                  <tr key={p.id} className="cursor-pointer transition-colors hover:bg-surface-2/70" onClick={() => navigate(`/app/projeto/${p.id}`)}>
+                    <td className="px-5 py-3 font-medium text-accent-fg">{p.code}</td>
+                    <td className="px-5 py-3 text-fg-2">
                       <div className="font-medium">{p.data.name}</div>
-                      <div className="text-xs text-slate-400">{p.code}</div>
+                      <div className="text-xs text-subtle">{p.code}</div>
                     </td>
-                    <td className="px-5 py-3 text-slate-600">
+                    <td className="px-5 py-3 text-muted">
                       <div className="max-w-[180px] truncate">{p.data.address}, {p.data.number}</div>
-                      <div className="text-xs text-slate-400">{p.data.neighborhood}</div>
+                      <div className="text-xs text-subtle">{p.data.neighborhood}</div>
                     </td>
-                    <td className="px-5 py-3 text-slate-600">{new Date(p.createdAt).toLocaleDateString('pt-BR')}</td>
+                    <td className="px-5 py-3 text-muted">{new Date(p.createdAt).toLocaleDateString('pt-BR')}</td>
                     <td className="px-5 py-3">
-                      <span className="inline-flex items-center gap-1 font-medium text-slate-800">
-                        <Zap className="h-3.5 w-3.5 text-amber-500" />
+                      <span className="inline-flex items-center gap-1 font-medium text-fg">
+                        <Zap className="h-3.5 w-3.5 text-warning-fg" />
                         {formatKw(p.calcResult?.calculatedDemand)}
                       </span>
                     </td>

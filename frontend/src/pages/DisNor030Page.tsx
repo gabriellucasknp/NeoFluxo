@@ -67,8 +67,8 @@ export function DisNor030Page() {
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Gestão da DIS-NOR-030</h1>
-          <p className="text-sm text-slate-500">Tabelas de fatores de demanda e regras de cálculo.</p>
+          <h1 className="text-2xl font-bold text-fg">Gestão da DIS-NOR-030</h1>
+          <p className="text-sm text-muted">Tabelas de fatores de demanda e regras de cálculo.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" icon={<History className="h-4 w-4" />} onClick={() => setShowHistory(true)}>
@@ -81,15 +81,15 @@ export function DisNor030Page() {
       </div>
 
       {/* Version info */}
-      <Card className="bg-neo-50">
+      <Card className="bg-accent-soft">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-neo-600">Versão atual</p>
-            <p className="text-lg font-bold text-neo-700">
+            <p className="text-xs text-accent-fg">Versão atual</p>
+            <p className="text-lg font-bold text-accent-fg">
               {mockNormVersions.find((v) => v.norma === 'DIS-NOR-030')?.version || 'V1.0'}
             </p>
           </div>
-          <div className="text-right text-xs text-neo-600">
+          <div className="text-right text-xs text-accent-fg">
             <p>Vigente desde: {mockNormVersions.find((v) => v.norma === 'DIS-NOR-030')?.startDate}</p>
             <p>Responsável: {mockNormVersions.find((v) => v.norma === 'DIS-NOR-030')?.responsible}</p>
           </div>
@@ -101,38 +101,38 @@ export function DisNor030Page() {
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50/50">
-                <th className="px-5 py-3 font-semibold text-slate-600">Categoria</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">Descrição</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">Pot. Mín (W)</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">Pot. Máx (W)</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">Fator</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">Status</th>
-                <th className="px-5 py-3 font-semibold text-slate-600 text-right">Ações</th>
+              <tr className="border-b border-line bg-surface-2/50">
+                <th className="px-5 py-3 font-semibold text-muted">Categoria</th>
+                <th className="px-5 py-3 font-semibold text-muted">Descrição</th>
+                <th className="px-5 py-3 font-semibold text-muted">Pot. Mín (W)</th>
+                <th className="px-5 py-3 font-semibold text-muted">Pot. Máx (W)</th>
+                <th className="px-5 py-3 font-semibold text-muted">Fator</th>
+                <th className="px-5 py-3 font-semibold text-muted">Status</th>
+                <th className="px-5 py-3 font-semibold text-muted text-right">Ações</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-line">
               {factors.map((f) => (
                 <tr key={f.id} className={f.active ? '' : 'opacity-50'}>
-                  <td className="px-5 py-3 capitalize text-slate-600">{f.category.replace('_', ' ')}</td>
-                  <td className="px-5 py-3 font-medium text-slate-700">{f.label}</td>
-                  <td className="px-5 py-3 text-slate-600">{f.minPower}</td>
-                  <td className="px-5 py-3 text-slate-600">{f.maxPower === 0 ? '∞' : f.maxPower}</td>
-                  <td className="px-5 py-3 font-medium text-slate-800">{(f.factor * 100).toFixed(0)}%</td>
+                  <td className="px-5 py-3 capitalize text-muted">{f.category.replace('_', ' ')}</td>
+                  <td className="px-5 py-3 font-medium text-fg-2">{f.label}</td>
+                  <td className="px-5 py-3 text-muted">{f.minPower}</td>
+                  <td className="px-5 py-3 text-muted">{f.maxPower === 0 ? '∞' : f.maxPower}</td>
+                  <td className="px-5 py-3 font-medium text-fg">{(f.factor * 100).toFixed(0)}%</td>
                   <td className="px-5 py-3">
-                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${f.active ? 'bg-success-100 text-success-700' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${f.active ? 'bg-success-soft text-success-fg' : 'bg-surface-2 text-muted'}`}>
                       {f.active ? 'Ativo' : 'Inativo'}
                     </span>
                   </td>
                   <td className="px-5 py-3 text-right">
                     <div className="flex justify-end gap-1">
-                      <button onClick={() => openEdit(f)} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600" title="Editar">
+                      <button onClick={() => openEdit(f)} className="rounded-lg p-1.5 text-subtle hover:bg-surface-2 hover:text-muted" title="Editar">
                         <Edit2 className="h-4 w-4" />
                       </button>
-                      <button onClick={() => toggleActive(f.id)} className="rounded-lg p-1.5 text-slate-400 hover:bg-amber-50 hover:text-amber-600" title="Ativar/Desativar">
+                      <button onClick={() => toggleActive(f.id)} className="rounded-lg p-1.5 text-subtle hover:bg-warning-soft hover:text-warning-fg" title="Ativar/Desativar">
                         <Power className="h-4 w-4" />
                       </button>
-                      <button onClick={() => deleteFactor(f.id)} className="rounded-lg p-1.5 text-slate-400 hover:bg-danger-50 hover:text-danger-600" title="Excluir">
+                      <button onClick={() => deleteFactor(f.id)} className="rounded-lg p-1.5 text-subtle hover:bg-danger-soft hover:text-danger-fg" title="Excluir">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -214,20 +214,20 @@ export function DisNor030Page() {
       >
         <div className="space-y-3">
           {mockNormVersions.filter((v) => v.norma === 'DIS-NOR-030').map((v) => (
-            <div key={v.id} className="rounded-lg border border-slate-200 p-4">
+            <div key={v.id} className="rounded-lg border border-line p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-semibold text-slate-800">{v.version}</p>
-                  <p className="text-xs text-slate-500">Início: {v.startDate} · Atualizada: {v.updatedAt}</p>
-                  <p className="text-xs text-slate-500">Responsável: {v.responsible}</p>
+                  <p className="font-semibold text-fg">{v.version}</p>
+                  <p className="text-xs text-muted">Início: {v.startDate} · Atualizada: {v.updatedAt}</p>
+                  <p className="text-xs text-muted">Responsável: {v.responsible}</p>
                 </div>
-                <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${v.active ? 'bg-success-100 text-success-700' : 'bg-slate-100 text-slate-500'}`}>
+                <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${v.active ? 'bg-success-soft text-success-fg' : 'bg-surface-2 text-muted'}`}>
                   {v.active ? 'Vigente' : 'Histórica'}
                 </span>
               </div>
             </div>
           ))}
-          <div className="rounded-lg border border-dashed border-slate-300 p-4 text-center">
+          <div className="rounded-lg border border-dashed border-line-strong p-4 text-center">
             <Button variant="outline" size="sm" icon={<Plus className="h-3.5 w-3.5" />}>Criar Nova Versão</Button>
           </div>
         </div>

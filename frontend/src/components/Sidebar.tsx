@@ -58,15 +58,15 @@ export function Sidebar() {
 
   const sidebarContent = (
     <div className="flex h-full flex-col">
-      <div className="flex h-16 items-center border-b border-slate-200 px-5">
+      <div className="flex h-16 items-center border-b border-line px-5">
         <NavLink to={homeLink}>
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neo-600">
-              <ShieldCheck className="h-5 w-5 text-white" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+              <ShieldCheck className="h-5 w-5 text-on-primary" />
             </div>
             <div className="leading-tight">
-              <div className="text-sm font-bold text-slate-800">Portal de Projetos</div>
-              <div className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
+              <div className="text-sm font-bold text-fg">Portal de Projetos</div>
+              <div className="text-[10px] font-medium uppercase tracking-wider text-subtle">
                 Neoenergia PE
               </div>
             </div>
@@ -77,7 +77,7 @@ export function Sidebar() {
         {groups.map((group) =>
           group.items.length > 0 ? (
             <div key={group.label} className="mb-4">
-              <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+              <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-wider text-subtle">
                 {group.label}
               </p>
               {group.items.map((item) => (
@@ -88,8 +88,8 @@ export function Sidebar() {
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                       isActive
-                        ? 'bg-neo-50 text-neo-700'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
+                        ? 'bg-accent-soft text-accent-fg'
+                        : 'text-muted hover:bg-surface-2 hover:text-fg'
                     }`
                   }
                 >
@@ -101,11 +101,11 @@ export function Sidebar() {
           ) : null,
         )}
       </nav>
-      <div className="border-t border-slate-200 p-3">
+      <div className="border-t border-line p-3">
         <NavLink
           to="/validar"
           target="_blank"
-          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
+          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-surface-2"
         >
           <ShieldCheck className="h-4.5 w-4.5" />
           Validação Pública de Atestado
@@ -119,13 +119,13 @@ export function Sidebar() {
       {/* Mobile menu button */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="fixed left-4 top-4 z-30 rounded-lg bg-neo-600 p-2 text-white lg:hidden"
+        className="fixed left-4 top-4 z-30 rounded-lg bg-primary p-2 text-on-primary lg:hidden"
       >
         <Menu className="h-5 w-5" />
       </button>
 
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white lg:block">
+      <aside className="hidden w-64 shrink-0 border-r border-line bg-surface lg:block">
         {sidebarContent}
       </aside>
 
@@ -133,13 +133,13 @@ export function Sidebar() {
       {mobileOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div
-            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="absolute left-0 top-0 h-full w-64 bg-white shadow-xl animate-slide-in">
+          <aside className="absolute left-0 top-0 h-full w-64 bg-surface shadow-xl animate-slide-in">
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute right-3 top-4 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100"
+              className="absolute right-3 top-4 rounded-lg p-1.5 text-subtle hover:bg-surface-2"
             >
               <X className="h-5 w-5" />
             </button>

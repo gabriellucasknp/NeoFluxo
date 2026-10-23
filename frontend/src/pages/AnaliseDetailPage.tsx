@@ -57,7 +57,7 @@ export function AnaliseDetailPage() {
     return (
       <Card>
         <EmptyState
-          icon={<AlertTriangle className="h-12 w-12 text-slate-300" />}
+          icon={<AlertTriangle className="h-12 w-12 text-subtle" />}
           title="Projeto não encontrado"
           message="O projeto solicitado não foi localizado na fila de análise técnica."
           action={<Button onClick={() => navigate('/app/analise')}>Voltar para a Fila</Button>}
@@ -115,20 +115,20 @@ export function AnaliseDetailPage() {
           <button
             type="button"
             onClick={() => navigate('/app/analise')}
-            className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 shadow-sm transition-colors hover:bg-slate-50 hover:text-slate-800"
+            className="rounded-xl border border-line bg-surface p-2.5 text-muted shadow-sm transition-colors hover:bg-surface-2 hover:text-fg"
             title="Voltar para a fila de análise"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
             <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 font-mono">
+              <h1 className="text-2xl font-bold tracking-tight text-fg font-mono">
                 {project.code}
               </h1>
               <StatusBadge status={project.status} />
               <EnquadramentoBadge enquadramento={project.calcResult?.enquadramento || 'baixa_tensao'} />
             </div>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-muted">
               {project.data?.name} · Responsável: <strong>{project.data?.technicalResponsible || project.projetistaName}</strong>
             </p>
           </div>
@@ -139,16 +139,16 @@ export function AnaliseDetailPage() {
           <div className="flex items-center gap-2.5">
             <Button
               variant="outline"
-              icon={<XCircle className="h-4 w-4 text-danger-600" />}
+              icon={<XCircle className="h-4 w-4 text-danger-fg" />}
               onClick={() => setShowRejectModal(true)}
-              className="text-danger-700 hover:bg-danger-50 border-danger-200"
+              className="text-danger-fg hover:bg-danger-soft border-danger/30"
             >
               Emitir Reprovação
             </Button>
             <Button
               icon={<CheckCircle2 className="h-4 w-4" />}
               onClick={() => setShowApproveModal(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-success hover:bg-success/90 text-white"
             >
               Aprovar Projeto
             </Button>
@@ -170,28 +170,28 @@ export function AnaliseDetailPage() {
 
       {/* Decision Status Banner if already Finalized */}
       {isApproved && (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-5 shadow-sm">
+        <div className="rounded-2xl border border-success/30 bg-success-soft/80 p-5 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
-              <div className="rounded-xl bg-emerald-100 p-2.5 text-emerald-700">
+              <div className="rounded-xl bg-success-soft p-2.5 text-success-fg">
                 <CheckCircle2 className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="font-bold text-emerald-900 text-base">Projeto Homologado e Aprovado</h3>
-                <p className="text-xs text-emerald-800 mt-0.5">
+                <h3 className="font-bold text-success-fg text-base">Projeto Homologado e Aprovado</h3>
+                <p className="text-xs text-success-fg mt-0.5">
                   Atestado Digital: <strong className="font-mono">{project.atestado?.code || project.certificateCode}</strong> ·
                   Identificador: <span className="font-mono">{project.atestado?.uniqueIdentifier}</span>
                 </p>
-                <p className="text-xs text-emerald-700 mt-1">
+                <p className="text-xs text-success-fg mt-1">
                   Parecer favorável emitido por <strong>{project.atestado?.analystName || 'Analista Neoenergia'}</strong> em {project.approvedAt ? new Date(project.approvedAt).toLocaleDateString('pt-BR') : 'Data registrada'}.
                 </p>
               </div>
             </div>
             <Button
               variant="outline"
-              icon={<QrCode className="h-4 w-4 text-emerald-700" />}
+              icon={<QrCode className="h-4 w-4 text-success-fg" />}
               onClick={() => navigate(`/validar?codigo=${project.atestado?.uniqueIdentifier || project.atestado?.code}`)}
-              className="border-emerald-300 text-emerald-800 hover:bg-emerald-100/50 bg-white"
+              className="border-success/30 text-success-fg hover:bg-success-soft/50 bg-surface"
             >
               Ver Autenticação Pública
             </Button>
@@ -200,19 +200,19 @@ export function AnaliseDetailPage() {
       )}
 
       {isRejected && project.rejection && (
-        <div className="rounded-2xl border border-danger-200 bg-danger-50/80 p-5 shadow-sm">
+        <div className="rounded-2xl border border-danger/30 bg-danger-soft/80 p-5 shadow-sm">
           <div className="flex items-start gap-3">
-            <div className="rounded-xl bg-danger-100 p-2.5 text-danger-700">
+            <div className="rounded-xl bg-danger-soft p-2.5 text-danger-fg">
               <XCircle className="h-6 w-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="font-bold text-danger-900 text-base">
+              <h3 className="font-bold text-danger-fg text-base">
                 Projeto Reprovado — Motivo: {project.rejection.reason}
               </h3>
-              <p className="text-xs text-danger-800">
+              <p className="text-xs text-danger-fg">
                 {project.rejection.observations || 'Nenhuma observação complementar informada.'}
               </p>
-              <p className="text-[11px] text-danger-700 pt-1">
+              <p className="text-[11px] text-danger-fg pt-1">
                 Analisado por <strong>{project.rejection.analyst}</strong> em {new Date(project.rejection.date).toLocaleDateString('pt-BR')}.
                 O projetista foi notificado para realizar as correções no memorial e reenviar.
               </p>
@@ -223,45 +223,45 @@ export function AnaliseDetailPage() {
 
       {/* Summary Metric Cards for Fast Technical Overview */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-xl border border-neo-200 bg-neo-50/60 p-4">
-          <p className="text-xs font-semibold text-neo-700">Demanda Total Homologada</p>
-          <p className="mt-1 text-2xl font-black text-neo-900 font-mono">
+        <div className="rounded-xl border border-accent/40 bg-accent-soft/60 p-4">
+          <p className="text-xs font-semibold text-accent-fg">Demanda Total Homologada</p>
+          <p className="mt-1 text-2xl font-black text-accent-fg font-mono">
             {formatKw(project.calcResult?.calculatedDemand || 0)}
           </p>
-          <span className="text-[10px] text-neo-600">Conforme DIS-NOR-030</span>
+          <span className="text-[10px] text-accent-fg">Conforme DIS-NOR-030</span>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium text-slate-500">Potência Instalada Total</p>
-          <p className="mt-1 text-xl font-bold text-slate-800 font-mono">
+        <div className="rounded-xl border border-line bg-surface p-4">
+          <p className="text-xs font-medium text-muted">Potência Instalada Total</p>
+          <p className="mt-1 text-xl font-bold text-fg font-mono">
             {formatKw(project.calcResult?.totalInstalledPower || 0)}
           </p>
-          <span className="text-[10px] text-slate-400">Soma de todas as cargas</span>
+          <span className="text-[10px] text-subtle">Soma de todas as cargas</span>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium text-slate-500">Classificação de Tensão</p>
+        <div className="rounded-xl border border-line bg-surface p-4">
+          <p className="text-xs font-medium text-muted">Classificação de Tensão</p>
           <div className="mt-1.5">
             <EnquadramentoBadge enquadramento={project.calcResult?.enquadramento || 'baixa_tensao'} />
           </div>
-          <span className="text-[10px] text-slate-500 block mt-1">
+          <span className="text-[10px] text-muted block mt-1">
             Norma: <strong>{project.calcResult?.normaAplicada || 'DIS-NOR-030'}</strong>
           </span>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium text-slate-500">Posto de Transformação</p>
-          <p className="mt-1 text-sm font-bold text-slate-800">
+        <div className="rounded-xl border border-line bg-surface p-4">
+          <p className="text-xs font-medium text-muted">Posto de Transformação</p>
+          <p className="mt-1 text-sm font-bold text-fg">
             {isMt ? (project.subestacao?.transformadorLabel || 'Subestação Particular') : 'Dispensada (Rede BT)'}
           </p>
-          <span className="text-[10px] text-slate-400">
+          <span className="text-[10px] text-subtle">
             {isMt ? `${project.subestacao?.potenciaNominal || 150} kVA — DIS-NOR-053` : 'Fornecimento BT simples'}
           </span>
         </div>
       </div>
 
       {/* Navigation Tabs for Technical Deep-dive */}
-      <div className="border-b border-slate-200">
+      <div className="border-b border-line">
         <nav className="flex space-x-6">
           {[
             { id: 'dados', label: '1. Dados Cadastrais & ART', icon: <FileText className="h-4 w-4" /> },
@@ -276,8 +276,8 @@ export function AnaliseDetailPage() {
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 pb-3 text-sm font-semibold border-b-2 transition-all ${
                 activeTab === tab.id
-                  ? 'border-neo-600 text-neo-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
+                  ? 'border-accent text-accent-fg'
+                  : 'border-transparent text-muted hover:text-fg'
               }`}
             >
               {tab.icon}
@@ -293,39 +293,39 @@ export function AnaliseDetailPage() {
           <CardHeader
             title="Identificação do Empreendimento e Responsabilidade Técnica"
             subtitle="Dados cadastrais enviados pelo projetista para validação."
-            icon={<FileText className="h-5 w-5 text-neo-600" />}
+            icon={<FileText className="h-5 w-5 text-accent-fg" />}
           />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 text-sm">
-            <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-100">
-              <span className="text-xs text-slate-500 block">Nome do Projeto:</span>
-              <strong className="text-slate-800 text-base">{project.data?.name}</strong>
+            <div className="rounded-lg bg-surface-2 p-3.5 border border-line">
+              <span className="text-xs text-muted block">Nome do Projeto:</span>
+              <strong className="text-fg text-base">{project.data?.name}</strong>
             </div>
-            <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-100">
-              <span className="text-xs text-slate-500 block">Endereço Completo:</span>
-              <strong className="text-slate-800">
+            <div className="rounded-lg bg-surface-2 p-3.5 border border-line">
+              <span className="text-xs text-muted block">Endereço Completo:</span>
+              <strong className="text-fg">
                 {project.data?.address}, {project.data?.number} {project.data?.complement ? `(${project.data.complement})` : ''}
               </strong>
             </div>
-            <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-100">
-              <span className="text-xs text-slate-500 block">Bairro / Cidade:</span>
-              <strong className="text-slate-800">{project.data?.neighborhood} — {project.data?.city} (CEP: {project.data?.cep})</strong>
+            <div className="rounded-lg bg-surface-2 p-3.5 border border-line">
+              <span className="text-xs text-muted block">Bairro / Cidade:</span>
+              <strong className="text-fg">{project.data?.neighborhood} — {project.data?.city} (CEP: {project.data?.cep})</strong>
             </div>
-            <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-100">
-              <span className="text-xs text-slate-500 block">CNPJ / CPF do Titular:</span>
-              <strong className="text-slate-800 font-mono">{project.data?.document || '—'}</strong>
+            <div className="rounded-lg bg-surface-2 p-3.5 border border-line">
+              <span className="text-xs text-muted block">CNPJ / CPF do Titular:</span>
+              <strong className="text-fg font-mono">{project.data?.document || '—'}</strong>
             </div>
-            <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-100">
-              <span className="text-xs text-slate-500 block">ART / TRT:</span>
-              <strong className="text-slate-800 font-mono">{project.data?.artNumber || 'ART-2026-PENDENTE'}</strong>
+            <div className="rounded-lg bg-surface-2 p-3.5 border border-line">
+              <span className="text-xs text-muted block">ART / TRT:</span>
+              <strong className="text-fg font-mono">{project.data?.artNumber || 'ART-2026-PENDENTE'}</strong>
             </div>
-            <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-100">
-              <span className="text-xs text-slate-500 block">Responsável Técnico / CREA:</span>
-              <strong className="text-slate-800">{project.data?.technicalResponsible}</strong>
+            <div className="rounded-lg bg-surface-2 p-3.5 border border-line">
+              <span className="text-xs text-muted block">Responsável Técnico / CREA:</span>
+              <strong className="text-fg">{project.data?.technicalResponsible}</strong>
             </div>
           </div>
 
           {project.data?.observations && (
-            <div className="mt-4 rounded-lg bg-blue-50/70 p-4 border border-blue-100 text-xs text-blue-900">
+            <div className="mt-4 rounded-lg bg-info-soft/70 p-4 border border-info/30 text-xs text-info-fg">
               <strong className="block mb-1 font-semibold">Observações enviadas pelo projetista:</strong>
               <p>{project.data.observations}</p>
             </div>
@@ -340,29 +340,29 @@ export function AnaliseDetailPage() {
             <CardHeader
               title="Unidades Consumidoras Agrupadas"
               subtitle="Grupos de unidades residenciais, comerciais ou industriais com suas cargas."
-              icon={<Building2 className="h-5 w-5 text-neo-600" />}
+              icon={<Building2 className="h-5 w-5 text-accent-fg" />}
             />
             {project.units && project.units.length > 0 ? (
               <div className="space-y-3">
                 {project.units.map((unit) => {
                   const unitW = unit.loads?.reduce((s, l) => s + (l.quantity * l.powerPerUnit), 0) || 0;
                   return (
-                    <div key={unit.id} className="rounded-xl border border-slate-200 overflow-hidden bg-white">
-                      <div className="bg-slate-50 px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+                    <div key={unit.id} className="rounded-xl border border-line overflow-hidden bg-surface">
+                      <div className="bg-surface-2 px-4 py-3 border-b border-line flex items-center justify-between">
                         <div>
-                          <strong className="text-slate-800 text-sm">{unit.name}</strong>
-                          <span className="text-xs text-slate-500 ml-2">
+                          <strong className="text-fg text-sm">{unit.name}</strong>
+                          <span className="text-xs text-muted ml-2">
                             ({unit.unitCount} unidade{unit.unitCount > 1 ? 's' : ''} · {unit.unitType})
                           </span>
                         </div>
-                        <span className="text-xs font-bold text-neo-700 font-mono">
+                        <span className="text-xs font-bold text-accent-fg font-mono">
                           {formatKw((unitW * unit.unitCount) / 1000)} total instalados
                         </span>
                       </div>
                       <div className="p-4">
                         <table className="w-full text-left text-xs">
                           <thead>
-                            <tr className="text-slate-500 border-b border-slate-100">
+                            <tr className="text-muted border-b border-line">
                               <th className="pb-2 font-semibold">Carga</th>
                               <th className="pb-2 font-semibold">Tipo</th>
                               <th className="pb-2 font-semibold">Qtd./Unid.</th>
@@ -370,11 +370,11 @@ export function AnaliseDetailPage() {
                               <th className="pb-2 font-semibold text-right">Potência Grupo</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-slate-100">
+                          <tbody className="divide-y divide-line">
                             {unit.loads?.map((l) => (
-                              <tr key={l.id} className="text-slate-700">
+                              <tr key={l.id} className="text-fg-2">
                                 <td className="py-1.5 font-medium">{l.label}</td>
-                                <td className="py-1.5 uppercase text-[10px] text-slate-500 font-mono">{l.type}</td>
+                                <td className="py-1.5 uppercase text-[10px] text-muted font-mono">{l.type}</td>
                                 <td className="py-1.5">{l.quantity}</td>
                                 <td className="py-1.5">{l.powerPerUnit} W</td>
                                 <td className="py-1.5 text-right font-mono font-medium">
@@ -390,7 +390,7 @@ export function AnaliseDetailPage() {
                 })}
               </div>
             ) : (
-              <p className="text-sm text-slate-400 py-6 text-center">Nenhuma unidade cadastrada.</p>
+              <p className="text-sm text-subtle py-6 text-center">Nenhuma unidade cadastrada.</p>
             )}
           </Card>
 
@@ -399,13 +399,13 @@ export function AnaliseDetailPage() {
             <CardHeader
               title="Cargas de Serviço / Uso Comum"
               subtitle="Elevadores, bombas, pressurização e iluminação condominial."
-              icon={<Wrench className="h-5 w-5 text-neo-600" />}
+              icon={<Wrench className="h-5 w-5 text-accent-fg" />}
             />
             {project.serviceLoads && project.serviceLoads.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-50 text-slate-600">
+                    <tr className="border-b border-line bg-surface-2 text-muted">
                       <th className="px-4 py-2.5 font-semibold">Equipamento</th>
                       <th className="px-4 py-2.5 font-semibold">Categoria</th>
                       <th className="px-4 py-2.5 font-semibold">Quantidade</th>
@@ -414,17 +414,17 @@ export function AnaliseDetailPage() {
                       <th className="px-4 py-2.5 font-semibold text-right">Potência Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-line">
                     {project.serviceLoads.map((s) => (
                       <tr key={s.id}>
-                        <td className="px-4 py-2 font-medium text-slate-800">{s.name}</td>
-                        <td className="px-4 py-2 text-slate-600 capitalize">{s.category}</td>
-                        <td className="px-4 py-2 text-slate-600">{s.quantity}</td>
-                        <td className="px-4 py-2 text-slate-600">{s.power} W</td>
-                        <td className="px-4 py-2 text-slate-500">
+                        <td className="px-4 py-2 font-medium text-fg">{s.name}</td>
+                        <td className="px-4 py-2 text-muted capitalize">{s.category}</td>
+                        <td className="px-4 py-2 text-muted">{s.quantity}</td>
+                        <td className="px-4 py-2 text-muted">{s.power} W</td>
+                        <td className="px-4 py-2 text-muted">
                           {s.motorType || s.startType ? `${s.motorType || ''} ${s.startType ? `(${s.startType})` : ''}` : 'Convencional'}
                         </td>
-                        <td className="px-4 py-2 text-right font-mono font-medium text-slate-800">
+                        <td className="px-4 py-2 text-right font-mono font-medium text-fg">
                           {formatKw((s.quantity * s.power) / 1000)}
                         </td>
                       </tr>
@@ -433,7 +433,7 @@ export function AnaliseDetailPage() {
                 </table>
               </div>
             ) : (
-              <p className="text-sm text-slate-400 py-4 text-center">Nenhuma carga de serviço cadastrada.</p>
+              <p className="text-sm text-subtle py-4 text-center">Nenhuma carga de serviço cadastrada.</p>
             )}
           </Card>
         </div>
@@ -445,13 +445,13 @@ export function AnaliseDetailPage() {
           <CardHeader
             title="Memória de Cálculo Auditável (DIS-NOR-030)"
             subtitle="Discriminação de todas as cargas com os fatores de demanda normativos aplicados pelo sistema."
-            icon={<FileSpreadsheet className="h-5 w-5 text-neo-600" />}
+            icon={<FileSpreadsheet className="h-5 w-5 text-accent-fg" />}
           />
 
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider">
+                <tr className="border-b border-line bg-surface-2 text-muted font-bold uppercase tracking-wider">
                   <th className="px-4 py-3">Origem / Grupo</th>
                   <th className="px-4 py-3">Descrição da Carga</th>
                   <th className="px-4 py-3">Potência Instalada</th>
@@ -460,34 +460,34 @@ export function AnaliseDetailPage() {
                   <th className="px-4 py-3 text-right">Demanda Resultante (kW)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-line">
                 {project.calcResult?.calculationMemory && project.calcResult?.calculationMemory.length > 0 ? (
                   project.calcResult?.calculationMemory.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50">
-                      <td className="px-4 py-2.5 font-medium text-slate-800">{item.group}</td>
-                      <td className="px-4 py-2.5 text-slate-600">{item.description}</td>
-                      <td className="px-4 py-2.5 font-mono text-slate-700">{formatKw(item.totalPowerKw)}</td>
-                      <td className="px-4 py-2.5 font-bold text-neo-700">{(item.demandFactor * 100).toFixed(0)}%</td>
-                      <td className="px-4 py-2.5 text-slate-500 italic">{item.ruleReference}</td>
-                      <td className="px-4 py-2.5 text-right font-mono font-bold text-slate-900">
+                    <tr key={idx} className="hover:bg-surface-2">
+                      <td className="px-4 py-2.5 font-medium text-fg">{item.group}</td>
+                      <td className="px-4 py-2.5 text-muted">{item.description}</td>
+                      <td className="px-4 py-2.5 font-mono text-fg-2">{formatKw(item.totalPowerKw)}</td>
+                      <td className="px-4 py-2.5 font-bold text-accent-fg">{(item.demandFactor * 100).toFixed(0)}%</td>
+                      <td className="px-4 py-2.5 text-muted italic">{item.ruleReference}</td>
+                      <td className="px-4 py-2.5 text-right font-mono font-bold text-fg">
                         {formatKw(item.resultDemandKw)}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-4 py-6 text-center text-slate-400">
+                    <td colSpan={6} className="px-4 py-6 text-center text-subtle">
                       Memória sintética consolidada: Demanda de {formatKw(project.calcResult?.calculatedDemand || 0)}.
                     </td>
                   </tr>
                 )}
               </tbody>
               <tfoot>
-                <tr className="border-t-2 border-slate-300 bg-slate-100/70 font-bold text-slate-900">
+                <tr className="border-t-2 border-line-strong bg-surface-2/70 font-bold text-fg">
                   <td className="px-4 py-3" colSpan={2}>Total Geral do Empreendimento</td>
                   <td className="px-4 py-3 font-mono">{formatKw(project.calcResult?.totalInstalledPower || 0)}</td>
                   <td className="px-4 py-3" colSpan={2}>Enquadramento: {project.calcResult?.normaAplicada || 'DIS-NOR-030'}</td>
-                  <td className="px-4 py-3 text-right font-mono text-base text-neo-800">
+                  <td className="px-4 py-3 text-right font-mono text-base text-accent-fg">
                     {formatKw(project.calcResult?.calculatedDemand || 0)}
                   </td>
                 </tr>
@@ -503,7 +503,7 @@ export function AnaliseDetailPage() {
           <CardHeader
             title="Dimensionamento da Subestação e Posto de Transformação"
             subtitle="Regras da norma DIS-NOR-053 para fornecimento em Média Tensão (13,8 kV)."
-            icon={<Building2 className="h-5 w-5 text-neo-600" />}
+            icon={<Building2 className="h-5 w-5 text-accent-fg" />}
           />
           {isMt ? (
             <div className="space-y-4">
@@ -513,25 +513,25 @@ export function AnaliseDetailPage() {
               </Alert>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 text-sm">
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <span className="text-xs text-slate-500 block">Transformador Selecionado:</span>
-                  <strong className="text-slate-800 text-base">{project.subestacao?.transformadorLabel || 'Transformador Padronizado'}</strong>
+                <div className="rounded-xl border border-line bg-surface-2 p-4">
+                  <span className="text-xs text-muted block">Transformador Selecionado:</span>
+                  <strong className="text-fg text-base">{project.subestacao?.transformadorLabel || 'Transformador Padronizado'}</strong>
                 </div>
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <span className="text-xs text-slate-500 block">Potência Nominal Total:</span>
-                  <strong className="text-slate-800 text-base font-mono">{project.subestacao?.potenciaNominal || 150} kVA</strong>
+                <div className="rounded-xl border border-line bg-surface-2 p-4">
+                  <span className="text-xs text-muted block">Potência Nominal Total:</span>
+                  <strong className="text-fg text-base font-mono">{project.subestacao?.potenciaNominal || 150} kVA</strong>
                 </div>
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <span className="text-xs text-slate-500 block">Quantidade de Unidades:</span>
-                  <strong className="text-slate-800">{project.subestacao?.quantidade || 1} unidade(s)</strong>
+                <div className="rounded-xl border border-line bg-surface-2 p-4">
+                  <span className="text-xs text-muted block">Quantidade de Unidades:</span>
+                  <strong className="text-fg">{project.subestacao?.quantidade || 1} unidade(s)</strong>
                 </div>
-                <div className="sm:col-span-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <span className="text-xs text-slate-500 block">Configuração Construtiva:</span>
-                  <strong className="text-slate-800">{project.subestacao?.configuracao || 'Abrigada em alvenaria com medição em MT'}</strong>
+                <div className="sm:col-span-2 rounded-xl border border-line bg-surface-2 p-4">
+                  <span className="text-xs text-muted block">Configuração Construtiva:</span>
+                  <strong className="text-fg">{project.subestacao?.configuracao || 'Abrigada em alvenaria com medição em MT'}</strong>
                 </div>
-                <div className="sm:col-span-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <span className="text-xs text-slate-500 block mb-1">Observações Técnicas da Subestação:</span>
-                  <p className="text-xs text-slate-700 leading-relaxed">
+                <div className="sm:col-span-3 rounded-xl border border-line bg-surface-2 p-4">
+                  <span className="text-xs text-muted block mb-1">Observações Técnicas da Subestação:</span>
+                  <p className="text-xs text-fg-2 leading-relaxed">
                     {project.subestacao?.observacoes || 'Configuração homologada em conformidade com as diretrizes da DIS-NOR-053 da Neoenergia Pernambuco.'}
                   </p>
                 </div>
@@ -552,27 +552,27 @@ export function AnaliseDetailPage() {
           <CardHeader
             title="Trilha de Auditoria e Decisões Anteriores"
             subtitle="Rastreabilidade temporal de todas as etapas e pareceres emitidos."
-            icon={<History className="h-5 w-5 text-neo-600" />}
+            icon={<History className="h-5 w-5 text-accent-fg" />}
           />
           <div className="space-y-3">
             {project.history && project.history.length > 0 ? (
               project.history.map((h, i) => (
-                <div key={h.id || i} className="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50/70 p-3.5">
-                  <div className="mt-0.5 rounded-full bg-neo-100 p-1.5 text-neo-700">
+                <div key={h.id || i} className="flex items-start gap-3 rounded-xl border border-line bg-surface-2/70 p-3.5">
+                  <div className="mt-0.5 rounded-full bg-accent-soft p-1.5 text-accent-fg">
                     <Clock className="h-4 w-4" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <strong className="text-sm text-slate-800">{h.action}</strong>
-                      <span className="text-xs text-slate-400">
+                      <strong className="text-sm text-fg">{h.action}</strong>
+                      <span className="text-xs text-subtle">
                         {h.date ? new Date(h.date).toLocaleDateString('pt-BR') : 'Data não registrada'}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 mt-0.5">
+                    <p className="text-xs text-muted mt-0.5">
                       Responsável: <strong>{h.user || 'Sistema Automático'}</strong>
                     </p>
                     {h.detail && (
-                      <p className="text-xs text-slate-500 mt-1 rounded bg-white p-2 border border-slate-200">
+                      <p className="text-xs text-muted mt-1 rounded bg-surface p-2 border border-line">
                         {h.detail}
                       </p>
                     )}
@@ -580,7 +580,7 @@ export function AnaliseDetailPage() {
                 </div>
               ))
             ) : (
-              <p className="text-sm text-slate-400 py-4 text-center">Nenhum evento registrado.</p>
+              <p className="text-sm text-subtle py-4 text-center">Nenhum evento registrado.</p>
             )}
           </div>
         </Card>
@@ -588,26 +588,26 @@ export function AnaliseDetailPage() {
 
       {/* Bottom Sticky Action Bar if Pending */}
       {isPending && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-md flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="rounded-2xl border border-line bg-surface p-5 shadow-md flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h4 className="font-bold text-slate-800 text-sm">Parecer da Análise Técnica</h4>
-            <p className="text-xs text-slate-500">
+            <h4 className="font-bold text-fg text-sm">Parecer da Análise Técnica</h4>
+            <p className="text-xs text-muted">
               Revise o memorial de cargas e a memória auditável para homologar ou solicitar correções.
             </p>
           </div>
           <div className="flex items-center gap-2.5">
             <Button
               variant="outline"
-              icon={<XCircle className="h-4 w-4 text-danger-600" />}
+              icon={<XCircle className="h-4 w-4 text-danger-fg" />}
               onClick={() => setShowRejectModal(true)}
-              className="text-danger-700 border-danger-200 hover:bg-danger-50"
+              className="text-danger-fg border-danger/30 hover:bg-danger-soft"
             >
               Reprovar com Justificativa
             </Button>
             <Button
               icon={<CheckCircle2 className="h-4 w-4" />}
               onClick={() => setShowApproveModal(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-sm"
+              className="bg-success hover:bg-success/90 text-white font-semibold shadow-sm"
             >
               Aprovar e Emitir Atestado Digital
             </Button>
@@ -629,32 +629,32 @@ export function AnaliseDetailPage() {
               icon={<CheckCircle2 className="h-4 w-4" />}
               onClick={handleApprove}
               disabled={isSubmitting}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-success hover:bg-success/90 text-white"
             >
               {isSubmitting ? 'Homologando...' : 'Confirmar Aprovação'}
             </Button>
           </div>
         }
       >
-        <div className="space-y-4 text-sm text-slate-600">
+        <div className="space-y-4 text-sm text-muted">
           <p>
             Ao confirmar a aprovação deste projeto, o sistema executará automaticamente:
           </p>
-          <ul className="space-y-2 text-xs text-slate-700 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <ul className="space-y-2 text-xs text-fg-2 bg-surface-2 p-3.5 rounded-xl border border-line">
             <li className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-success-fg shrink-0" />
               <span>Geração do <strong>Atestado Digital de Projeto Elétrico</strong> com identificador global único.</span>
             </li>
             <li className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-success-fg shrink-0" />
               <span>Criação do código e URL para <strong>validação pública via QR Code</strong>.</span>
             </li>
             <li className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-success-fg shrink-0" />
               <span>Transição do status do projeto para <strong>Aprovado</strong> e registro na trilha de auditoria.</span>
             </li>
           </ul>
-          <div className="rounded-xl bg-neo-50/70 p-3 text-xs text-neo-900 space-y-1">
+          <div className="rounded-xl bg-accent-soft/70 p-3 text-xs text-accent-fg space-y-1">
             <p><strong>Empreendimento:</strong> {project.data?.name}</p>
             <p><strong>Demanda Homologada:</strong> {formatKw(project.calcResult?.calculatedDemand || 0)}</p>
             <p><strong>Analista Responsável:</strong> {user?.name}</p>
@@ -684,13 +684,13 @@ export function AnaliseDetailPage() {
         }
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-muted">
             A reprovação exige justificativa técnica fundamentada para que o projetista possa realizar as devidas adequações no memorial.
           </p>
 
           <div>
             <label className="label-base">
-              Motivo da Reprovação <span className="text-danger-500">*</span>
+              Motivo da Reprovação <span className="text-danger-fg">*</span>
             </label>
             <select
               value={rejectReason}

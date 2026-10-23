@@ -68,10 +68,10 @@ export function AnaliseListPage() {
       {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-fg">
             Fila de Análise Técnica
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-muted">
             Pareceres técnicos, homologação de demandas (DIS-NOR-030/053) e emissão de atestados digitais.
           </p>
         </div>
@@ -84,23 +84,23 @@ export function AnaliseListPage() {
           onClick={() => setStatusFilter(statusFilter === 'enviado_analise' ? 'all' : 'enviado_analise')}
           className={`flex items-center gap-3 rounded-xl border p-4 text-left transition-all ${
             statusFilter === 'enviado_analise'
-              ? 'border-amber-400 bg-amber-50/90 shadow-sm ring-2 ring-amber-300'
-              : 'border-slate-200 bg-white hover:bg-slate-50'
+              ? 'border-warning/30 bg-warning-soft/90 shadow-sm ring-2 ring-warning/30'
+              : 'border-line bg-surface hover:bg-surface-2'
           }`}
         >
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-warning-soft text-warning-fg">
             <Clock className="h-5 w-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-2xl font-extrabold text-slate-900">{pendingCount}</span>
+              <span className="text-2xl font-extrabold text-fg">{pendingCount}</span>
               {pendingCount > 0 && (
-                <span className="inline-flex rounded-full bg-amber-200 px-1.5 py-0.5 text-[10px] font-bold text-amber-800">
+                <span className="inline-flex rounded-full bg-warning-soft px-1.5 py-0.5 text-[10px] font-bold text-warning-fg">
                   Ação pendente
                 </span>
               )}
             </div>
-            <p className="text-xs font-medium text-slate-500">Aguardando Avaliação</p>
+            <p className="text-xs font-medium text-muted">Aguardando Avaliação</p>
           </div>
         </button>
 
@@ -109,16 +109,16 @@ export function AnaliseListPage() {
           onClick={() => setStatusFilter(statusFilter === 'em_analise' ? 'all' : 'em_analise')}
           className={`flex items-center gap-3 rounded-xl border p-4 text-left transition-all ${
             statusFilter === 'em_analise'
-              ? 'border-blue-400 bg-blue-50/90 shadow-sm ring-2 ring-blue-300'
-              : 'border-slate-200 bg-white hover:bg-slate-50'
+              ? 'border-info/30 bg-info-soft/90 shadow-sm ring-2 ring-info/30'
+              : 'border-line bg-surface hover:bg-surface-2'
           }`}
         >
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-info-soft text-info-fg">
             <ClipboardCheck className="h-5 w-5" />
           </div>
           <div>
-            <span className="text-2xl font-extrabold text-slate-900">{inReviewCount}</span>
-            <p className="text-xs font-medium text-slate-500">Em Análise Técnica</p>
+            <span className="text-2xl font-extrabold text-fg">{inReviewCount}</span>
+            <p className="text-xs font-medium text-muted">Em Análise Técnica</p>
           </div>
         </button>
 
@@ -127,16 +127,16 @@ export function AnaliseListPage() {
           onClick={() => setStatusFilter(statusFilter === 'aprovado' ? 'all' : 'aprovado')}
           className={`flex items-center gap-3 rounded-xl border p-4 text-left transition-all ${
             statusFilter === 'aprovado'
-              ? 'border-emerald-400 bg-emerald-50/90 shadow-sm ring-2 ring-emerald-300'
-              : 'border-slate-200 bg-white hover:bg-slate-50'
+              ? 'border-success/30 bg-success-soft/90 shadow-sm ring-2 ring-success/30'
+              : 'border-line bg-surface hover:bg-surface-2'
           }`}
         >
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-success-soft text-success-fg">
             <CheckCircle2 className="h-5 w-5" />
           </div>
           <div>
-            <span className="text-2xl font-extrabold text-slate-900">{approvedCount}</span>
-            <p className="text-xs font-medium text-slate-500">Projetos Aprovados</p>
+            <span className="text-2xl font-extrabold text-fg">{approvedCount}</span>
+            <p className="text-xs font-medium text-muted">Projetos Aprovados</p>
           </div>
         </button>
 
@@ -145,16 +145,16 @@ export function AnaliseListPage() {
           onClick={() => setStatusFilter(statusFilter === 'reprovado' ? 'all' : 'reprovado')}
           className={`flex items-center gap-3 rounded-xl border p-4 text-left transition-all ${
             statusFilter === 'reprovado'
-              ? 'border-danger-400 bg-danger-50/90 shadow-sm ring-2 ring-danger-300'
-              : 'border-slate-200 bg-white hover:bg-slate-50'
+              ? 'border-danger/30 bg-danger-soft/90 shadow-sm ring-2 ring-danger/30'
+              : 'border-line bg-surface hover:bg-surface-2'
           }`}
         >
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-danger-100 text-danger-700">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-danger-soft text-danger-fg">
             <XCircle className="h-5 w-5" />
           </div>
           <div>
-            <span className="text-2xl font-extrabold text-slate-900">{rejectedCount}</span>
-            <p className="text-xs font-medium text-slate-500">Projetos Reprovados</p>
+            <span className="text-2xl font-extrabold text-fg">{rejectedCount}</span>
+            <p className="text-xs font-medium text-muted">Projetos Reprovados</p>
           </div>
         </button>
       </div>
@@ -163,7 +163,7 @@ export function AnaliseListPage() {
       <Card padding="sm">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
             <input
               type="text"
               placeholder="Buscar por protocolo, nome do empreendimento, cidade ou projetista..."
@@ -175,7 +175,7 @@ export function AnaliseListPage() {
 
           <div className="flex flex-wrap items-center gap-2">
             {/* Status pills */}
-            <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1">
+            <div className="flex items-center gap-1 rounded-lg bg-surface-2 p-1">
               {[
                 { value: 'all', label: 'Todos' },
                 { value: 'enviado_analise', label: 'Pendentes' },
@@ -189,8 +189,8 @@ export function AnaliseListPage() {
                   onClick={() => setStatusFilter(opt.value as any)}
                   className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-all ${
                     statusFilter === opt.value
-                      ? 'bg-white text-slate-900 shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-surface text-fg shadow-sm'
+                      : 'text-muted hover:text-fg'
                   }`}
                 >
                   {opt.label}
@@ -202,7 +202,7 @@ export function AnaliseListPage() {
             <select
               value={voltageFilter}
               onChange={(e) => setVoltageFilter(e.target.value as any)}
-              className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-neo-200"
+              className="rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs font-medium text-fg-2 focus:outline-none focus:ring-2 focus:ring-accent/40"
             >
               <option value="all">Todas as Tensões</option>
               <option value="baixa_tensao">Baixa Tensão (BT $\le$ 75 kW)</option>
@@ -213,7 +213,7 @@ export function AnaliseListPage() {
             <select
               value={sortByDate}
               onChange={(e) => setSortByDate(e.target.value as any)}
-              className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-neo-200"
+              className="rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs font-medium text-fg-2 focus:outline-none focus:ring-2 focus:ring-accent/40"
             >
               <option value="recent">Mais Recentes</option>
               <option value="oldest">Mais Antigos</option>
@@ -226,7 +226,7 @@ export function AnaliseListPage() {
       <Card padding="none">
         {filtered.length === 0 ? (
           <EmptyState
-            icon={<ClipboardCheck className="h-12 w-12 text-slate-300" />}
+            icon={<ClipboardCheck className="h-12 w-12 text-subtle" />}
             title="Nenhum projeto encontrado"
             message="Não há projetos correspondentes aos filtros aplicados na fila de análise técnica."
           />
@@ -234,7 +234,7 @@ export function AnaliseListPage() {
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/70 text-xs font-bold uppercase tracking-wider text-slate-600">
+                <tr className="border-b border-line bg-surface-2/70 text-xs font-bold uppercase tracking-wider text-muted">
                   <th className="px-5 py-3.5">Protocolo</th>
                   <th className="px-5 py-3.5">Empreendimento</th>
                   <th className="px-5 py-3.5">Responsável Técnico</th>
@@ -245,45 +245,45 @@ export function AnaliseListPage() {
                   <th className="px-5 py-3.5 text-right">Ação</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-line">
                 {filtered.map((p) => {
                   const isPending = p.status === 'enviado_analise' || p.status === 'em_analise';
                   return (
                     <tr
                       key={p.id}
                       onClick={() => navigate(`/app/analise/${p.id}`)}
-                      className={`cursor-pointer transition-colors hover:bg-slate-50/80 ${
-                        p.status === 'enviado_analise' ? 'bg-amber-50/20' : ''
+                      className={`cursor-pointer transition-colors hover:bg-surface-2/80 ${
+                        p.status === 'enviado_analise' ? 'bg-warning-soft/20' : ''
                       }`}
                     >
-                      <td className="px-5 py-3.5 font-mono font-bold text-neo-700">
+                      <td className="px-5 py-3.5 font-mono font-bold text-accent-fg">
                         {p.code}
                       </td>
                       <td className="px-5 py-3.5">
-                        <div className="font-semibold text-slate-800">{p.data?.name}</div>
-                        <div className="text-xs text-slate-400">
+                        <div className="font-semibold text-fg">{p.data?.name}</div>
+                        <div className="text-xs text-subtle">
                           {p.data?.neighborhood ? `${p.data.neighborhood}, ` : ''}{p.data?.city || 'Recife - PE'}
                         </div>
                       </td>
-                      <td className="px-5 py-3.5 text-slate-600 text-xs">
-                        <div className="font-medium text-slate-800">
+                      <td className="px-5 py-3.5 text-muted text-xs">
+                        <div className="font-medium text-fg">
                           {p.data?.technicalResponsible || p.projetistaName}
                         </div>
-                        <div className="text-slate-400">{p.data?.document || 'CNPJ/CPF informado'}</div>
+                        <div className="text-subtle">{p.data?.document || 'CNPJ/CPF informado'}</div>
                       </td>
-                      <td className="px-5 py-3.5 font-semibold text-slate-800">
+                      <td className="px-5 py-3.5 font-semibold text-fg">
                         <span className="inline-flex items-center gap-1 font-mono">
-                          <Zap className="h-3.5 w-3.5 text-amber-500" />
+                          <Zap className="h-3.5 w-3.5 text-warning-fg" />
                           {formatKw(p.calcResult?.calculatedDemand || 0)}
                         </span>
                       </td>
                       <td className="px-5 py-3.5">
                         <EnquadramentoBadge enquadramento={p.calcResult?.enquadramento || 'baixa_tensao'} />
-                        <span className="block text-[10px] text-slate-400 mt-0.5">
+                        <span className="block text-[10px] text-subtle mt-0.5">
                           {p.calcResult?.normaAplicada || 'DIS-NOR-030'}
                         </span>
                       </td>
-                      <td className="px-5 py-3.5 text-xs text-slate-500 whitespace-nowrap">
+                      <td className="px-5 py-3.5 text-xs text-muted whitespace-nowrap">
                         {p.submittedAt
                           ? new Date(p.submittedAt).toLocaleDateString('pt-BR')
                           : new Date(p.createdAt).toLocaleDateString('pt-BR')}
@@ -296,7 +296,7 @@ export function AnaliseListPage() {
                           <Button
                             size="sm"
                             onClick={() => navigate(`/app/analise/${p.id}`)}
-                            className="bg-neo-600 text-white hover:bg-neo-700"
+                            className="bg-primary text-on-primary hover:bg-primary-hover"
                           >
                             Avaliar Projeto
                             <ArrowRight className="h-3.5 w-3.5 ml-1" />

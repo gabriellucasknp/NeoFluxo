@@ -72,8 +72,8 @@ export function TransformadoresPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Transformadores</h1>
-          <p className="text-sm text-slate-500">Módulos de transformadores para dimensionamento de subestações (DIS-NOR-053).</p>
+          <h1 className="text-2xl font-bold text-fg">Transformadores</h1>
+          <p className="text-sm text-muted">Módulos de transformadores para dimensionamento de subestações (DIS-NOR-053).</p>
         </div>
         <Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>Novo Transformador</Button>
       </div>
@@ -83,11 +83,11 @@ export function TransformadoresPage() {
           <Card key={t.id} className={t.active ? '' : 'opacity-50'}>
             <div className="flex items-start justify-between">
               <div>
-                <p className="font-semibold text-slate-800">{t.label}</p>
-                <p className="mt-1 text-2xl font-bold text-neo-700">{t.powerKva} <span className="text-sm font-normal text-slate-500">kVA</span></p>
-                <p className="text-xs text-slate-500">{t.voltage}</p>
+                <p className="font-semibold text-fg">{t.label}</p>
+                <p className="mt-1 text-2xl font-bold text-accent-fg">{t.powerKva} <span className="text-sm font-normal text-muted">kVA</span></p>
+                <p className="text-xs text-muted">{t.voltage}</p>
               </div>
-              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${t.active ? 'bg-success-100 text-success-700' : 'bg-slate-100 text-slate-500'}`}>
+              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${t.active ? 'bg-success-soft text-success-fg' : 'bg-surface-2 text-muted'}`}>
                 {t.active ? 'Ativo' : 'Inativo'}
               </span>
             </div>

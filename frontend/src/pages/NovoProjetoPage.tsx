@@ -441,9 +441,9 @@ export function NovoProjetoPage() {
 
           {units.length === 0 ? (
             <div className="py-12 text-center">
-              <Building2 className="mx-auto h-12 w-12 text-slate-300" />
-              <p className="mt-3 text-sm text-slate-400">Nenhuma unidade cadastrada.</p>
-              <p className="text-xs text-slate-400">Clique em "Adicionar Grupo" para começar.</p>
+              <Building2 className="mx-auto h-12 w-12 text-subtle" />
+              <p className="mt-3 text-sm text-subtle">Nenhuma unidade cadastrada.</p>
+              <p className="text-xs text-subtle">Clique em "Adicionar Grupo" para começar.</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -451,34 +451,34 @@ export function NovoProjetoPage() {
                 const calc = unitCalc(unit);
                 const isExpanded = expandedUnit === unit.id;
                 return (
-                  <div key={unit.id} className="rounded-lg border border-slate-200">
+                  <div key={unit.id} className="rounded-lg border border-line">
                     <div className="flex items-center justify-between gap-3 p-4">
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => setExpandedUnit(isExpanded ? null : unit.id)}
-                          className="rounded p-1 text-slate-400 hover:bg-slate-100"
+                          className="rounded p-1 text-subtle hover:bg-surface-2"
                         >
                           {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                         </button>
                         <div>
-                          <p className="font-medium text-slate-800">{unit.name}</p>
-                          <p className="text-xs text-slate-500">
+                          <p className="font-medium text-fg">{unit.name}</p>
+                          <p className="text-xs text-muted">
                             {unit.unitCount} unidade(s) · {unit.unitType} · {formatKw(calc.totalInstalledKw)} instalados
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
-                        <button onClick={() => duplicateUnit(unit.id)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600" title="Duplicar">
+                        <button onClick={() => duplicateUnit(unit.id)} className="rounded-lg p-2 text-subtle hover:bg-surface-2 hover:text-muted" title="Duplicar">
                           <Copy className="h-4 w-4" />
                         </button>
-                        <button onClick={() => deleteUnit(unit.id)} className="rounded-lg p-2 text-slate-400 hover:bg-danger-50 hover:text-danger-600" title="Excluir">
+                        <button onClick={() => deleteUnit(unit.id)} className="rounded-lg p-2 text-subtle hover:bg-danger-soft hover:text-danger-fg" title="Excluir">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
 
                     {isExpanded && (
-                      <div className="border-t border-slate-100 p-4">
+                      <div className="border-t border-line p-4">
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                           <Input
                             label="Nome do Grupo"
@@ -513,14 +513,14 @@ export function NovoProjetoPage() {
 
                         <div className="mt-4">
                           <div className="mb-2 flex items-center justify-between">
-                            <p className="text-sm font-medium text-slate-700">Cargas da Unidade</p>
+                            <p className="text-sm font-medium text-fg-2">Cargas da Unidade</p>
                             <Button size="sm" variant="outline" icon={<Plus className="h-3.5 w-3.5" />} onClick={() => addLoadToUnit(unit.id)}>
                               Adicionar Carga
                             </Button>
                           </div>
                           <div className="space-y-2">
                             {unit.loads.map((load) => (
-                              <div key={load.id} className="grid grid-cols-12 items-end gap-2 rounded-lg bg-slate-50 p-3">
+                              <div key={load.id} className="grid grid-cols-12 items-end gap-2 rounded-lg bg-surface-2 p-3">
                                 <div className="col-span-12 sm:col-span-3">
                                   <Select
                                     label="Tipo"
@@ -564,7 +564,7 @@ export function NovoProjetoPage() {
                                 <div className="col-span-12 sm:col-span-1 flex justify-end">
                                   <button
                                     onClick={() => deleteLoad(unit.id, load.id)}
-                                    className="rounded-lg p-2 text-slate-400 hover:bg-danger-50 hover:text-danger-600"
+                                    className="rounded-lg p-2 text-subtle hover:bg-danger-soft hover:text-danger-fg"
                                   >
                                     <Trash2 className="h-4 w-4" />
                                   </button>
@@ -575,21 +575,21 @@ export function NovoProjetoPage() {
                         </div>
 
                         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                          <div className="rounded-lg bg-slate-50 p-3">
-                            <p className="text-xs text-slate-500">Pot. instalada/unidade</p>
-                            <p className="text-lg font-semibold text-slate-800">{(calc.installedW / 1000).toFixed(2)} kW</p>
+                          <div className="rounded-lg bg-surface-2 p-3">
+                            <p className="text-xs text-muted">Pot. instalada/unidade</p>
+                            <p className="text-lg font-semibold text-fg">{(calc.installedW / 1000).toFixed(2)} kW</p>
                           </div>
-                          <div className="rounded-lg bg-slate-50 p-3">
-                            <p className="text-xs text-slate-500">Nº de unidades</p>
-                            <p className="text-lg font-semibold text-slate-800">{unit.unitCount}</p>
+                          <div className="rounded-lg bg-surface-2 p-3">
+                            <p className="text-xs text-muted">Nº de unidades</p>
+                            <p className="text-lg font-semibold text-fg">{unit.unitCount}</p>
                           </div>
-                          <div className="rounded-lg bg-neo-50 p-3">
-                            <p className="text-xs text-neo-600">Pot. total do grupo</p>
-                            <p className="text-lg font-semibold text-neo-700">{formatKw(calc.totalInstalledKw)}</p>
+                          <div className="rounded-lg bg-accent-soft p-3">
+                            <p className="text-xs text-accent-fg">Pot. total do grupo</p>
+                            <p className="text-lg font-semibold text-accent-fg">{formatKw(calc.totalInstalledKw)}</p>
                           </div>
-                          <div className="rounded-lg bg-amber-50 p-3">
-                            <p className="text-xs text-amber-600">Demanda (estimada)</p>
-                            <p className="text-lg font-semibold text-amber-700">{formatKw(calc.totalInstalledKw * 0.7)}</p>
+                          <div className="rounded-lg bg-warning-soft p-3">
+                            <p className="text-xs text-warning-fg">Demanda (estimada)</p>
+                            <p className="text-lg font-semibold text-warning-fg">{formatKw(calc.totalInstalledKw * 0.7)}</p>
                           </div>
                         </div>
                       </div>
@@ -603,19 +603,19 @@ export function NovoProjetoPage() {
 
         {/* Summary */}
         {units.length > 0 && (
-          <Card className="bg-slate-50">
+          <Card className="bg-surface-2">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-xs text-slate-500">Total de unidades</p>
-                <p className="text-xl font-bold text-slate-800">{units.reduce((s, u) => s + u.unitCount, 0)}</p>
+                <p className="text-xs text-muted">Total de unidades</p>
+                <p className="text-xl font-bold text-fg">{units.reduce((s, u) => s + u.unitCount, 0)}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-500">Potência instalada</p>
-                <p className="text-xl font-bold text-slate-800">{formatKw(liveCalc?.totalInstalledPower || 0)}</p>
+                <p className="text-xs text-muted">Potência instalada</p>
+                <p className="text-xl font-bold text-fg">{formatKw(liveCalc?.totalInstalledPower || 0)}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-500">Demanda parcial</p>
-                <p className="text-xl font-bold text-neo-700">{formatKw(liveCalc?.calculatedDemand || 0)}</p>
+                <p className="text-xs text-muted">Demanda parcial</p>
+                <p className="text-xl font-bold text-accent-fg">{formatKw(liveCalc?.calculatedDemand || 0)}</p>
               </div>
             </div>
           </Card>
@@ -645,14 +645,14 @@ export function NovoProjetoPage() {
 
           {serviceLoads.length === 0 ? (
             <div className="py-12 text-center">
-              <Wrench className="mx-auto h-12 w-12 text-slate-300" />
-              <p className="mt-3 text-sm text-slate-400">Nenhuma carga de serviço cadastrada.</p>
-              <p className="text-xs text-slate-400">Adicione elevadores, bombas, motores e outros equipamentos comuns.</p>
+              <Wrench className="mx-auto h-12 w-12 text-subtle" />
+              <p className="mt-3 text-sm text-subtle">Nenhuma carga de serviço cadastrada.</p>
+              <p className="text-xs text-subtle">Adicione elevadores, bombas, motores e outros equipamentos comuns.</p>
             </div>
           ) : (
             <div className="space-y-3">
               {serviceLoads.map((load) => (
-                <div key={load.id} className="rounded-lg border border-slate-200 p-4">
+                <div key={load.id} className="rounded-lg border border-line p-4">
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     <Select
                       label="Categoria"
@@ -721,12 +721,12 @@ export function NovoProjetoPage() {
                   )}
 
                   <div className="mt-3 flex items-center justify-between">
-                    <div className="text-sm text-slate-600">
-                      Potência total: <span className="font-medium text-slate-800">{((load.quantity * load.power) / 1000).toFixed(2)} kW</span>
+                    <div className="text-sm text-muted">
+                      Potência total: <span className="font-medium text-fg">{((load.quantity * load.power) / 1000).toFixed(2)} kW</span>
                     </div>
                     <button
                       onClick={() => deleteServiceLoad(load.id)}
-                      className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-danger-600 hover:bg-danger-50"
+                      className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-danger-fg hover:bg-danger-soft"
                     >
                       <Trash2 className="h-4 w-4" />
                       Excluir
@@ -739,19 +739,19 @@ export function NovoProjetoPage() {
         </Card>
 
         {serviceLoads.length > 0 && (
-          <Card className="bg-slate-50">
+          <Card className="bg-surface-2">
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               <div>
-                <p className="text-xs text-slate-500">Pot. instalada (serviço)</p>
-                <p className="text-lg font-semibold text-slate-800">{formatKw(liveCalc?.totalInstalledPower ? liveCalc.totalInstalledPower - (units.reduce((s, u) => s + u.loads.reduce((sum, l) => sum + l.quantity * l.powerPerUnit * u.unitCount, 0), 0) / 1000) : 0)}</p>
+                <p className="text-xs text-muted">Pot. instalada (serviço)</p>
+                <p className="text-lg font-semibold text-fg">{formatKw(liveCalc?.totalInstalledPower ? liveCalc.totalInstalledPower - (units.reduce((s, u) => s + u.loads.reduce((sum, l) => sum + l.quantity * l.powerPerUnit * u.unitCount, 0), 0) / 1000) : 0)}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-500">Demanda (serviço)</p>
-                <p className="text-lg font-semibold text-slate-800">{formatKw(liveCalc?.serviceDemand || 0)}</p>
+                <p className="text-xs text-muted">Demanda (serviço)</p>
+                <p className="text-lg font-semibold text-fg">{formatKw(liveCalc?.serviceDemand || 0)}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-500">Demanda total do projeto</p>
-                <p className="text-lg font-semibold text-neo-700">{formatKw(liveCalc?.calculatedDemand || 0)}</p>
+                <p className="text-xs text-muted">Demanda total do projeto</p>
+                <p className="text-lg font-semibold text-accent-fg">{formatKw(liveCalc?.calculatedDemand || 0)}</p>
               </div>
             </div>
           </Card>
@@ -765,13 +765,13 @@ export function NovoProjetoPage() {
         <Card className="py-16">
           <div className="flex flex-col items-center justify-center text-center">
             <div className="relative">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-neo-50">
-                <Loader2 className="h-10 w-10 animate-spin text-neo-600" />
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-accent-soft">
+                <Loader2 className="h-10 w-10 animate-spin text-accent-fg" />
               </div>
-              <Zap className="absolute -right-2 -top-2 h-7 w-7 text-amber-500" fill="currentColor" />
+              <Zap className="absolute -right-2 -top-2 h-7 w-7 text-warning-fg" fill="currentColor" />
             </div>
-            <h3 className="mt-6 text-lg font-semibold text-slate-800">Calculando demanda...</h3>
-            <p className="mt-1 text-sm text-slate-500">Aplicando fatores da DIS-NOR-030 e determinando enquadramento.</p>
+            <h3 className="mt-6 text-lg font-semibold text-fg">Calculando demanda...</h3>
+            <p className="mt-1 text-sm text-muted">Aplicando fatores da DIS-NOR-030 e determinando enquadramento.</p>
           </div>
         </Card>
       );
@@ -780,8 +780,8 @@ export function NovoProjetoPage() {
     if (!calcResult) {
       return (
         <Card className="py-12 text-center">
-          <Calculator className="mx-auto h-12 w-12 text-slate-300" />
-          <p className="mt-3 text-sm text-slate-400">Clique em "Continuar" para realizar o cálculo.</p>
+          <Calculator className="mx-auto h-12 w-12 text-subtle" />
+          <p className="mt-3 text-sm text-subtle">Clique em "Continuar" para realizar o cálculo.</p>
         </Card>
       );
     }
@@ -798,32 +798,32 @@ export function NovoProjetoPage() {
           />
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            <div className="rounded-lg border border-slate-200 p-4">
-              <p className="text-xs text-slate-500">Potência instalada total</p>
-              <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(calcResult.totalInstalledPower)}</p>
+            <div className="rounded-lg border border-line p-4">
+              <p className="text-xs text-muted">Potência instalada total</p>
+              <p className="mt-1 text-xl font-bold text-fg">{formatKw(calcResult.totalInstalledPower)}</p>
             </div>
-            <div className="rounded-lg border border-neo-200 bg-neo-50 p-4">
-              <p className="text-xs text-neo-600">Demanda calculada</p>
-              <p className="mt-1 text-xl font-bold text-neo-700">{formatKw(calcResult.calculatedDemand)}</p>
+            <div className="rounded-lg border border-accent/40 bg-accent-soft p-4">
+              <p className="text-xs text-accent-fg">Demanda calculada</p>
+              <p className="mt-1 text-xl font-bold text-accent-fg">{formatKw(calcResult.calculatedDemand)}</p>
             </div>
-            <div className="rounded-lg border border-slate-200 p-4">
-              <p className="text-xs text-slate-500">Quantidade de unidades</p>
-              <p className="mt-1 text-xl font-bold text-slate-800">{calcResult.unitCount}</p>
+            <div className="rounded-lg border border-line p-4">
+              <p className="text-xs text-muted">Quantidade de unidades</p>
+              <p className="mt-1 text-xl font-bold text-fg">{calcResult.unitCount}</p>
             </div>
-            <div className="rounded-lg border border-slate-200 p-4">
-              <p className="text-xs text-slate-500">Demanda das unidades</p>
-              <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(calcResult.unitDemand)}</p>
+            <div className="rounded-lg border border-line p-4">
+              <p className="text-xs text-muted">Demanda das unidades</p>
+              <p className="mt-1 text-xl font-bold text-fg">{formatKw(calcResult.unitDemand)}</p>
             </div>
-            <div className="rounded-lg border border-slate-200 p-4">
-              <p className="text-xs text-slate-500">Demanda das áreas comuns</p>
-              <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(calcResult.serviceDemand)}</p>
+            <div className="rounded-lg border border-line p-4">
+              <p className="text-xs text-muted">Demanda das áreas comuns</p>
+              <p className="mt-1 text-xl font-bold text-fg">{formatKw(calcResult.serviceDemand)}</p>
             </div>
-            <div className="rounded-lg border border-slate-200 p-4">
-              <p className="text-xs text-slate-500">Norma aplicada</p>
-              <p className="mt-1 text-lg font-bold text-slate-800">{calcResult.normaAplicada}</p>
+            <div className="rounded-lg border border-line p-4">
+              <p className="text-xs text-muted">Norma aplicada</p>
+              <p className="mt-1 text-lg font-bold text-fg">{calcResult.normaAplicada}</p>
             </div>
-            <div className="rounded-lg border border-slate-200 p-4">
-              <p className="text-xs text-slate-500">Enquadramento</p>
+            <div className="rounded-lg border border-line p-4">
+              <p className="text-xs text-muted">Enquadramento</p>
               <div className="mt-1"><EnquadramentoBadge enquadramento={calcResult.enquadramento} /></div>
             </div>
           </div>
@@ -856,9 +856,9 @@ export function NovoProjetoPage() {
               icon={<Building2 className="h-5 w-5" />}
             />
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              <div className="rounded-lg bg-neo-50 p-3 sm:col-span-2">
-                <p className="text-xs text-neo-600">Demanda calculada</p>
-                <p className="text-lg font-bold text-neo-700">{formatKw(calcResult.calculatedDemand)}</p>
+              <div className="rounded-lg bg-accent-soft p-3 sm:col-span-2">
+                <p className="text-xs text-accent-fg">Demanda calculada</p>
+                <p className="text-lg font-bold text-accent-fg">{formatKw(calcResult.calculatedDemand)}</p>
               </div>
               <Select
                 label="Transformador recomendado"
@@ -911,9 +911,9 @@ export function NovoProjetoPage() {
               </div>
             </div>
             {subestacao.transformadorId && (
-              <div className="mt-4 flex items-center gap-2 rounded-lg bg-success-50 p-3">
-                <CheckCircle2 className="h-5 w-5 text-success-600" />
-                <p className="text-sm font-medium text-success-700">
+              <div className="mt-4 flex items-center gap-2 rounded-lg bg-success-soft p-3">
+                <CheckCircle2 className="h-5 w-5 text-success-fg" />
+                <p className="text-sm font-medium text-success-fg">
                   Dimensionamento compatível — {subestacao.transformadorLabel}
                 </p>
               </div>
@@ -938,41 +938,41 @@ export function NovoProjetoPage() {
           <div className="space-y-6">
             {/* Project data */}
             <div>
-              <h4 className="mb-2 text-sm font-semibold text-slate-700">Dados do Projeto</h4>
-              <div className="grid grid-cols-2 gap-3 rounded-lg bg-slate-50 p-4 text-sm">
-                <div><span className="text-slate-500">Nome: </span><span className="font-medium text-slate-800">{projectData.name}</span></div>
-                <div><span className="text-slate-500">Endereço: </span><span className="font-medium text-slate-800">{projectData.address}, {projectData.number}</span></div>
-                <div><span className="text-slate-500">Bairro: </span><span className="font-medium text-slate-800">{projectData.neighborhood}</span></div>
-                <div><span className="text-slate-500">Cidade: </span><span className="font-medium text-slate-800">{projectData.city}</span></div>
-                <div><span className="text-slate-500">CEP: </span><span className="font-medium text-slate-800">{projectData.cep}</span></div>
-                <div><span className="text-slate-500">CNPJ/CPF: </span><span className="font-medium text-slate-800">{projectData.document}</span></div>
-                <div><span className="text-slate-500">ART/TRT: </span><span className="font-medium text-slate-800">{projectData.artNumber || '—'}</span></div>
-                <div><span className="text-slate-500">Responsável: </span><span className="font-medium text-slate-800">{projectData.technicalResponsible}</span></div>
+              <h4 className="mb-2 text-sm font-semibold text-fg-2">Dados do Projeto</h4>
+              <div className="grid grid-cols-2 gap-3 rounded-lg bg-surface-2 p-4 text-sm">
+                <div><span className="text-muted">Nome: </span><span className="font-medium text-fg">{projectData.name}</span></div>
+                <div><span className="text-muted">Endereço: </span><span className="font-medium text-fg">{projectData.address}, {projectData.number}</span></div>
+                <div><span className="text-muted">Bairro: </span><span className="font-medium text-fg">{projectData.neighborhood}</span></div>
+                <div><span className="text-muted">Cidade: </span><span className="font-medium text-fg">{projectData.city}</span></div>
+                <div><span className="text-muted">CEP: </span><span className="font-medium text-fg">{projectData.cep}</span></div>
+                <div><span className="text-muted">CNPJ/CPF: </span><span className="font-medium text-fg">{projectData.document}</span></div>
+                <div><span className="text-muted">ART/TRT: </span><span className="font-medium text-fg">{projectData.artNumber || '—'}</span></div>
+                <div><span className="text-muted">Responsável: </span><span className="font-medium text-fg">{projectData.technicalResponsible}</span></div>
               </div>
             </div>
 
             {/* Units */}
             <div>
-              <h4 className="mb-2 text-sm font-semibold text-slate-700">Unidades Consumidoras</h4>
+              <h4 className="mb-2 text-sm font-semibold text-fg-2">Unidades Consumidoras</h4>
               <div className="overflow-x-auto scrollbar-thin">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-50">
-                      <th className="px-4 py-2 font-semibold text-slate-600">Grupo</th>
-                      <th className="px-4 py-2 font-semibold text-slate-600">Quantidade</th>
-                      <th className="px-4 py-2 font-semibold text-slate-600">Potência instalada</th>
-                      <th className="px-4 py-2 font-semibold text-slate-600">Demanda</th>
+                    <tr className="border-b border-line bg-surface-2">
+                      <th className="px-4 py-2 font-semibold text-muted">Grupo</th>
+                      <th className="px-4 py-2 font-semibold text-muted">Quantidade</th>
+                      <th className="px-4 py-2 font-semibold text-muted">Potência instalada</th>
+                      <th className="px-4 py-2 font-semibold text-muted">Demanda</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-line">
                     {units.map((u) => {
                       const installed = u.loads.reduce((s, l) => s + l.quantity * l.powerPerUnit * u.unitCount, 0) / 1000;
                       return (
                         <tr key={u.id}>
-                          <td className="px-4 py-2 font-medium text-slate-700">{u.name}</td>
-                          <td className="px-4 py-2 text-slate-600">{u.unitCount}</td>
-                          <td className="px-4 py-2 text-slate-600">{formatKw(installed)}</td>
-                          <td className="px-4 py-2 text-slate-600">{formatKw(installed * 0.7)}</td>
+                          <td className="px-4 py-2 font-medium text-fg-2">{u.name}</td>
+                          <td className="px-4 py-2 text-muted">{u.unitCount}</td>
+                          <td className="px-4 py-2 text-muted">{formatKw(installed)}</td>
+                          <td className="px-4 py-2 text-muted">{formatKw(installed * 0.7)}</td>
                         </tr>
                       );
                     })}
@@ -984,12 +984,12 @@ export function NovoProjetoPage() {
             {/* Service loads */}
             {serviceLoads.length > 0 && (
               <div>
-                <h4 className="mb-2 text-sm font-semibold text-slate-700">Cargas de Serviço</h4>
-                <div className="rounded-lg bg-slate-50 p-4 text-sm">
+                <h4 className="mb-2 text-sm font-semibold text-fg-2">Cargas de Serviço</h4>
+                <div className="rounded-lg bg-surface-2 p-4 text-sm">
                   {serviceLoads.map((s) => (
                     <div key={s.id} className="flex justify-between py-1">
-                      <span className="text-slate-600">{s.name} ({s.quantity}x)</span>
-                      <span className="font-medium text-slate-800">{formatKw((s.quantity * s.power) / 1000)}</span>
+                      <span className="text-muted">{s.name} ({s.quantity}x)</span>
+                      <span className="font-medium text-fg">{formatKw((s.quantity * s.power) / 1000)}</span>
                     </div>
                   ))}
                 </div>
@@ -998,22 +998,22 @@ export function NovoProjetoPage() {
 
             {/* Calculation result */}
             <div>
-              <h4 className="mb-2 text-sm font-semibold text-slate-700">Resultado do Cálculo</h4>
+              <h4 className="mb-2 text-sm font-semibold text-fg-2">Resultado do Cálculo</h4>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div className="rounded-lg bg-slate-50 p-3">
-                  <p className="text-xs text-slate-500">Potência instalada</p>
-                  <p className="text-lg font-bold text-slate-800">{formatKw(calcResult.totalInstalledPower)}</p>
+                <div className="rounded-lg bg-surface-2 p-3">
+                  <p className="text-xs text-muted">Potência instalada</p>
+                  <p className="text-lg font-bold text-fg">{formatKw(calcResult.totalInstalledPower)}</p>
                 </div>
-                <div className="rounded-lg bg-neo-50 p-3">
-                  <p className="text-xs text-neo-600">Demanda calculada</p>
-                  <p className="text-lg font-bold text-neo-700">{formatKw(calcResult.calculatedDemand)}</p>
+                <div className="rounded-lg bg-accent-soft p-3">
+                  <p className="text-xs text-accent-fg">Demanda calculada</p>
+                  <p className="text-lg font-bold text-accent-fg">{formatKw(calcResult.calculatedDemand)}</p>
                 </div>
-                <div className="rounded-lg bg-slate-50 p-3">
-                  <p className="text-xs text-slate-500">Norma aplicada</p>
-                  <p className="text-lg font-bold text-slate-800">{calcResult.normaAplicada}</p>
+                <div className="rounded-lg bg-surface-2 p-3">
+                  <p className="text-xs text-muted">Norma aplicada</p>
+                  <p className="text-lg font-bold text-fg">{calcResult.normaAplicada}</p>
                 </div>
-                <div className="rounded-lg bg-slate-50 p-3">
-                  <p className="text-xs text-slate-500">Enquadramento</p>
+                <div className="rounded-lg bg-surface-2 p-3">
+                  <p className="text-xs text-muted">Enquadramento</p>
                   <div className="mt-1"><EnquadramentoBadge enquadramento={calcResult.enquadramento} /></div>
                 </div>
               </div>
@@ -1022,13 +1022,13 @@ export function NovoProjetoPage() {
             {/* Substation */}
             {calcResult.needsSubstation && subestacao && (
               <div>
-                <h4 className="mb-2 text-sm font-semibold text-slate-700">Subestação</h4>
-                <div className="rounded-lg bg-slate-50 p-4 text-sm">
+                <h4 className="mb-2 text-sm font-semibold text-fg-2">Subestação</h4>
+                <div className="rounded-lg bg-surface-2 p-4 text-sm">
                   <div className="grid grid-cols-2 gap-3">
-                    <div><span className="text-slate-500">Transformador: </span><span className="font-medium text-slate-800">{subestacao.transformadorLabel || '—'}</span></div>
-                    <div><span className="text-slate-500">Potência nominal: </span><span className="font-medium text-slate-800">{subestacao.potenciaNominal} kVA</span></div>
-                    <div><span className="text-slate-500">Quantidade: </span><span className="font-medium text-slate-800">{subestacao.quantidade}</span></div>
-                    <div><span className="text-slate-500">Configuração: </span><span className="font-medium text-slate-800">{subestacao.configuracao || '—'}</span></div>
+                    <div><span className="text-muted">Transformador: </span><span className="font-medium text-fg">{subestacao.transformadorLabel || '—'}</span></div>
+                    <div><span className="text-muted">Potência nominal: </span><span className="font-medium text-fg">{subestacao.potenciaNominal} kVA</span></div>
+                    <div><span className="text-muted">Quantidade: </span><span className="font-medium text-fg">{subestacao.quantidade}</span></div>
+                    <div><span className="text-muted">Configuração: </span><span className="font-medium text-fg">{subestacao.configuracao || '—'}</span></div>
                   </div>
                 </div>
               </div>
@@ -1049,8 +1049,8 @@ export function NovoProjetoPage() {
     if (!submitSuccess) {
       return (
         <Card className="py-12 text-center">
-          <FileCheck className="mx-auto h-12 w-12 text-slate-300" />
-          <p className="mt-3 text-sm text-slate-400">O atestado será gerado após a aprovação do projeto pela análise técnica.</p>
+          <FileCheck className="mx-auto h-12 w-12 text-subtle" />
+          <p className="mt-3 text-sm text-subtle">O atestado será gerado após a aprovação do projeto pela análise técnica.</p>
           <Button className="mt-4" onClick={() => navigate('/app/dashboard')}>
             Ir para o Dashboard
           </Button>
@@ -1060,12 +1060,12 @@ export function NovoProjetoPage() {
 
     return (
       <Card className="py-12 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success-50">
-          <CheckCircle2 className="h-10 w-10 text-success-600" />
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success-soft">
+          <CheckCircle2 className="h-10 w-10 text-success-fg" />
         </div>
-        <h3 className="mt-4 text-lg font-semibold text-slate-800">Projeto enviado para análise!</h3>
-        <p className="mt-1 text-sm text-slate-500">Código do projeto: <span className="font-bold text-neo-700">{submittedProjectCode}</span></p>
-        <p className="text-sm text-slate-500">Seu projeto foi enviado para a equipe de análise da Neoenergia. Você acompanhará o status no dashboard.</p>
+        <h3 className="mt-4 text-lg font-semibold text-fg">Projeto enviado para análise!</h3>
+        <p className="mt-1 text-sm text-muted">Código do projeto: <span className="font-bold text-accent-fg">{submittedProjectCode}</span></p>
+        <p className="text-sm text-muted">Seu projeto foi enviado para a equipe de análise da Neoenergia. Você acompanhará o status no dashboard.</p>
         <div className="mt-6 flex justify-center gap-3">
           <Button variant="outline" onClick={() => navigate('/app/dashboard')}>
             Ir para o Dashboard
@@ -1084,8 +1084,8 @@ export function NovoProjetoPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Novo Projeto</h1>
-          <p className="text-sm text-slate-500">O sistema calcula automaticamente a demanda e o enquadramento normativo.</p>
+          <h1 className="text-2xl font-bold text-fg">Novo Projeto</h1>
+          <p className="text-sm text-muted">O sistema calcula automaticamente a demanda e o enquadramento normativo.</p>
         </div>
       </div>
 
@@ -1099,7 +1099,7 @@ export function NovoProjetoPage() {
 
         {/* Navigation */}
         {step < 5 && (
-          <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
+          <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
             <Button
               variant="outline"
               icon={<ArrowLeft className="h-4 w-4" />}
@@ -1117,7 +1117,7 @@ export function NovoProjetoPage() {
             </Button>
           </div>
         )}
-        <p className="mt-4 text-center text-xs text-slate-400">Rascunho salvo localmente</p>
+        <p className="mt-4 text-center text-xs text-subtle">Rascunho salvo localmente</p>
       </Card>
 
       {/* Submit confirmation modal */}
@@ -1133,20 +1133,20 @@ export function NovoProjetoPage() {
         }
       >
         <div className="space-y-3">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-muted">
             Ao enviar o projeto para análise, o sistema irá:
           </p>
-          <ul className="space-y-1.5 text-sm text-slate-600">
-            <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success-500" /> Validar todos os campos</li>
-            <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success-500" /> Registrar data e hora do envio</li>
-            <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success-500" /> Gerar código único do projeto</li>
-            <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success-500" /> Alterar status para "Em análise"</li>
+          <ul className="space-y-1.5 text-sm text-muted">
+            <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success-fg" /> Validar todos os campos</li>
+            <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success-fg" /> Registrar data e hora do envio</li>
+            <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success-fg" /> Gerar código único do projeto</li>
+            <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success-fg" /> Alterar status para "Em análise"</li>
           </ul>
-          <div className="rounded-lg bg-neo-50 p-3">
-            <p className="text-sm text-neo-700">
+          <div className="rounded-lg bg-accent-soft p-3">
+            <p className="text-sm text-accent-fg">
               <strong>Demanda calculada:</strong> {calcResult && formatKw(calcResult.calculatedDemand)}
             </p>
-            <p className="text-sm text-neo-700">
+            <p className="text-sm text-accent-fg">
               <strong>Norma aplicada:</strong> {calcResult?.normaAplicada}
             </p>
           </div>

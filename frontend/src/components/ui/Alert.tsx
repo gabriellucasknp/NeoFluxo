@@ -10,10 +10,10 @@ interface AlertProps {
 }
 
 const config: Record<AlertType, { bg: string; border: string; icon: ReactNode; text: string }> = {
-  success: { bg: 'bg-success-50', border: 'border-success-500', icon: <CheckCircle2 className="h-5 w-5 text-success-600" />, text: 'text-success-700' },
-  warning: { bg: 'bg-warning-50', border: 'border-warning-500', icon: <AlertTriangle className="h-5 w-5 text-warning-600" />, text: 'text-warning-700' },
-  error: { bg: 'bg-danger-50', border: 'border-danger-500', icon: <XCircle className="h-5 w-5 text-danger-600" />, text: 'text-danger-700' },
-  info: { bg: 'bg-blue-50', border: 'border-blue-500', icon: <Info className="h-5 w-5 text-blue-600" />, text: 'text-blue-700' },
+  success: { bg: 'bg-success-soft', border: 'border-success', icon: <CheckCircle2 className="h-5 w-5 text-success-fg" />, text: 'text-success-fg' },
+  warning: { bg: 'bg-warning-soft', border: 'border-warning', icon: <AlertTriangle className="h-5 w-5 text-warning-fg" />, text: 'text-warning-fg' },
+  error: { bg: 'bg-danger-soft', border: 'border-danger', icon: <XCircle className="h-5 w-5 text-danger-fg" />, text: 'text-danger-fg' },
+  info: { bg: 'bg-info-soft', border: 'border-info', icon: <Info className="h-5 w-5 text-info-fg" />, text: 'text-info-fg' },
 };
 
 export function Alert({ type, title, children }: AlertProps) {

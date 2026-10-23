@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/firebase/config';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuth } from '@/hooks/useAuth';
 import { Alert } from '@/components/ui/Alert';
 import { Modal } from '@/components/ui/Modal';
@@ -286,32 +287,32 @@ export function LoginPage() {
   return (
     <div className="flex min-h-screen">
       {/* Left panel — branding corporativo Neoenergia */}
-      <div className="relative hidden w-1/2 flex-col justify-between bg-neo-600 p-12 lg:flex">
+      <div className="relative hidden w-1/2 flex-col justify-between bg-panel p-12 lg:flex">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-neo-500/20" />
-          <div className="absolute -bottom-32 -left-10 h-96 w-96 rounded-full bg-neo-700/30" />
-          <div className="absolute right-1/4 top-1/3 h-40 w-40 rounded-full bg-neo-400/10" />
+          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-accent/20" />
+          <div className="absolute -bottom-32 -left-10 h-96 w-96 rounded-full bg-accent/10" />
+          <div className="absolute right-1/4 top-1/3 h-40 w-40 rounded-full bg-accent/10" />
         </div>
         <div className="relative">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-md">
-              <Zap className="h-7 w-7 text-neo-600" fill="currentColor" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-surface shadow-md">
+              <Zap className="h-7 w-7 text-accent-fg" fill="currentColor" />
             </div>
             <div>
-              <div className="text-xl font-bold tracking-tight text-white">Neoenergia</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-neo-200">
+              <div className="text-xl font-bold tracking-tight text-on-panel">Neoenergia</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-on-panel/70">
                 Pernambuco
               </div>
             </div>
           </div>
         </div>
         <div className="relative">
-          <h1 className="text-3xl font-extrabold leading-tight text-white">
+          <h1 className="text-3xl font-extrabold leading-tight text-on-panel">
             Portal de Projetos
             <br />
             Elétricos
           </h1>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-neo-100">
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-on-panel/70">
             Cálculo automatizado de demanda elétrica, enquadramento normativo entre
             DIS-NOR-030 e DIS-NOR-053, e ciclo de aprovação técnica auditável com emissão de atestados digitais.
           </p>
@@ -323,31 +324,32 @@ export function LoginPage() {
               'Gestão de rascunhos em 6 etapas e retomada contínua',
               'Autenticação corporativa integrada com Google e Firestore',
             ].map((item) => (
-              <div key={item} className="flex items-center gap-3 text-sm text-neo-100">
-                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-neo-500/40">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-neo-200" />
+              <div key={item} className="flex items-center gap-3 text-sm text-on-panel/70">
+                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/40">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-on-panel/70" />
                 </div>
                 <span>{item}</span>
               </div>
             ))}
           </div>
         </div>
-        <div className="relative text-xs text-neo-200">
+        <div className="relative text-xs text-on-panel/70">
           © 2026 Neoenergia Pernambuco. Sistema corporativo de uso restrito e auditado.
         </div>
       </div>
 
       {/* Right panel — formulário dinâmico */}
-      <div className="flex w-full flex-col items-center justify-center bg-slate-50 p-6 lg:w-1/2">
+      <div className="relative flex w-full flex-col items-center justify-center bg-surface-2 p-6 lg:w-1/2">
+        <ThemeToggle className="absolute right-4 top-4" />
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="mb-6 flex items-center gap-3 lg:hidden">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-neo-600 shadow-md">
-              <Zap className="h-7 w-7 text-white" fill="white" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-md">
+              <Zap className="h-7 w-7 text-on-primary" fill="white" />
             </div>
             <div>
-              <div className="text-xl font-bold text-slate-800">Neoenergia</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <div className="text-xl font-bold text-fg">Neoenergia</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-subtle">
                 Pernambuco
               </div>
             </div>
@@ -355,14 +357,14 @@ export function LoginPage() {
 
           {/* TAB SELECTOR (Apenas visível em modo login / register) */}
           {(mode === 'login' || mode === 'register') && (
-            <div className="mb-6 flex rounded-xl bg-slate-200/70 p-1">
+            <div className="mb-6 flex rounded-xl bg-surface-3/70 p-1">
               <button
                 type="button"
                 onClick={() => { setMode('login'); setError(''); setSuccessMsg(''); }}
                 className={`flex-1 rounded-lg py-2 text-center text-sm font-semibold transition-all ${
                   mode === 'login'
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-surface text-fg shadow-sm'
+                    : 'text-muted hover:text-fg'
                 }`}
               >
                 Entrar no Portal
@@ -372,8 +374,8 @@ export function LoginPage() {
                 onClick={() => { setMode('register'); setError(''); setSuccessMsg(''); }}
                 className={`flex-1 rounded-lg py-2 text-center text-sm font-semibold transition-all ${
                   mode === 'register'
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-surface text-fg shadow-sm'
+                    : 'text-muted hover:text-fg'
                 }`}
               >
                 Cadastrar Usuário
@@ -399,8 +401,8 @@ export function LoginPage() {
           {mode === 'login' && (
             <div>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold tracking-tight text-slate-800">Identificação do Usuário</h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <h2 className="text-2xl font-bold tracking-tight text-fg">Identificação do Usuário</h2>
+                <p className="mt-1 text-sm text-muted">
                   Acesse o sistema com suas credenciais corporativas ou autenticação Google.
                 </p>
               </div>
@@ -408,10 +410,10 @@ export function LoginPage() {
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
                   <label className="label-base">
-                    E-mail corporativo <span className="text-danger-500">*</span>
+                    E-mail corporativo <span className="text-danger-fg">*</span>
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
                     <input
                       type="email"
                       value={email}
@@ -425,10 +427,10 @@ export function LoginPage() {
 
                 <div>
                   <label className="label-base">
-                    Senha de acesso <span className="text-danger-500">*</span>
+                    Senha de acesso <span className="text-danger-fg">*</span>
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
                     <input
                       type="password"
                       value={password}
@@ -441,18 +443,18 @@ export function LoginPage() {
                 </div>
 
                 <div className="flex items-center justify-between text-sm">
-                  <label className="flex items-center gap-2 text-slate-600">
+                  <label className="flex items-center gap-2 text-muted">
                     <input
                       type="checkbox"
                       defaultChecked
-                      className="h-4 w-4 rounded border-slate-300 text-neo-600 focus:ring-neo-500"
+                      className="h-4 w-4 rounded border-line-strong text-accent-fg focus:ring-accent"
                     />
                     Lembrar credenciais
                   </label>
                   <button
                     type="button"
                     onClick={() => { setForgotOpen(true); setForgotEmail(email); setForgotMsg(''); }}
-                    className="font-medium text-neo-600 hover:text-neo-700 hover:underline"
+                    className="font-medium text-accent-fg hover:text-accent-fg hover:underline"
                   >
                     Esqueci minha senha
                   </button>
@@ -461,10 +463,10 @@ export function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-neo-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-neo-700 disabled:opacity-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-on-primary shadow-sm transition-all hover:bg-primary-hover disabled:opacity-50"
                 >
                   {loading ? (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-transparent" />
                   ) : (
                     <>
                       Entrar no Sistema
@@ -475,9 +477,9 @@ export function LoginPage() {
 
                 <div className="relative my-4 flex items-center justify-center">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-200" />
+                    <div className="w-full border-t border-line" />
                   </div>
-                  <div className="relative bg-slate-50 px-3 text-xs uppercase tracking-wider text-slate-400">
+                  <div className="relative bg-surface-2 px-3 text-xs uppercase tracking-wider text-subtle">
                     Ou continue com
                   </div>
                 </div>
@@ -486,10 +488,10 @@ export function LoginPage() {
                   type="button"
                   onClick={handleGoogleLogin}
                   disabled={googleLoading || loading}
-                  className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-300 bg-white py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
+                  className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-line-strong bg-surface py-2.5 text-sm font-medium text-fg-2 shadow-sm transition-all hover:bg-surface-2 hover:text-fg disabled:opacity-50"
                 >
                   {googleLoading ? (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-neo-600 border-t-transparent" />
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-accent border-t-transparent" />
                   ) : (
                     <>
                       <svg className="h-4 w-4" viewBox="0 0 24 24">
@@ -524,8 +526,8 @@ export function LoginPage() {
           {mode === 'register' && (
             <div>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold tracking-tight text-slate-800">Novo Cadastro no Portal</h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <h2 className="text-2xl font-bold tracking-tight text-fg">Novo Cadastro no Portal</h2>
+                <p className="mt-1 text-sm text-muted">
                   Cadastre suas credenciais para submeter e acompanhar projetos elétricos.
                 </p>
               </div>
@@ -533,10 +535,10 @@ export function LoginPage() {
               <form onSubmit={handleRegisterSubmit} className="space-y-4">
                 <div>
                   <label className="label-base">
-                    Nome Completo <span className="text-danger-500">*</span>
+                    Nome Completo <span className="text-danger-fg">*</span>
                   </label>
                   <div className="relative">
-                    <UserIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <UserIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
                     <input
                       type="text"
                       value={regName}
@@ -551,10 +553,10 @@ export function LoginPage() {
 
                 <div>
                   <label className="label-base">
-                    E-mail Corporativo <span className="text-danger-500">*</span>
+                    E-mail Corporativo <span className="text-danger-fg">*</span>
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
                     <input
                       type="email"
                       value={regEmail}
@@ -569,7 +571,7 @@ export function LoginPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="label-base">
-                      Perfil Inicial <span className="text-danger-500">*</span>
+                      Perfil Inicial <span className="text-danger-fg">*</span>
                     </label>
                     <select
                       value={regRole}
@@ -583,7 +585,7 @@ export function LoginPage() {
                   </div>
                   <div>
                     <label className="label-base">
-                      Departamento <span className="text-danger-500">*</span>
+                      Departamento <span className="text-danger-fg">*</span>
                     </label>
                     <input
                       type="text"
@@ -598,10 +600,10 @@ export function LoginPage() {
 
                 <div>
                   <label className="label-base">
-                    Senha <span className="text-danger-500">*</span>
+                    Senha <span className="text-danger-fg">*</span>
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
                     <input
                       type="password"
                       value={regPassword}
@@ -616,10 +618,10 @@ export function LoginPage() {
 
                 <div>
                   <label className="label-base">
-                    Confirmar Senha <span className="text-danger-500">*</span>
+                    Confirmar Senha <span className="text-danger-fg">*</span>
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
                     <input
                       type="password"
                       value={regConfirmPassword}
@@ -635,10 +637,10 @@ export function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-neo-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-neo-700 disabled:opacity-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-on-primary shadow-sm transition-all hover:bg-primary-hover disabled:opacity-50"
                 >
                   {loading ? (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-transparent" />
                   ) : (
                     <>
                       Concluir Cadastro e Acessar
@@ -654,9 +656,9 @@ export function LoginPage() {
           {/* TELA 3: ESCOLHA DE PERFIL NO LOGIN GOOGLE (NOVA ESPECIFICAÇÃO)   */}
           {/* ================================================================ */}
           {mode === 'google-profile' && googleData && (
-            <div className="rounded-2xl border border-neo-200 bg-white p-6 shadow-md">
+            <div className="rounded-2xl border border-accent/40 bg-surface p-6 shadow-md">
               <div className="mb-5">
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200 mb-3">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-info-soft px-3 py-1 text-xs font-semibold text-info-fg border border-info/30 mb-3">
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24">
                     <path
                       fill="#4285F4"
@@ -677,10 +679,10 @@ export function LoginPage() {
                   </svg>
                   <span>Conta Google Autenticada</span>
                 </div>
-                <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+                <h2 className="text-2xl font-bold tracking-tight text-fg">
                   Complete seu cadastro
                 </h2>
-                <p className="mt-1 text-sm text-slate-600">
+                <p className="mt-1 text-sm text-muted">
                   Selecione seu perfil de acesso para continuar no Portal de Projetos Elétricos.
                 </p>
               </div>
@@ -689,10 +691,10 @@ export function LoginPage() {
                 {/* Nome Completo */}
                 <div>
                   <label className="label-base">
-                    Nome Completo <span className="text-danger-500">*</span>
+                    Nome Completo <span className="text-danger-fg">*</span>
                   </label>
                   <div className="relative">
-                    <UserIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <UserIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
                     <input
                       type="text"
                       value={googleName}
@@ -711,16 +713,16 @@ export function LoginPage() {
                     E-mail Corporativo Autenticado
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
                     <input
                       type="email"
                       value={googleData.email}
                       disabled
-                      className="input-base pl-9 bg-slate-100 text-slate-600 font-medium cursor-not-allowed"
+                      className="input-base pl-9 bg-surface-2 text-muted font-medium cursor-not-allowed"
                     />
-                    <CheckCircle2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-600" />
+                    <CheckCircle2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-success-fg" />
                   </div>
-                  <p className="mt-1 text-[11px] text-slate-500">
+                  <p className="mt-1 text-[11px] text-muted">
                     E-mail validado pelo provedor Google e vinculado ao Cloud Firestore.
                   </p>
                 </div>
@@ -728,7 +730,7 @@ export function LoginPage() {
                 {/* Perfil de Acesso — Opções detalhadas conforme especificação */}
                 <div>
                   <label className="label-base">
-                    Perfil de Acesso <span className="text-danger-500">*</span>
+                    Perfil de Acesso <span className="text-danger-fg">*</span>
                   </label>
 
                   <div className="mt-2 space-y-2.5">
@@ -737,8 +739,8 @@ export function LoginPage() {
                       onClick={() => setSelectedRole('projetista')}
                       className={`cursor-pointer rounded-xl border p-3.5 transition-all ${
                         selectedRole === 'projetista'
-                          ? 'border-neo-600 bg-neo-50/70 ring-2 ring-neo-500/20 shadow-sm'
-                          : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50'
+                          ? 'border-accent bg-accent-soft/70 ring-2 ring-accent/20 shadow-sm'
+                          : 'border-line bg-surface hover:border-line-strong hover:bg-surface-2/50'
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -747,16 +749,16 @@ export function LoginPage() {
                           name="profileRole"
                           checked={selectedRole === 'projetista'}
                           onChange={() => setSelectedRole('projetista')}
-                          className="mt-1 h-4 w-4 text-neo-600 focus:ring-neo-500"
+                          className="mt-1 h-4 w-4 text-accent-fg focus:ring-accent"
                         />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-slate-900">Projetista</span>
-                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                            <span className="text-sm font-bold text-fg">Projetista</span>
+                            <span className="rounded-full bg-success-soft px-2 py-0.5 text-[10px] font-bold text-success-fg">
                               Acesso Imediato
                             </span>
                           </div>
-                          <p className="mt-0.5 text-xs text-slate-600">
+                          <p className="mt-0.5 text-xs text-muted">
                             Elaboração e gerenciamento de projetos elétricos, dimensionamento em 6 etapas e cálculo de demanda.
                           </p>
                         </div>
@@ -768,8 +770,8 @@ export function LoginPage() {
                       onClick={() => setSelectedRole('analista')}
                       className={`cursor-pointer rounded-xl border p-3.5 transition-all ${
                         selectedRole === 'analista'
-                          ? 'border-neo-600 bg-neo-50/70 ring-2 ring-neo-500/20 shadow-sm'
-                          : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50'
+                          ? 'border-accent bg-accent-soft/70 ring-2 ring-accent/20 shadow-sm'
+                          : 'border-line bg-surface hover:border-line-strong hover:bg-surface-2/50'
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -778,16 +780,16 @@ export function LoginPage() {
                           name="profileRole"
                           checked={selectedRole === 'analista'}
                           onChange={() => setSelectedRole('analista')}
-                          className="mt-1 h-4 w-4 text-neo-600 focus:ring-neo-500"
+                          className="mt-1 h-4 w-4 text-accent-fg focus:ring-accent"
                         />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-slate-900">Analista</span>
-                            <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-800">
+                            <span className="text-sm font-bold text-fg">Analista</span>
+                            <span className="rounded-full bg-info-soft px-2 py-0.5 text-[10px] font-bold text-info-fg">
                               Corpo Técnico
                             </span>
                           </div>
-                          <p className="mt-0.5 text-xs text-slate-600">
+                          <p className="mt-0.5 text-xs text-muted">
                             Análise técnica de projetos e emissão de pareceres, conforme as permissões autorizadas da Neoenergia.
                           </p>
                         </div>
@@ -799,8 +801,8 @@ export function LoginPage() {
                       onClick={() => setSelectedRole('admin')}
                       className={`cursor-pointer rounded-xl border p-3.5 transition-all ${
                         selectedRole === 'admin'
-                          ? 'border-amber-600 bg-amber-50/70 ring-2 ring-amber-500/20 shadow-sm'
-                          : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50'
+                          ? 'border-warning bg-warning-soft/70 ring-2 ring-warning/20 shadow-sm'
+                          : 'border-line bg-surface hover:border-line-strong hover:bg-surface-2/50'
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -809,16 +811,16 @@ export function LoginPage() {
                           name="profileRole"
                           checked={selectedRole === 'admin'}
                           onChange={() => setSelectedRole('admin')}
-                          className="mt-1 h-4 w-4 text-amber-600 focus:ring-amber-500"
+                          className="mt-1 h-4 w-4 text-warning-fg focus:ring-warning"
                         />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-slate-900">Administrador</span>
-                            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-900">
+                            <span className="text-sm font-bold text-fg">Administrador</span>
+                            <span className="rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-bold text-warning-fg">
                               Requer Homologação
                             </span>
                           </div>
-                          <p className="mt-0.5 text-xs text-slate-600">
+                          <p className="mt-0.5 text-xs text-muted">
                             Gerenciamento de usuários, perfis e configurações administrativas, conforme as permissões autorizadas.
                           </p>
                         </div>
@@ -830,10 +832,10 @@ export function LoginPage() {
                 {/* Departamento */}
                 <div>
                   <label className="label-base">
-                    Departamento ou Área <span className="text-danger-500">*</span>
+                    Departamento ou Área <span className="text-danger-fg">*</span>
                   </label>
                   <div className="relative">
-                    <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
                     <input
                       type="text"
                       value={googleDepartment}
@@ -847,9 +849,9 @@ export function LoginPage() {
 
                 {/* Alerta Contextual Informativo */}
                 {selectedRole === 'admin' ? (
-                  <div className="rounded-xl border border-blue-200 bg-blue-50/80 p-3 text-xs text-blue-900">
+                  <div className="rounded-xl border border-info/30 bg-info-soft/80 p-3 text-xs text-info-fg">
                     <div className="flex gap-2">
-                      <ShieldCheck className="h-4 w-4 shrink-0 text-blue-700 mt-0.5" />
+                      <ShieldCheck className="h-4 w-4 shrink-0 text-info-fg mt-0.5" />
                       <div>
                         <strong className="block font-semibold">Acesso ao Portal Liberado:</strong>
                         Seu acesso às funcionalidades de cálculo de demanda, memorial e emissão de atestados está autorizado imediatamente como Projetista.
@@ -857,9 +859,9 @@ export function LoginPage() {
                     </div>
                   </div>
                 ) : selectedRole === 'analista' ? (
-                  <div className="rounded-xl border border-blue-200 bg-blue-50/80 p-3 text-xs text-blue-900">
+                  <div className="rounded-xl border border-info/30 bg-info-soft/80 p-3 text-xs text-info-fg">
                     <div className="flex gap-2">
-                      <ShieldCheck className="h-4 w-4 shrink-0 text-blue-700 mt-0.5" />
+                      <ShieldCheck className="h-4 w-4 shrink-0 text-info-fg mt-0.5" />
                       <div>
                         <strong className="block font-semibold">Perfil de Analista Técnico:</strong>
                         Acesso liberado à fila de análise técnica de projetos e homologação de atestados de viabilidade.
@@ -867,9 +869,9 @@ export function LoginPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 p-3 text-xs text-emerald-900">
+                  <div className="rounded-xl border border-success/30 bg-success-soft/80 p-3 text-xs text-success-fg">
                     <div className="flex gap-2">
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-700 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-success-fg mt-0.5" />
                       <div>
                         <strong className="block font-semibold">Liberação Imediata:</strong>
                         Seu perfil de Projetista será ativado instantaneamente para iniciar projetos elétricos, calcular demandas e emitir atestados.
@@ -883,10 +885,10 @@ export function LoginPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-neo-600 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-neo-700 disabled:opacity-50"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-semibold text-on-primary shadow-md transition-all hover:bg-primary-hover disabled:opacity-50"
                   >
                     {loading ? (
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-transparent" />
                     ) : (
                       <>
                         Confirmar e Acessar Portal
@@ -902,7 +904,7 @@ export function LoginPage() {
                       setGoogleData(null);
                       setError('');
                     }}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                    className="flex w-full items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold text-muted hover:text-fg-2 hover:bg-surface-2 transition-colors"
                   >
                     <ArrowLeft className="h-3.5 w-3.5" />
                     Cancelar e voltar ao início
@@ -914,11 +916,11 @@ export function LoginPage() {
 
           {/* Demo accounts helper (Apenas exibido no modo login) */}
           {mode === 'login' && (
-            <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50/80 p-4">
+            <div className="mt-6 rounded-xl border border-info/30 bg-info-soft/80 p-4">
               <div className="flex gap-2.5">
-                <Info className="h-4 w-4 shrink-0 text-blue-600" />
-                <div className="text-xs text-blue-800">
-                  <p className="font-semibold text-blue-900">Perfis de Teste Pré-Configurados:</p>
+                <Info className="h-4 w-4 shrink-0 text-info-fg" />
+                <div className="text-xs text-info-fg">
+                  <p className="font-semibold text-info-fg">Perfis de Teste Pré-Configurados:</p>
                   <p className="mt-1 opacity-90">
                     Clique em um dos perfis para preencher as credenciais e testar o fluxo completo:
                   </p>
@@ -926,26 +928,26 @@ export function LoginPage() {
                     <button
                       type="button"
                       onClick={() => fillDemo('carlos.mendes@neoenergia.com')}
-                      className="flex w-full items-center justify-between rounded-lg bg-white/70 px-2.5 py-1.5 text-left font-medium text-blue-950 transition-colors hover:bg-white"
+                      className="flex w-full items-center justify-between rounded-lg bg-surface/70 px-2.5 py-1.5 text-left font-medium text-info-fg transition-colors hover:bg-surface"
                     >
                       <span><strong>Projetista:</strong> carlos.mendes@neoenergia.com</span>
-                      <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">US-04 / US-05</span>
+                      <span className="rounded bg-info-soft px-1.5 py-0.5 text-[10px] text-info-fg">US-04 / US-05</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => fillDemo('ana.silva@neoenergia.com')}
-                      className="flex w-full items-center justify-between rounded-lg bg-white/70 px-2.5 py-1.5 text-left font-medium text-blue-950 transition-colors hover:bg-white"
+                      className="flex w-full items-center justify-between rounded-lg bg-surface/70 px-2.5 py-1.5 text-left font-medium text-info-fg transition-colors hover:bg-surface"
                     >
                       <span><strong>Analista:</strong> ana.silva@neoenergia.com</span>
-                      <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">US-06 Parecer</span>
+                      <span className="rounded bg-info-soft px-1.5 py-0.5 text-[10px] text-info-fg">US-06 Parecer</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => fillDemo('roberto.fonseca@neoenergia.com')}
-                      className="flex w-full items-center justify-between rounded-lg bg-white/70 px-2.5 py-1.5 text-left font-medium text-blue-950 transition-colors hover:bg-white"
+                      className="flex w-full items-center justify-between rounded-lg bg-surface/70 px-2.5 py-1.5 text-left font-medium text-info-fg transition-colors hover:bg-surface"
                     >
                       <span><strong>Administrador:</strong> roberto.fonseca@neoenergia.com</span>
-                      <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">Gestão & Normas</span>
+                      <span className="rounded bg-info-soft px-1.5 py-0.5 text-[10px] text-info-fg">Gestão & Normas</span>
                     </button>
                   </div>
                 </div>
@@ -953,8 +955,8 @@ export function LoginPage() {
             </div>
           )}
 
-          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <ShieldCheck className="h-4 w-4 text-emerald-600" />
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-subtle">
+            <ShieldCheck className="h-4 w-4 text-success-fg" />
             <span>Autenticação auditada com Cloud Firestore & Firebase Auth</span>
           </div>
         </div>
@@ -979,7 +981,7 @@ export function LoginPage() {
         }
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-muted">
             Informe o e-mail corporativo cadastrado. Você receberá um link de verificação para cadastrar uma nova senha.
           </p>
           {forgotMsg ? (

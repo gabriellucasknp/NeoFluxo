@@ -61,17 +61,17 @@ export function AdminDashboardPage() {
     }, [] as { name: string; value: number }[]);
 
   const indicators = [
-    { label: 'Total de projetos', value: projects.length, icon: <FolderOpen className="h-5 w-5" />, color: 'text-neo-600 bg-neo-50' },
-    { label: 'Em análise', value: projects.filter((p) => p.status === 'em_analise' || p.status === 'enviado_analise').length, icon: <Clock className="h-5 w-5" />, color: 'text-amber-600 bg-amber-50' },
-    { label: 'Aprovados', value: projects.filter((p) => p.status === 'aprovado').length, icon: <CheckCircle2 className="h-5 w-5" />, color: 'text-success-600 bg-success-50' },
-    { label: 'Reprovados', value: projects.filter((p) => p.status === 'reprovado').length, icon: <XCircle className="h-5 w-5" />, color: 'text-danger-600 bg-danger-50' },
+    { label: 'Total de projetos', value: projects.length, icon: <FolderOpen className="h-5 w-5" />, color: 'text-accent-fg bg-accent-soft' },
+    { label: 'Em análise', value: projects.filter((p) => p.status === 'em_analise' || p.status === 'enviado_analise').length, icon: <Clock className="h-5 w-5" />, color: 'text-warning-fg bg-warning-soft' },
+    { label: 'Aprovados', value: projects.filter((p) => p.status === 'aprovado').length, icon: <CheckCircle2 className="h-5 w-5" />, color: 'text-success-fg bg-success-soft' },
+    { label: 'Reprovados', value: projects.filter((p) => p.status === 'reprovado').length, icon: <XCircle className="h-5 w-5" />, color: 'text-danger-fg bg-danger-soft' },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-800">Painel Administrativo</h1>
-        <p className="text-sm text-slate-500">Visão geral do sistema e indicadores de desempenho.</p>
+        <h1 className="text-2xl font-bold text-fg">Painel Administrativo</h1>
+        <p className="text-sm text-muted">Visão geral do sistema e indicadores de desempenho.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -81,8 +81,8 @@ export function AdminDashboardPage() {
               {ind.icon}
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-800">{ind.value}</p>
-              <p className="text-xs text-slate-500">{ind.label}</p>
+              <p className="text-2xl font-bold text-fg">{ind.value}</p>
+              <p className="text-xs text-muted">{ind.label}</p>
             </div>
           </Card>
         ))}
@@ -135,7 +135,7 @@ export function AdminDashboardPage() {
         <Card>
           <CardHeader title="Principais Motivos de Reprovação" icon={<TrendingUp className="h-5 w-5" />} />
           {rejectionReasons.length === 0 ? (
-            <div className="flex h-[250px] items-center justify-center text-sm text-slate-400">
+            <div className="flex h-[250px] items-center justify-center text-sm text-subtle">
               Nenhuma reprovação registrada.
             </div>
           ) : (

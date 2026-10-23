@@ -4,7 +4,7 @@ import { Header } from '@/components/Header';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50">
+    <div className="flex h-screen overflow-hidden bg-surface-2">
       <Sidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header />

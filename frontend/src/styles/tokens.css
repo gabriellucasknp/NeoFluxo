@@ -1,0 +1,108 @@
+/*
+ * Design tokens do NeoFluxo.
+ * Cada cor tem um PAPEL (fundo, texto, linha, primário...), não um nome de tom.
+ * Claro = direção B (grafite claro + preto + verde); escuro = direção A (grafite + verde neon).
+ * Valores em canais RGB pra o Tailwind aceitar opacidade (bg-surface/80).
+ *
+ * Tema: <html data-theme="light|dark">; sem atributo = segue o sistema.
+ */
+:root {
+  /* superfícies */
+  --canvas: 233 233 230;      /* fundo da página */
+  --surface: 250 250 248;     /* card, painel, modal */
+  --surface-2: 240 240 236;   /* tile dentro de card, cabeçalho de tabela, hover */
+  --surface-3: 226 226 221;   /* trilho de barra, segmentado */
+  --raised: 255 255 255;      /* input, pílula sobre card */
+
+  /* texto */
+  --fg: 17 17 17;             /* título e valor */
+  --fg-2: 58 58 62;           /* corpo */
+  --muted: 94 94 99;          /* apoio — 6,2:1 na superfície */
+  --subtle: 128 128 134;      /* placeholder, desativado, ícone decorativo */
+
+  /* linhas */
+  --line: 222 222 217;
+  --line-strong: 201 201 195;
+
+  /* ação principal e destaque (no claro: preto; no escuro: verde) */
+  --primary: 17 17 17;
+  --primary-hover: 48 48 50;
+  --on-primary: 255 255 255;
+
+  /* acento de marca */
+  --accent: 60 207 90;
+  --accent-soft: 220 245 225;
+  --accent-fg: 20 101 43;     /* texto na cor da marca, legível */
+  --on-accent: 13 43 20;
+
+  /* status — sólidos iguais nos dois temas (texto branco por cima) */
+  --success: 31 157 69;   --success-soft: 220 245 225; --success-fg: 20 101 43;
+  --warning: 185 120 0;   --warning-soft: 255 243 214; --warning-fg: 122 82 0;
+  --danger: 217 48 37;    --danger-soft: 253 226 224;  --danger-fg: 155 28 20;
+  --info: 47 98 217;      --info-soft: 227 234 251;    --info-fg: 30 64 160;
+
+  /* painel de marca (lado esquerdo do login): preto nos dois temas, acento verde por cima */
+  --panel: 17 17 17;
+  --on-panel: 255 255 255;
+
+  --focus: 17 17 17;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --canvas: 12 12 13;
+    --surface: 24 24 26;
+    --surface-2: 34 34 37;
+    --surface-3: 46 46 50;
+    --raised: 42 42 45;
+    --fg: 242 242 239;
+    --fg-2: 214 214 211;
+    --muted: 163 163 168;
+    --subtle: 122 122 128;
+    --line: 44 44 48;
+    --line-strong: 62 62 66;
+    --primary: 93 232 111;
+    --primary-hover: 125 240 140;
+    --on-primary: 12 12 13;
+    --accent: 93 232 111;
+    --accent-soft: 22 53 29;
+    --accent-fg: 127 240 141;
+    --on-accent: 12 12 13;
+    --success-soft: 22 53 29;  --success-fg: 127 240 141;
+    --warning-soft: 58 50 32;  --warning-fg: 255 207 107;
+    --danger-soft: 58 29 29;   --danger-fg: 255 143 143;
+    --info-soft: 28 36 51;     --info-fg: 143 176 255;
+    --panel: 24 24 26;
+    --focus: 93 232 111;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --canvas: 12 12 13;
+  --surface: 24 24 26;
+  --surface-2: 34 34 37;
+  --surface-3: 46 46 50;
+  --raised: 42 42 45;
+  --fg: 242 242 239;
+  --fg-2: 214 214 211;
+  --muted: 163 163 168;
+  --subtle: 122 122 128;
+  --line: 44 44 48;
+  --line-strong: 62 62 66;
+  --primary: 93 232 111;
+  --primary-hover: 125 240 140;
+  --on-primary: 12 12 13;
+  --accent: 93 232 111;
+  --accent-soft: 22 53 29;
+  --accent-fg: 127 240 141;
+  --on-accent: 12 12 13;
+  --success-soft: 22 53 29;  --success-fg: 127 240 141;
+  --warning-soft: 58 50 32;  --warning-fg: 255 207 107;
+  --danger-soft: 58 29 29;   --danger-fg: 255 143 143;
+  --info-soft: 28 36 51;     --info-fg: 143 176 255;
+  --panel: 24 24 26;
+  --focus: 93 232 111;
+  color-scheme: dark;
+}

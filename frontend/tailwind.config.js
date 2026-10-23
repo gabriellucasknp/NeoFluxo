@@ -1,44 +1,42 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ['selector', '[data-theme="dark"]'],
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      // Tipografia das refs: Urbanist nos títulos e números, Manrope no texto
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Urbanist', 'Manrope', 'system-ui', 'sans-serif'],
       },
+      // Cores por papel (valores em src/styles/tokens.css, trocam no claro/escuro)
       colors: {
-        neo: {
-          50: '#eef3ff',
-          100: '#d9e4ff',
-          200: '#b8ccff',
-          300: '#8aa8ff',
-          400: '#5a7eff',
-          500: '#3a5ee0',
-          600: '#0033A0',
-          700: '#002a82',
-          800: '#001f63',
-          900: '#001542',
-        },
-        success: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          500: '#10b981',
-          600: '#059669',
-          700: '#047857',
-        },
-        warning: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          500: '#f59e0b',
-          600: '#d97706',
-        },
-        danger: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          500: '#ef4444',
-          600: '#dc2626',
-          700: '#b91c1c',
-        },
+        'canvas': 'rgb(var(--canvas) / <alpha-value>)',
+        'surface': 'rgb(var(--surface) / <alpha-value>)',
+        'surface-2': 'rgb(var(--surface-2) / <alpha-value>)',
+        'surface-3': 'rgb(var(--surface-3) / <alpha-value>)',
+        'raised': 'rgb(var(--raised) / <alpha-value>)',
+        'fg': 'rgb(var(--fg) / <alpha-value>)',
+        'fg-2': 'rgb(var(--fg-2) / <alpha-value>)',
+        'muted': 'rgb(var(--muted) / <alpha-value>)',
+        'subtle': 'rgb(var(--subtle) / <alpha-value>)',
+        'line': 'rgb(var(--line) / <alpha-value>)',
+        'line-strong': 'rgb(var(--line-strong) / <alpha-value>)',
+        'on-primary': 'rgb(var(--on-primary) / <alpha-value>)',
+        'on-accent': 'rgb(var(--on-accent) / <alpha-value>)',
+        'focus': 'rgb(var(--focus) / <alpha-value>)',
+        'panel': 'rgb(var(--panel) / <alpha-value>)',
+        'on-panel': 'rgb(var(--on-panel) / <alpha-value>)',
+        primary: { DEFAULT: 'rgb(var(--primary) / <alpha-value>)', hover: 'rgb(var(--primary-hover) / <alpha-value>)' },
+        accent: { DEFAULT: 'rgb(var(--accent) / <alpha-value>)', soft: 'rgb(var(--accent-soft) / <alpha-value>)', fg: 'rgb(var(--accent-fg) / <alpha-value>)' },
+        success: { DEFAULT: 'rgb(var(--success) / <alpha-value>)', soft: 'rgb(var(--success-soft) / <alpha-value>)', fg: 'rgb(var(--success-fg) / <alpha-value>)' },
+        warning: { DEFAULT: 'rgb(var(--warning) / <alpha-value>)', soft: 'rgb(var(--warning-soft) / <alpha-value>)', fg: 'rgb(var(--warning-fg) / <alpha-value>)' },
+        danger: { DEFAULT: 'rgb(var(--danger) / <alpha-value>)', soft: 'rgb(var(--danger-soft) / <alpha-value>)', fg: 'rgb(var(--danger-fg) / <alpha-value>)' },
+        info: { DEFAULT: 'rgb(var(--info) / <alpha-value>)', soft: 'rgb(var(--info-soft) / <alpha-value>)', fg: 'rgb(var(--info-fg) / <alpha-value>)' },
+      },
+      borderRadius: {
+        control: '12px', // botão, input, tile interno
+        card: '20px', // card, painel, modal
       },
       boxShadow: {
         card: '0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.05)',
