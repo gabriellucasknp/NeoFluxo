@@ -293,14 +293,14 @@ As funcionalidades contempladas nesta etapa foram:
 <tr>
 <td width="50%" valign="top">
 
-> 🟧 **POST-IT 1 — US-01: Entrar com credenciais Neoenergia**
->
-> **Como** projetista, analista ou administrador cadastrado no portal corporativo da Neoenergia,
->
-> **Quero** entrar no Portal de Projetos Elétricos utilizando o mesmo e-mail e senha já utilizados,
->
-> **Para que** eu consiga acessar diretamente a área correspondente ao meu perfil, sem precisar gerenciar outra senha.
->
+> 🟧 **POST-IT 1 — US-01: Acesso à área correspondente ao perfil**
+
+> **Como** projetista, analista ou administrador cadastrado no Portal de Projetos Elétricos da Neoenergia,
+
+> **Quero** acessar a área correspondente ao meu perfil,
+
+> **Para que** eu tenha acesso às funcionalidades e informações adequadas às minhas responsabilidades dentro do portal.
+
 > | Critério | Classificação |
 > |---|---|
 > | **Impacto** | 🟡 Médio |
