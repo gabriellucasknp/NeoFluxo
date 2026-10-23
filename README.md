@@ -272,6 +272,11 @@ A Entrega 02 consolidou a estrutura inicial do MVP, com a priorização das hist
 
 ### Entrega 03: Implementação das funcionalidades de cálculo e validação
 
+#### Histórias Implementadas
+
+![Histórias Implementadas — Post-its](https://github.com/user-attachments/assets/2361d615-808b-49f3-919c-cdff7698cffb)
+
+
 #### 1. Evolução do MVP
 
 A Entrega 03 teve como objetivo aprimorar o Portal de Projetos Elétricos da Neoenergia, implementando funcionalidades importantes para facilitar o acesso dos usuários e tornar o processo de elaboração e análise dos projetos mais eficiente.
