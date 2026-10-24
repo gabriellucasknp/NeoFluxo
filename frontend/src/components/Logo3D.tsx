@@ -6,23 +6,25 @@ import { MARK_PATH } from '@/ds/Mark';
 
 /*
  * O "N em ponta" em 3D pro painel azul do login (técnica do login de Camelo, mxc/camelo-distribuidora):
- * o path do manual extrudado em metal cromado frio. Parado ele balança devagar; o mouse empurra e
+ * o path do manual extrudado em argila fosca (era cromo; Mateus achou reflexivo demais, 24/10). Parado ele balança devagar; o mouse empurra e
  * ele gira, perde força no atrito e volta de frente.
  *
- * Duas armadilhas herdadas de Camelo:
- *  1. Metal quase espelho mostra o ambiente literalmente: painel de luz retangular vira LISTRA.
- *     O estúdio é feito de manchas redondas de queda suave.
- *  2. Sem soldar os vértices, cada tira da parede lateral fica com normal própria e o cromo listra.
+ * Herdado de Camelo: sem soldar os vértices, cada tira da parede lateral fica com normal própria
+ * e a luz listra. O estúdio de manchas redondas segue como preenchimento fraco do ambiente.
  */
 
-const CROMO = {
-  depth: 16, // na unidade do path (caixa 66 × 92)
-  bevel: 3.2,
-  scale: 3.1,
-  color: '#e6ecff', // levemente frio: no painel azul o cromo puxa pro azul do reflexo, não pro cinza
-  roughness: 0.13,
-  env: 3.6,
-  exposure: 1.2,
+const ARGILA = {
+  depth: 12, // na unidade do path (caixa 66 × 92)
+  // chanfro grande e com muitos segmentos: é o que arredonda a peça como massinha. Chanfro curto com
+  // poucos degraus aparecia como faixas na borda (Mateus, 24/10)
+  bevelThickness: 7,
+  bevelSize: 4.5,
+  bevelSegments: 18,
+  scale: 2.3, // menor que o camelo: a peça é apoio, o recado embaixo é o que se lê
+  color: '#eef2ff', // argila clara, um fio de azul pra conversar com o painel
+  roughness: 0.82,
+  env: 0.55,
+  exposure: 1.05,
   yaw: -0.32,
   pitch: 0.08,
 };
@@ -47,12 +49,12 @@ function shapeDoPath(d: string) {
 
 function geometria() {
   const g = new THREE.ExtrudeGeometry(shapeDoPath(MARK_PATH), {
-    depth: CROMO.depth,
+    depth: ARGILA.depth,
     bevelEnabled: true,
-    bevelThickness: CROMO.bevel,
-    bevelSize: CROMO.bevel * 0.7,
-    bevelSegments: 8,
-    curveSegments: 16,
+    bevelThickness: ARGILA.bevelThickness,
+    bevelSize: ARGILA.bevelSize,
+    bevelSegments: ARGILA.bevelSegments,
+    curveSegments: 24,
   });
   let out: THREE.BufferGeometry = g;
   try {
@@ -65,7 +67,7 @@ function geometria() {
   out.computeBoundingBox();
   const size = new THREE.Vector3();
   out.boundingBox!.getSize(size);
-  const k = CROMO.scale / Math.max(size.x, size.y);
+  const k = ARGILA.scale / Math.max(size.x, size.y);
   out.scale(k, k, k);
   return out;
 }
@@ -142,12 +144,14 @@ function Marca() {
   const mat = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
-        color: new THREE.Color(CROMO.color),
-        metalness: 1,
-        roughness: CROMO.roughness,
-        envMapIntensity: CROMO.env,
-        clearcoat: 0.3,
-        clearcoatRoughness: 0.2,
+        color: new THREE.Color(ARGILA.color),
+        metalness: 0,
+        roughness: ARGILA.roughness,
+        envMapIntensity: ARGILA.env,
+        // sheen dá a penugem fosca da argila nas bordas, sem brilho de espelho
+        sheen: 0.4,
+        sheenRoughness: 0.8,
+        sheenColor: new THREE.Color('#c9d6ff'),
       }),
     [],
   );
@@ -194,7 +198,7 @@ function Marca() {
       }}
     >
       <group ref={idle}>
-        <group rotation={[CROMO.pitch, CROMO.yaw, 0]}>
+        <group rotation={[ARGILA.pitch, ARGILA.yaw, 0]}>
           <mesh geometry={geo} material={mat} />
         </group>
       </group>
@@ -207,13 +211,14 @@ export default function Logo3D() {
     <Canvas
       camera={{ position: [0, 0, 6.4], fov: 38 }}
       dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: CROMO.exposure }}
+      gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: ARGILA.exposure }}
       style={{ width: '100%', height: '100%' }}
     >
       <Estudio />
-      <ambientLight intensity={0.35} />
-      <directionalLight position={[3, 5, 6]} intensity={0.6} color="#f2f5ff" />
-      <directionalLight position={[-5, -1, 3]} intensity={0.25} color="#9db6ff" />
+      {/* luz de estúdio de argila: céu claro em cima, rebote azul do painel embaixo, uma chave suave */}
+      <hemisphereLight args={['#ffffff', '#2a44a8', 0.9]} />
+      <directionalLight position={[-3, 5, 6]} intensity={1.5} color="#ffffff" />
+      <directionalLight position={[5, -2, 2]} intensity={0.35} color="#9db6ff" />
       <Marca />
     </Canvas>
   );
