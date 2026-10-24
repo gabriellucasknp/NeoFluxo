@@ -4,7 +4,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const SRC = new URL('../src', import.meta.url).pathname;
-const LIVRES = ['ds/', 'pages/design-system/', 'components/ThemeToggle.tsx'];
+const LIVRES = ['ds/', 'pages/design-system/'];
 const REGRAS = [
   [/<input\b/, 'campo na mão → TextField / SearchField'],
   [/<select\b/, 'select nativo → Select'],

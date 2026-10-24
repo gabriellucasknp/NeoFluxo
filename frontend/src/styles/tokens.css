@@ -29,9 +29,6 @@
   --primary: 0 51 160;
   --primary-hover: 0 42 130;
   --on-primary: 255 255 255;
-  /* camada que atravessa o botão no hover (fluxo) */
-  --primary-flow: 47 91 234;
-  --danger-flow: 168 32 24;
 
   /* acento de marca */
   --accent: 47 91 234;
@@ -86,8 +83,6 @@
     --primary: 115 152 255;
     --primary-hover: 145 175 255;
     --on-primary: 8 14 32;
-    --primary-flow: 170 194 255;
-    --danger-flow: 176 34 26;
     --accent: 115 152 255;
     --accent-soft: 24 33 62;
     --accent-fg: 150 180 255;
@@ -126,8 +121,6 @@
   --primary: 115 152 255;
   --primary-hover: 145 175 255;
   --on-primary: 8 14 32;
-    --primary-flow: 170 194 255;
-    --danger-flow: 176 34 26;
   --accent: 115 152 255;
   --accent-soft: 24 33 62;
   --accent-fg: 150 180 255;

@@ -28,8 +28,6 @@ export default {
         'panel': 'rgb(var(--panel) / <alpha-value>)',
         'on-panel': 'rgb(var(--on-panel) / <alpha-value>)',
         'highlight': 'rgb(var(--highlight) / <alpha-value>)',
-        'primary-flow': 'rgb(var(--primary-flow) / <alpha-value>)',
-        'danger-flow': 'rgb(var(--danger-flow) / <alpha-value>)',
         'on-highlight': 'rgb(var(--on-highlight) / <alpha-value>)',
         'nav': 'rgb(var(--nav) / <alpha-value>)',
         'on-nav': 'rgb(var(--on-nav) / <alpha-value>)',

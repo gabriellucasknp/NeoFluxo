@@ -99,7 +99,7 @@ export function DesignSystemPage() {
                 <Button variant="secondary" arrow onClick={() => window.open(ANTES, '_blank', 'noopener')}>
                   Ver como está hoje
                 </Button>
-                <ThemeToggle className="h-11 w-11 bg-surface ring-1 ring-inset ring-line" />
+                <ThemeToggle tone="outline" />
               </div>
             </header>
 

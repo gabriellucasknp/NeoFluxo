@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Monitor, Moon, Sun } from 'lucide-react';
+import { IconButton } from '@/ds/Button';
 
 type Theme = 'system' | 'light' | 'dark';
 const KEY = 'neofluxo-theme';
@@ -16,8 +17,9 @@ function readTheme(): Theme {
   }
 }
 
-/** Alterna sistema → claro → escuro. O tema vai em <html data-theme>; sem atributo = segue o sistema. */
-export function ThemeToggle({ className = '' }: { className?: string }) {
+/** Alterna sistema → claro → escuro. O tema vai em <html data-theme>; sem atributo = segue o sistema.
+ *  É um IconButton do design system: ícone centrado e o mesmo hover dos outros botões. */
+export function ThemeToggle({ className = '', tone = 'soft' }: { className?: string; tone?: 'soft' | 'outline' }) {
   const [theme, setTheme] = useState<Theme>(readTheme);
 
   useEffect(() => {
@@ -36,14 +38,8 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
   const Icon = ICON[theme];
 
   return (
-    <button
-      type="button"
-      onClick={() => setTheme(next)}
-      aria-label={`${LABEL[theme]} (trocar para ${LABEL[next].toLowerCase()})`}
-      title={LABEL[theme]}
-      className={`rounded-full p-2 text-muted transition-colors hover:bg-surface-2 hover:text-fg ${className}`}
-    >
+    <IconButton label={`${LABEL[theme]} (trocar para ${LABEL[next].toLowerCase()})`} tone={tone} onClick={() => setTheme(next)} className={className}>
       <Icon className="h-5 w-5" />
-    </button>
+    </IconButton>
   );
 }

@@ -56,11 +56,13 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
 
 // [fundo parado, camada que atravessa, cor do rótulo invertido (só quando o fundo inverte)]
+// Todo botão cheio troca de cor de verdade no hover: a camada é a tinta (preto no claro, branco no escuro).
+// Tom vizinho (azul → azul mais claro) lia como "só clareou" (Mateus, 23/10).
 const VARIANT: Record<Variant, [string, string, string | null]> = {
-  primary: ['bg-primary text-on-primary', 'bg-primary-flow', null],
+  primary: ['bg-primary text-on-primary', 'bg-fg', 'text-canvas'],
   secondary: ['bg-raised text-fg ring-1 ring-inset ring-line-strong', 'bg-fg', 'text-canvas'],
   ghost: ['text-fg-2', 'bg-surface-3', null],
-  danger: ['bg-danger text-white', 'bg-danger-flow', null],
+  danger: ['bg-danger text-white', 'bg-fg', 'text-canvas'],
 };
 const SIZE: Record<Size, string> = {
   sm: 'h-9 gap-1.5 px-4 text-sm',
@@ -118,7 +120,7 @@ type IconTone = 'outline' | 'soft' | 'solid' | 'onColor';
 const TONE: Record<IconTone, [string, string, string | null]> = {
   outline: ['text-fg ring-1 ring-inset ring-line-strong', 'bg-fg', 'text-canvas'],
   soft: ['bg-surface-2 text-fg-2', 'bg-fg', 'text-canvas'],
-  solid: ['bg-primary text-on-primary', 'bg-primary-flow', null],
+  solid: ['bg-primary text-on-primary', 'bg-fg', 'text-canvas'],
   onColor: ['bg-white/15 text-white ring-1 ring-inset ring-white/30', 'bg-white', 'text-highlight'],
 };
 
