@@ -19,6 +19,7 @@ import { TransformadoresPage } from '@/pages/TransformadoresPage';
 import { UsuariosPage } from '@/pages/UsuariosPage';
 import { LogsPage } from '@/pages/LogsPage';
 import { ConfiguracoesPage } from '@/pages/ConfiguracoesPage';
+import { DesignSystemPage } from '@/pages/design-system/DesignSystemPage';
 import type { UserRole } from '@/types';
 
 function ProtectedRoute({ children, roles }: { children: ReactNode; roles?: UserRole[] }) {
@@ -39,6 +40,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/validar" element={<ValidarAtestadoPage />} />
+      <Route path="/design-system" element={<DesignSystemPage />} />
       <Route
         path="/app/dashboard"
         element={

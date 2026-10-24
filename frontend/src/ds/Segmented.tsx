@@ -1,0 +1,59 @@
+import { useId } from 'react';
+import { motion } from 'motion/react';
+import { spring } from './motion';
+
+/*
+ * Filtros e abas numa peça só (hoje são 4): trilho em pílula e a opção ativa numa pílula clara que
+ * escorrega até ela (refs 3, 6, 9, 12). Contagem opcional ao lado, como o "Draft 3" do 12.
+ */
+
+export interface Segment {
+  value: string;
+  label: string;
+  count?: number;
+}
+
+export function Segmented({
+  value,
+  onChange,
+  items,
+  label,
+  size = 'md',
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  items: Segment[];
+  /** nome do grupo pra leitor de tela */
+  label: string;
+  size?: 'sm' | 'md';
+}) {
+  const id = useId();
+  return (
+    <div role="tablist" aria-label={label} className="inline-flex max-w-full gap-1 overflow-x-auto rounded-full bg-surface-3/70 p-1">
+      {items.map((it) => {
+        const on = it.value === value;
+        return (
+          <button
+            key={it.value}
+            role="tab"
+            aria-selected={on}
+            onClick={() => onChange(it.value)}
+            className={`relative shrink-0 rounded-full font-medium transition-colors duration-200 ${size === 'sm' ? 'h-8 px-3.5 text-xs' : 'h-9 px-4 text-sm'} ${
+              on ? 'text-fg' : 'text-muted hover:text-fg'
+            }`}
+          >
+            {on && <motion.span layoutId={`${id}-pilula`} transition={spring.snappy} className="absolute inset-0 rounded-full bg-raised shadow-card" />}
+            <span className="relative flex items-center gap-2">
+              {it.label}
+              {it.count !== undefined && (
+                <span className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular ${on ? 'bg-primary text-on-primary' : 'bg-surface text-fg-2'}`}>
+                  {it.count}
+                </span>
+              )}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}

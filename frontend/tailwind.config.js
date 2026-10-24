@@ -27,6 +27,15 @@ export default {
         'focus': 'rgb(var(--focus) / <alpha-value>)',
         'panel': 'rgb(var(--panel) / <alpha-value>)',
         'on-panel': 'rgb(var(--on-panel) / <alpha-value>)',
+        'highlight': 'rgb(var(--highlight) / <alpha-value>)',
+        'on-highlight': 'rgb(var(--on-highlight) / <alpha-value>)',
+        'nav': 'rgb(var(--nav) / <alpha-value>)',
+        'on-nav': 'rgb(var(--on-nav) / <alpha-value>)',
+        'chart-1': 'rgb(var(--chart-1) / <alpha-value>)',
+        'chart-2': 'rgb(var(--chart-2) / <alpha-value>)',
+        'chart-3': 'rgb(var(--chart-3) / <alpha-value>)',
+        'chart-rest': 'rgb(var(--chart-rest) / <alpha-value>)',
+        'chart-grid': 'rgb(var(--chart-grid) / <alpha-value>)',
         primary: { DEFAULT: 'rgb(var(--primary) / <alpha-value>)', hover: 'rgb(var(--primary-hover) / <alpha-value>)' },
         accent: { DEFAULT: 'rgb(var(--accent) / <alpha-value>)', soft: 'rgb(var(--accent-soft) / <alpha-value>)', fg: 'rgb(var(--accent-fg) / <alpha-value>)' },
         success: { DEFAULT: 'rgb(var(--success) / <alpha-value>)', soft: 'rgb(var(--success-soft) / <alpha-value>)', fg: 'rgb(var(--success-fg) / <alpha-value>)' },
@@ -35,12 +44,16 @@ export default {
         info: { DEFAULT: 'rgb(var(--info) / <alpha-value>)', soft: 'rgb(var(--info-soft) / <alpha-value>)', fg: 'rgb(var(--info-fg) / <alpha-value>)' },
       },
       borderRadius: {
-        control: '12px', // botão, input, tile interno
-        card: '20px', // card, painel, modal
+        control: '14px', // input, tile interno (linha Apple das refs 1, 2, 11)
+        tile: '20px', // bloco dentro de card, linha de tabela
+        card: '28px', // card, painel, modal
       },
       boxShadow: {
         card: '0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.05)',
         'card-hover': '0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 6px -2px rgb(0 0 0 / 0.05)',
+        // linha selecionada que salta da tabela (ref 13)
+        glow: '0 14px 32px -10px rgb(var(--primary) / 0.55)',
+        pop: '0 24px 60px -20px rgb(0 0 0 / 0.35)',
       },
       keyframes: {
         'fade-in': {
