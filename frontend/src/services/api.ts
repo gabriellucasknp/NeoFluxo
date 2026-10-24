@@ -45,6 +45,13 @@ export async function fetchApi<T>(
    * fique acoplado ao React Router.
    */
   if (response.status === 401) {
+    // No login, 401 é senha/e-mail errado (ou conta inativa) — não é sessão expirada.
+    if (endpoint.startsWith('/auth/login')) {
+      const body = await response.json().catch(() => null);
+      const message = body?.message && body.message !== 'Credenciais inválidas' ? body.message : 'E-mail ou senha inválidos.';
+      throw new Error(message);
+    }
+
     localStorage.removeItem('token');
     localStorage.removeItem('user');
 

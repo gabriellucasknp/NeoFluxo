@@ -8,6 +8,7 @@ import {
 
 import type { Project } from '@/types';
 import { projectService } from '@/services/api';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ProjectContextValue {
   projects: Project[];
@@ -28,6 +29,7 @@ interface ProjectContextValue {
 const ProjectContext = createContext<ProjectContextValue | null>(null);
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,9 +50,16 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Recarrega quando o usuário entra, sai ou troca (antes só carregava ao abrir o app: após o login a lista ficava vazia até o F5)
   useEffect(() => {
+    if (!user) {
+      setProjects([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
     refreshProjects();
-  }, []);
+  }, [user?.id]);
 
   const getProject = (id: string) => {
     return projects.find((p) => p.id === id);
