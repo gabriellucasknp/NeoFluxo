@@ -6,7 +6,6 @@ import {
   Check,
   X,
   ShieldCheck,
-  Zap,
   Building2,
   Calendar,
   FileCheck2,
@@ -14,6 +13,7 @@ import {
 } from 'lucide-react';
 import type { Project, Atestado } from '@/types';
 import { formatKw } from '@/services/calcEngine';
+import { Logo } from '@/ds';
 
 interface AtestadoDocumentProps {
   project: Project;
@@ -153,15 +153,10 @@ export function AtestadoDocument({
         {/* 1. CABEÇALHO PROFISSIONAL */}
         <div className="flex flex-col sm:flex-row items-center justify-between border-b-2 border-primary pb-5 gap-4 pt-2">
           {/* Logo & Concessionária */}
-          <div className="flex items-center gap-3.5 text-center sm:text-left">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary text-on-primary shadow-md">
-              <Zap className="h-8 w-8" fill="currentColor" />
-            </div>
+          <div className="text-center sm:text-left">
+            <Logo size="lg" />
             <div>
-              <h1 className="text-xl font-black tracking-tight text-accent-fg uppercase">
-                Neoenergia Pernambuco
-              </h1>
-              <p className="text-xs font-semibold text-muted uppercase tracking-wider">
+              <p className="mt-2 text-xs font-semibold text-muted uppercase tracking-wider">
                 Distribuição de Energia S.A. — Grupo Neoenergia
               </p>
               <p className="text-[11px] text-muted">

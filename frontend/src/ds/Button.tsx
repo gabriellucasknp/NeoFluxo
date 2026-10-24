@@ -10,6 +10,9 @@ import { ArrowUpRight, Loader2 } from 'lucide-react';
 
 type Fase = 'idle' | 'in' | 'out';
 
+// quem chama pode posicionar o botão (absolute/fixed); só então o relative padrão sai, senão ele venceria no CSS
+const posicao = (className: string) => (/\b(absolute|fixed|sticky)\b/.test(className) ? '' : 'relative');
+
 /** Liga o hover de fluxo e a onda do clique a qualquer botão. */
 function useFlow(disabled?: boolean) {
   const [fase, setFase] = useState<Fase>('idle');
@@ -100,7 +103,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       disabled={off}
       data-f={fase}
       {...handlers}
-      className={`ds-sweep group relative isolate inline-flex shrink-0 items-center justify-center overflow-hidden whitespace-nowrap rounded-full font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${base} ${SIZE[size]} ${className}`}
+      className={`ds-sweep group ${posicao(className)} isolate inline-flex shrink-0 items-center justify-center overflow-hidden whitespace-nowrap rounded-full font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${base} ${SIZE[size]} ${className}`}
       {...rest}
     >
       <span aria-hidden className={`ds-sweep__fill absolute inset-0 -z-10 ${fill}`} />
@@ -143,7 +146,7 @@ export function IconButton({ label, tone = 'soft', size = 'md', className = '', 
       disabled={disabled}
       data-f={fase}
       {...handlers}
-      className={`ds-sweep group relative isolate inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full disabled:opacity-50 ${size === 'sm' ? 'h-9 w-9' : 'h-11 w-11'} ${base} ${className}`}
+      className={`ds-sweep group ${posicao(className)} isolate inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full disabled:opacity-50 ${size === 'sm' ? 'h-9 w-9' : 'h-11 w-11'} ${base} ${className}`}
       {...rest}
     >
       <span aria-hidden className={`ds-sweep__fill absolute inset-0 -z-10 ${fill}`} />

@@ -1,7 +1,8 @@
 import { useCallback, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ChevronDown, LogOut, Menu, Settings, User, X, Zap } from 'lucide-react';
+import { ChevronDown, LogOut, Menu, Settings, User, X } from 'lucide-react';
 import { IconButton } from './Button';
+import { NeoFluxoMark } from './Mark';
 import { Popover } from './Popover';
 import { spring } from './motion';
 
@@ -10,16 +11,21 @@ import { spring } from './motion';
  * com os cantos côncavos (refs 7 e 13, sem anotação = direção). A aba desliza até o item clicado.
  */
 
-export function Logo({ onNav, compact }: { onNav?: boolean; compact?: boolean }) {
+export function Logo({ onNav, compact, size = 'md', endosso = true }: { onNav?: boolean; compact?: boolean; size?: 'sm' | 'md' | 'lg'; endosso?: boolean }) {
+  // assinatura do manual: símbolo solto + "Neo" forte e "Fluxo" leve + endosso; o quadrado azul é só do ícone do app
+  const t = { sm: ['h-8', 'text-base', 'text-[10px]'], md: ['h-10', 'text-lg', 'text-xs'], lg: ['h-14', 'text-2xl', 'text-sm'] }[size];
   return (
-    <div className="flex items-center gap-3">
-      <span className={`flex h-10 w-10 items-center justify-center rounded-[14px] ${onNav ? 'bg-white text-nav' : 'bg-primary text-on-primary'}`}>
-        <Zap className="h-5 w-5" fill="currentColor" />
+    <div className="flex items-center gap-3" aria-label="NeoFluxo · Neoenergia Pernambuco" role="img">
+      <span className={onNav ? 'text-on-nav' : 'text-primary'}>
+        <NeoFluxoMark className={t[0]} />
       </span>
       {!compact && (
         <span className="leading-tight">
-          <span className={`block font-display text-lg font-semibold ${onNav ? 'text-on-nav' : 'text-fg'}`}>NeoFluxo</span>
-          <span className={`block text-xs ${onNav ? 'text-on-nav/70' : 'text-muted'}`}>Neoenergia Pernambuco</span>
+          <span className={`block font-display tracking-tight ${t[1]} ${onNav ? 'text-on-nav' : 'text-fg'}`}>
+            <span className="font-semibold">Neo</span>
+            <span className="font-light">Fluxo</span>
+          </span>
+          {endosso && <span className={`block font-medium ${t[2]} ${onNav ? 'text-on-nav/70' : 'text-muted'}`}>Neoenergia Pernambuco</span>}
         </span>
       )}
     </div>

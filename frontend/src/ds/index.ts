@@ -11,6 +11,7 @@ export { DataTable, type Column } from './Table';
 export { Badge, StatusBadge, TensionBadge, type Status } from './Badge';
 export { Alert, Dismissible, EmptyState, Skeleton, Spinner, Progress } from './Feedback';
 export { Logo, SideNav, UserMenu, MobileNav, type NavItem } from './Nav';
+export { NeoFluxoMark } from './Mark';
 export { Stepper } from './Stepper';
 export { Card } from './Card';
 export { PillBars, AreaTrend, PieShare, ChartTable } from './charts';

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Zap,
   Mail,
   Lock,
   User as UserIcon,
@@ -26,6 +25,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { authService } from '@/services/api';
 import type { User, UserRole } from '@/types';
+import { Logo } from '@/ds';
 
 interface GoogleAccountData {
   uid: string;
@@ -295,15 +295,7 @@ export function LoginPage() {
         </div>
         <div className="relative">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-surface shadow-md">
-              <Zap className="h-7 w-7 text-accent-fg" fill="currentColor" />
-            </div>
-            <div>
-              <div className="text-xl font-bold tracking-tight text-on-panel">Neoenergia</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-on-panel/70">
-                Pernambuco
-              </div>
-            </div>
+            <Logo onNav size="lg" />
           </div>
         </div>
         <div className="relative">
@@ -344,15 +336,7 @@ export function LoginPage() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="mb-6 flex items-center gap-3 lg:hidden">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-md">
-              <Zap className="h-7 w-7 text-on-primary" fill="white" />
-            </div>
-            <div>
-              <div className="text-xl font-bold text-fg">Neoenergia</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-subtle">
-                Pernambuco
-              </div>
-            </div>
+            <Logo size="lg" />
           </div>
 
           {/* TAB SELECTOR (Apenas visível em modo login / register) */}

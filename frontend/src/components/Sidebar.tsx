@@ -17,6 +17,7 @@ import {
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import type { UserRole } from '@/types';
+import { Logo } from '@/ds';
 
 interface NavItem {
   to: string;
@@ -60,17 +61,7 @@ export function Sidebar() {
     <div className="flex h-full flex-col">
       <div className="flex h-16 items-center border-b border-line px-5">
         <NavLink to={homeLink}>
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <ShieldCheck className="h-5 w-5 text-on-primary" />
-            </div>
-            <div className="leading-tight">
-              <div className="text-sm font-bold text-fg">Portal de Projetos</div>
-              <div className="text-[10px] font-medium uppercase tracking-wider text-subtle">
-                Neoenergia PE
-              </div>
-            </div>
-          </div>
+          <Logo size="sm" />
         </NavLink>
       </div>
       <nav className="flex-1 overflow-y-auto px-3 py-4 scrollbar-thin">

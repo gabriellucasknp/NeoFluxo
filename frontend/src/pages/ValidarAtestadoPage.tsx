@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  Zap,
   ShieldCheck,
   Search,
   CheckCircle2,
@@ -14,6 +13,7 @@ import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';
 import { formatKw } from '@/services/calcEngine';
 import { certificateService } from '@/services/api';
+import { Logo } from '@/ds';
 
 export function ValidarAtestadoPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -67,16 +67,9 @@ export function ValidarAtestadoPage() {
       {/* Header */}
       <header className="border-b border-line bg-surface shadow-sm">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow">
-              <Zap className="h-6 w-6 text-on-primary" fill="white" />
-            </div>
-            <div>
-              <div className="text-sm font-bold text-fg">Neoenergia Pernambuco</div>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-subtle">
-                Serviço Público de Autenticação Digital
-              </div>
-            </div>
+          <div className="flex items-center gap-4">
+            <Logo />
+            <span className="hidden border-l border-line pl-4 text-xs font-medium text-muted sm:block">Autenticação de atestado</span>
           </div>
           <a href="/" className="flex items-center gap-1.5 text-sm font-medium text-muted hover:text-accent-fg transition-colors">
             <ArrowLeft className="h-4 w-4" />

@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import {
   ArrowLeft,
-  Zap,
   Building2,
   Wrench,
   Calculator,
@@ -23,6 +22,7 @@ import { StatusBadge, EnquadramentoBadge } from '@/components/ui/Badge';
 import { Alert } from '@/components/ui/Alert';
 import { Loading, EmptyState } from '@/components/ui/States';
 import { formatKw } from '@/services/calcEngine';
+import { Logo } from '@/ds';
 
 export function ProjetoDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -307,15 +307,7 @@ export function ProjetoDetailPage() {
             <div className="p-8">
               {/* Header */}
               <div className="flex items-center justify-between border-b-2 border-accent pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
-                    <Zap className="h-7 w-7 text-on-primary" fill="white" />
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold text-fg">Neoenergia Pernambuco</div>
-                    <div className="text-xs text-muted">Portal de Projetos Elétricos</div>
-                  </div>
-                </div>
+                <Logo />
                 <div className="text-right">
                   <div className="text-xs font-semibold uppercase tracking-wider text-accent-fg">Atestado</div>
                   <div className="text-sm font-bold text-fg">{project.atestado.code}</div>
