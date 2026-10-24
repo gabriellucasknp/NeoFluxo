@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, LayoutGroup, motion } from 'motion/react';
-import { CheckCircle2, ClipboardCheck, FolderOpen, FolderPlus, LayoutDashboard, Menu, PanelRightClose, PanelRightOpen, Send } from 'lucide-react';
+import { CheckCircle2, ClipboardCheck, FolderOpen, FolderPlus, LayoutDashboard, Menu, PanelRightClose, PanelRightOpen, Send } from '@/ds/icons';
 import { Button, IconButton, PillBars, Segmented, StatCard, StatusBadge, SideNav, spring } from '@/ds';
 
 /*

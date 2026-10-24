@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown } from './icons';
 import { spring, ease } from './motion';
 
 /*

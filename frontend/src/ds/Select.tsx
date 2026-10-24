@@ -1,6 +1,6 @@
 import { useCallback, useId, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { Check, ChevronDown } from 'lucide-react';
+import { Check, ChevronDown } from './icons';
 import { Popover } from './Popover';
 import { spring } from './motion';
 
@@ -22,6 +22,7 @@ export function Select({
   options,
   placeholder = 'Selecione',
   pill,
+  disabled,
 }: {
   label?: string;
   value: string;
@@ -30,6 +31,7 @@ export function Select({
   placeholder?: string;
   /** gatilho compacto em pílula, pra filtro de cabeçalho */
   pill?: boolean;
+  disabled?: boolean;
 }) {
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -74,9 +76,10 @@ export function Select({
         aria-expanded={open}
         aria-controls={`${id}-lista`}
         aria-activedescendant={open ? `${id}-op-${active}` : undefined}
+        disabled={disabled}
         onClick={() => (open ? setOpen(false) : abrir())}
         onKeyDown={onKey}
-        className={`flex items-center justify-between gap-3 bg-raised text-sm ring-inset transition-[box-shadow,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-focus ${
+        className={`flex items-center justify-between gap-3 bg-raised text-sm ring-inset disabled:cursor-not-allowed disabled:opacity-60 transition-[box-shadow,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-focus ${
           open ? 'ring-2 ring-focus' : 'ring-1 ring-line-strong hover:bg-surface-2'
         } ${pill ? 'h-9 rounded-full px-4 font-medium text-fg' : 'h-11 w-full rounded-control px-4 text-left'}`}
       >

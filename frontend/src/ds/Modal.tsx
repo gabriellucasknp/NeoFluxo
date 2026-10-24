@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { AlertTriangle, X } from 'lucide-react';
+import { AlertTriangle, X } from './icons';
 import { Button, IconButton } from './Button';
 import { spring } from './motion';
 
@@ -25,7 +25,7 @@ export function Modal({
   description?: ReactNode;
   children?: ReactNode;
   footer?: ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }) {
   const panel = useRef<HTMLDivElement>(null);
   const opener = useRef<Element | null>(null);
@@ -45,7 +45,7 @@ export function Modal({
     };
   }, [open, onClose]);
 
-  const width = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl' }[size];
+  const width = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl' }[size];
 
   return createPortal(
     <AnimatePresence>
@@ -68,7 +68,7 @@ export function Modal({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98, transition: { duration: 0.16 } }}
             transition={spring.soft}
-            className={`relative w-full ${width} rounded-card bg-surface p-6 shadow-pop ring-1 ring-line sm:p-7`}
+            className={`relative max-h-[90vh] w-full ${width} overflow-y-auto rounded-card bg-surface p-6 shadow-pop ring-1 ring-line sm:p-7`}
           >
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>

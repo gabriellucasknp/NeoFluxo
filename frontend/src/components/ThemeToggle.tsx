@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Monitor, Moon, Sun } from 'lucide-react';
+import { Monitor, Moon, Sun } from '@/ds/icons';
 import { IconButton } from '@/ds/Button';
 
 type Theme = 'system' | 'light' | 'dark';

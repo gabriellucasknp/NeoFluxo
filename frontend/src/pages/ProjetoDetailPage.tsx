@@ -14,7 +14,7 @@ import {
   CheckCircle2,
   XCircle,
   QrCode,
-} from 'lucide-react';
+} from '@/ds/icons';
 import { useProjects } from '@/hooks/useProjects';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';

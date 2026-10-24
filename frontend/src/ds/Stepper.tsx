@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Check } from 'lucide-react';
+import { Check } from './icons';
 import { spring } from './motion';
 
 /*

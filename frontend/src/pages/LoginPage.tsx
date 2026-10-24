@@ -15,7 +15,7 @@ import {
   Layers,
   ChevronRight,
   ArrowLeft,
-} from 'lucide-react';
+} from '@/ds/icons';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/firebase/config';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -26,6 +26,7 @@ import { Button } from '@/components/ui/Button';
 import { authService } from '@/services/api';
 import type { User, UserRole } from '@/types';
 import { Logo } from '@/ds';
+import { Select as DsSelect } from '@/ds';
 
 interface GoogleAccountData {
   uid: string;
@@ -553,20 +554,16 @@ export function LoginPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="label-base">
-                      Perfil Inicial <span className="text-danger-fg">*</span>
-                    </label>
-                    <select
-                      value={regRole}
-                      onChange={(e) => setRegRole(e.target.value as any)}
-                      className="input-base text-xs"
-                    >
-                      <option value="projetista">Projetista</option>
-                      <option value="analista">Analista Neoenergia</option>
-                      <option value="admin">Administrador</option>
-                    </select>
-                  </div>
+                  <DsSelect
+                    label="Perfil inicial *"
+                    value={regRole}
+                    onChange={(v) => setRegRole(v as any)}
+                    options={[
+                      { value: 'projetista', label: 'Projetista' },
+                      { value: 'analista', label: 'Analista Neoenergia' },
+                      { value: 'admin', label: 'Administrador' },
+                    ]}
+                  />
                   <div>
                     <label className="label-base">
                       Departamento <span className="text-danger-fg">*</span>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from '@/ds/icons';
 import { mockUsers } from '@/data/mockData';
 import { userService } from '@/services/api';
 import { Card } from '@/components/ui/Card';

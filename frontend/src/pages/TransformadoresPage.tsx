@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Power } from 'lucide-react';
+import { Plus, Edit2, Trash2, Power } from '@/ds/icons';
 import { mockTransformers } from '@/data/mockData';
 import { transformerService } from '@/services/api';
 import { Card, CardHeader } from '@/components/ui/Card';

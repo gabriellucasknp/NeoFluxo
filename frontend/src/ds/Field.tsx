@@ -1,6 +1,6 @@
 import { forwardRef, useId, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Search, X } from 'lucide-react';
+import { Search, X } from './icons';
 import { spring } from './motion';
 
 /*
@@ -21,12 +21,13 @@ interface Base {
   suffix?: string;
 }
 
-function Shell({ id, label, hint, error, children }: Base & { id: string; children: ReactNode }) {
+function Shell({ id, label, hint, error, required, children }: Base & { id: string; required?: boolean; children: ReactNode }) {
   return (
     <div className="w-full">
       {label && (
         <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-fg-2">
           {label}
+          {required && <span className="ml-0.5 text-danger-fg">*</span>}
         </label>
       )}
       <motion.div animate={error ? { x: [0, -6, 6, -4, 4, 0] } : { x: 0 }} transition={{ duration: 0.36 }}>
@@ -61,7 +62,7 @@ export const TextField = forwardRef<HTMLInputElement, Base & InputHTMLAttributes
   const auto = useId();
   const fid = id ?? auto;
   return (
-    <Shell id={fid} label={label} hint={hint} error={error}>
+    <Shell id={fid} label={label} hint={hint} error={error} required={rest.required}>
       <div className="relative">
         <input
           ref={ref}
@@ -81,7 +82,7 @@ export function TextArea({ label, hint, error, id, className = '', ...rest }: Ba
   const auto = useId();
   const fid = id ?? auto;
   return (
-    <Shell id={fid} label={label} hint={hint} error={error}>
+    <Shell id={fid} label={label} hint={hint} error={error} required={rest.required}>
       <textarea id={fid} aria-invalid={!!error} className={`${BOX} min-h-[104px] resize-y px-4 py-3 ${error ? 'ring-2 ring-danger' : ''} ${className}`} {...rest} />
     </Shell>
   );

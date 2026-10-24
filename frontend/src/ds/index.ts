@@ -17,3 +17,4 @@ export { Card } from './Card';
 export { PillBars, AreaTrend, PieShare, ChartTable } from './charts';
 export { Popover } from './Popover';
 export { spring, stagger, rise, pop } from './motion';
+export { VazioMedidor, VazioFiltro, VazioFluxo, VazioLinha } from './Vazios';

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
-import { X } from 'lucide-react';
+import { Modal as DsModal } from '@/ds';
 
+/* Ponte pro design system: modal novo (sobe e assenta, Esc e clique fora fecham, foco volta). */
 interface ModalProps {
   open: boolean;
   onClose: () => void;
@@ -10,40 +11,6 @@ interface ModalProps {
   footer?: ReactNode;
 }
 
-const sizeClasses = {
-  sm: 'max-w-md',
-  md: 'max-w-lg',
-  lg: 'max-w-2xl',
-  xl: 'max-w-4xl',
-};
-
-export function Modal({ open, onClose, title, children, size = 'md', footer }: ModalProps) {
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      <div
-        className={`relative w-full ${sizeClasses[size]} animate-scale-in rounded-xl bg-surface shadow-xl`}
-      >
-        <div className="flex items-center justify-between border-b border-line px-5 py-4">
-          <h2 className="text-lg font-semibold text-fg">{title}</h2>
-          <button
-            onClick={onClose}
-            className="rounded-lg p-1.5 text-subtle transition-colors hover:bg-surface-2 hover:text-muted"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="max-h-[60vh] overflow-y-auto px-5 py-4 scrollbar-thin">{children}</div>
-        {footer && (
-          <div className="flex justify-end gap-3 border-t border-line px-5 py-4">
-            {footer}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+export function Modal(props: ModalProps) {
+  return <DsModal {...props} />;
 }

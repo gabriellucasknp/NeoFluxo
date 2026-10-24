@@ -1,6 +1,6 @@
 import { mockLogs } from '@/data/mockData';
 import { Card, CardHeader } from '@/components/ui/Card';
-import { History } from 'lucide-react';
+import { History } from '@/ds/icons';
 
 export function LogsPage() {
   return (

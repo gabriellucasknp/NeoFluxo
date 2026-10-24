@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Settings, FileText, Shield, Database, CheckCircle2, RefreshCw, AlertCircle, Lock } from 'lucide-react';
+import { Settings, FileText, Shield, Database, CheckCircle2, RefreshCw, AlertCircle, Lock } from '@/ds/icons';
 import { mockNormVersions } from '@/data/mockData';
 import { testConnection } from '@/firebase/config';
 import { firebaseBackendService } from '@/services/api';

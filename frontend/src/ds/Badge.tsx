@@ -8,7 +8,7 @@ export type Status = 'rascunho' | 'enviado_analise' | 'em_analise' | 'aprovado' 
 
 const STATUS: Record<Status, { label: string; tone: Tone }> = {
   rascunho: { label: 'Rascunho', tone: 'neutral' },
-  enviado_analise: { label: 'Aguardando análise', tone: 'info' },
+  enviado_analise: { label: 'Enviado para análise', tone: 'info' },
   em_analise: { label: 'Em análise', tone: 'warning' },
   aprovado: { label: 'Aprovado', tone: 'success' },
   reprovado: { label: 'Reprovado', tone: 'danger' },

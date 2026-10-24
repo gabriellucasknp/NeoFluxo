@@ -1,5 +1,5 @@
 import { forwardRef, useRef, useState, type ButtonHTMLAttributes, type PointerEvent, type ReactNode } from 'react';
-import { ArrowUpRight, Loader2 } from 'lucide-react';
+import { ArrowUpRight, Loader2 } from './icons';
 
 /*
  * Botão único do sistema. Pílula (refs 1, 2, 11), azul cheio como o "Export as CVS" do 10.
@@ -55,7 +55,7 @@ function Arrow({ className = 'h-4 w-4' }: { className?: string }) {
   );
 }
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'success';
 type Size = 'sm' | 'md' | 'lg';
 
 // [fundo parado, camada que atravessa, cor do rótulo invertido (só quando o fundo inverte)]
@@ -66,6 +66,7 @@ const VARIANT: Record<Variant, [string, string, string | null]> = {
   secondary: ['bg-raised text-fg ring-1 ring-inset ring-line-strong', 'bg-fg', 'text-canvas'],
   ghost: ['text-fg-2', 'bg-surface-3', null],
   danger: ['bg-danger text-white', 'bg-fg', 'text-canvas'],
+  success: ['bg-success text-white', 'bg-fg', 'text-canvas'],
 };
 const SIZE: Record<Size, string> = {
   sm: 'h-9 gap-1.5 px-4 text-sm',

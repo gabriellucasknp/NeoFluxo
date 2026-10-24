@@ -43,6 +43,8 @@ export default {
         danger: { DEFAULT: 'rgb(var(--danger) / <alpha-value>)', soft: 'rgb(var(--danger-soft) / <alpha-value>)', fg: 'rgb(var(--danger-fg) / <alpha-value>)' },
         info: { DEFAULT: 'rgb(var(--info) / <alpha-value>)', soft: 'rgb(var(--info-soft) / <alpha-value>)', fg: 'rgb(var(--info-fg) / <alpha-value>)' },
       },
+      // 4.5 = 18 px: as telas já usavam h-4.5 w-4.5, que não existia (o ícone caía em 24 px)
+      spacing: { '4.5': '1.125rem' },
       borderRadius: {
         control: '14px', // input, tile interno (linha Apple das refs 1, 2, 11)
         tile: '20px', // bloco dentro de card, linha de tabela

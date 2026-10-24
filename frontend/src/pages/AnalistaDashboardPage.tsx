@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ClipboardCheck, Clock, CheckCircle2, XCircle, ArrowRight } from 'lucide-react';
+import { ClipboardCheck, Clock, CheckCircle2, XCircle, ArrowRight } from '@/ds/icons';
 import { useProjects } from '@/hooks/useProjects';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';

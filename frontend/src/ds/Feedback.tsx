@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { AlertTriangle, CheckCircle2, Info, X, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Info, X, XCircle } from './icons';
 import { IconButton } from './Button';
 import { spring, ease } from './motion';
 
@@ -25,7 +25,7 @@ export function Alert({
   action,
 }: {
   tone?: Tone;
-  title: string;
+  title?: string;
   children?: ReactNode;
   onClose?: () => void;
   action?: ReactNode;
@@ -37,8 +37,8 @@ export function Alert({
         <a.Icon className="h-[18px] w-[18px]" />
       </span>
       <div className="min-w-0 flex-1 pt-1.5">
-        <p className="text-sm font-semibold text-fg">{title}</p>
-        {children && <div className="mt-1 text-sm text-fg-2">{children}</div>}
+        {title && <p className="text-sm font-semibold text-fg">{title}</p>}
+        {children && <div className={`text-sm text-fg-2 ${title ? 'mt-1' : ''}`}>{children}</div>}
         {action && <div className="mt-3">{action}</div>}
       </div>
       {onClose && (

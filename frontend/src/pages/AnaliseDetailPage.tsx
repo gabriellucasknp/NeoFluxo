@@ -16,7 +16,7 @@ import {
   Info,
   QrCode,
   FileSpreadsheet,
-} from 'lucide-react';
+} from '@/ds/icons';
 import { useProjects } from '@/hooks/useProjects';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardHeader } from '@/components/ui/Card';
@@ -27,6 +27,7 @@ import { Alert } from '@/components/ui/Alert';
 import { EmptyState } from '@/components/ui/States';
 import { Textarea, Select } from '@/components/ui/FormFields';
 import { formatKw } from '@/services/calcEngine';
+import { Select as DsSelect } from '@/ds';
 
 const rejectionReasons = [
   'Divergência com a planta ou memorial de cargas',
@@ -688,22 +689,13 @@ export function AnaliseDetailPage() {
             A reprovação exige justificativa técnica fundamentada para que o projetista possa realizar as devidas adequações no memorial.
           </p>
 
-          <div>
-            <label className="label-base">
-              Motivo da Reprovação <span className="text-danger-fg">*</span>
-            </label>
-            <select
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              className="input-base"
-              required
-            >
-              <option value="">Selecione um motivo...</option>
-              {rejectionReasons.map((r) => (
-                <option key={r} value={r}>{r}</option>
-              ))}
-            </select>
-          </div>
+          <DsSelect
+            label="Motivo da reprovação *"
+            value={rejectReason}
+            onChange={setRejectReason}
+            placeholder="Selecione um motivo..."
+            options={rejectionReasons.map((r) => ({ value: r, label: r }))}
+          />
 
           <div>
             <label className="label-base">

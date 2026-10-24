@@ -1,30 +1,14 @@
 import type { ReactNode } from 'react';
-import { AlertTriangle, CheckCircle2, Info, XCircle } from 'lucide-react';
+import { Alert as DsAlert } from '@/ds';
 
+/* Ponte pro design system: aviso em card suave com ícone redondo. */
 type AlertType = 'success' | 'warning' | 'error' | 'info';
+const TOM = { success: 'success', warning: 'warning', error: 'danger', info: 'info' } as const;
 
-interface AlertProps {
-  type: AlertType;
-  title?: string;
-  children: ReactNode;
-}
-
-const config: Record<AlertType, { bg: string; border: string; icon: ReactNode; text: string }> = {
-  success: { bg: 'bg-success-soft', border: 'border-success', icon: <CheckCircle2 className="h-5 w-5 text-success-fg" />, text: 'text-success-fg' },
-  warning: { bg: 'bg-warning-soft', border: 'border-warning', icon: <AlertTriangle className="h-5 w-5 text-warning-fg" />, text: 'text-warning-fg' },
-  error: { bg: 'bg-danger-soft', border: 'border-danger', icon: <XCircle className="h-5 w-5 text-danger-fg" />, text: 'text-danger-fg' },
-  info: { bg: 'bg-info-soft', border: 'border-info', icon: <Info className="h-5 w-5 text-info-fg" />, text: 'text-info-fg' },
-};
-
-export function Alert({ type, title, children }: AlertProps) {
-  const c = config[type];
+export function Alert({ type, title, children }: { type: AlertType; title?: string; children: ReactNode }) {
   return (
-    <div className={`flex gap-3 rounded-lg border-l-4 ${c.bg} ${c.border} p-4`}>
-      <div className="shrink-0">{c.icon}</div>
-      <div>
-        {title && <p className={`font-semibold ${c.text}`}>{title}</p>}
-        <div className={`text-sm ${c.text} opacity-90`}>{children}</div>
-      </div>
-    </div>
+    <DsAlert tone={TOM[type]} title={title}>
+      {children}
+    </DsAlert>
   );
 }

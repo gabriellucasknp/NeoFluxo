@@ -7,7 +7,7 @@ import {
   QrCode,
   ArrowLeft,
   Loader2,
-} from 'lucide-react';
+} from '@/ds/icons';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';

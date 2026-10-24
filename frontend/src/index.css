@@ -91,7 +91,8 @@
 
 @layer components {
   .input-base {
-    @apply w-full rounded-control border border-line-strong bg-raised px-3.5 py-2.5 text-sm text-fg placeholder-subtle transition-colors focus:border-focus focus:outline-none focus:ring-2 focus:ring-focus/20 disabled:bg-surface-2 disabled:text-muted;
+    /* mesmo visual do TextField do design system, pros campos ainda feitos à mão */
+    @apply w-full rounded-control border-0 bg-raised px-4 py-2.5 text-sm text-fg ring-1 ring-inset ring-line-strong placeholder-subtle transition-[box-shadow,background-color] duration-200 hover:ring-muted/60 focus:outline-none focus:ring-2 focus:ring-focus disabled:bg-surface-2 disabled:text-muted;
   }
   .label-base {
     @apply mb-1.5 block text-sm font-medium text-fg-2;

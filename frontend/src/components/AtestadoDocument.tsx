@@ -10,7 +10,7 @@ import {
   Calendar,
   FileCheck2,
   FileBadge,
-} from 'lucide-react';
+} from '@/ds/icons';
 import type { Project, Atestado } from '@/types';
 import { formatKw } from '@/services/calcEngine';
 import { Logo } from '@/ds';

@@ -19,7 +19,7 @@ import {
   ArrowLeft,
   Send,
   Loader2,
-} from 'lucide-react';
+} from '@/ds/icons';
 import { Stepper } from '@/components/ui/Stepper';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';

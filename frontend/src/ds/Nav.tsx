@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ChevronDown, LogOut, Menu, Settings, User, X } from 'lucide-react';
+import { ChevronDown, LogOut, Menu, Settings, User, X } from './icons';
 import { IconButton } from './Button';
 import { NeoFluxoMark } from './Mark';
 import { Popover } from './Popover';

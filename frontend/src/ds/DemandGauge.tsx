@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'motion/react';
-import { Navigation2 } from 'lucide-react';
 import { CountUp } from './StatCard';
 import { spring } from './motion';
 
@@ -92,7 +91,10 @@ export function DemandGauge({
           animate={{ rotate: seen ? -90 + 180 * f : -90 }}
           transition={{ type: 'spring', stiffness: 70, damping: 14 }}
         >
-          <Navigation2 className="h-9 w-9 fill-fg text-fg" strokeWidth={1.5} />
+          {/* a setinha do "832" (ref 4): peça da marca, desenhada aqui, não ícone de biblioteca */}
+          <svg viewBox="0 0 24 24" className="h-9 w-9 text-fg" aria-hidden>
+            <path d="M12 2L20 21L12 16.5L4 21Z" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+          </svg>
         </motion.div>
       </div>
     </div>

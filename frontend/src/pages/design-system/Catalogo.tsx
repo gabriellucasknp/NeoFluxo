@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { motion } from 'motion/react';
-import { Bell, Building2, ClipboardCheck, Download, FolderOpen, FolderPlus, Inbox, LayoutDashboard, Plus, Settings2, ShieldCheck, Trash2, Zap } from 'lucide-react';
+import { Bell, Building2, ClipboardCheck, Download, FolderOpen, FolderPlus, Inbox, LayoutDashboard, Plus, Settings2, ShieldCheck, Trash2, Zap } from '@/ds/icons';
 import {
   Alert, ArrowButton, Button, ConfirmDialog, DataTable, DemandGauge, Dismissible, EmptyState, IconButton, Logo, MobileNav, Modal,
   PageHeader, Progress, RingStat, SearchField, SectionHeader, Segmented, Select, SideNav, Skeleton, Spinner, StatCard, StatusBadge,

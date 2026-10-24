@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Edit2, Trash2, History } from 'lucide-react';
+import { Plus, Edit2, Trash2, History } from '@/ds/icons';
 import { mockNormVersions } from '@/data/mockData';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';

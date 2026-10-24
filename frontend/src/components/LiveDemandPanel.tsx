@@ -12,7 +12,7 @@ import {
   Building2,
   CheckCircle2,
   Info,
-} from 'lucide-react';
+} from '@/ds/icons';
 import type { CalcResult, SubestacaoConfig } from '@/types';
 import { EnquadramentoBadge } from '@/components/ui/Badge';
 
