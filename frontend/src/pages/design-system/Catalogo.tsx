@@ -78,8 +78,8 @@ const COLS: Column<Projeto>[] = [
     sort: (r) => r.nome,
   },
   { key: 'dem', header: 'Demanda', cell: (r) => <span className="font-semibold tabular">{kw(r.demanda)}</span>, sort: (r) => r.demanda },
-  { key: 'enq', header: 'Enquadramento', hideOnMobile: true, cell: (r) => <TensionBadge media={r.demanda > 75} /> },
-  { key: 'st', header: 'Status', cell: (r) => <span className="flex justify-end md:justify-start"><StatusBadge status={r.status} /></span> },
+  { key: 'enq', header: 'Enquadramento', hideOnMobile: true, cell: (r, on) => <TensionBadge media={r.demanda > 75} onColor={on} /> },
+  { key: 'st', header: 'Status', cell: (r, on) => <span className="flex justify-end md:justify-start"><StatusBadge status={r.status} onColor={on} /></span> },
   { key: 'data', header: 'Enviado em', hideOnMobile: true, align: 'right', cell: (r) => <span className="tabular">{r.data}</span>, sort: (r) => r.data.split('/').reverse().join('') },
 ];
 

@@ -1,5 +1,3 @@
-import { motion } from 'motion/react';
-import { spring } from './motion';
 
 /*
  * Badge único (hoje são 6). Pílula suave com ponto, como o status das refs 7, 11 e 13.
@@ -26,33 +24,47 @@ const TONE: Record<Tone, [string, string]> = {
   brand: ['bg-accent-soft text-accent-fg', 'bg-accent'],
 };
 
-export function Badge({ tone = 'neutral', children, pulse }: { tone?: Tone; children: React.ReactNode; pulse?: boolean }) {
-  const [box, dot] = TONE[tone];
+// em cima do azul (linha escolhida, card destacado): pílula branca translúcida; o ponto guarda a cor do estado
+const SOBRE_AZUL: Record<Tone, string> = {
+  neutral: 'bg-white/70',
+  info: 'bg-white',
+  warning: 'bg-[#FFC53D]',
+  success: 'bg-[#5BE37D]',
+  danger: 'bg-[#FF8A80]',
+  brand: 'bg-white',
+};
+
+export function Badge({ tone = 'neutral', children, pulse, onColor }: { tone?: Tone; children: React.ReactNode; pulse?: boolean; onColor?: boolean }) {
+  const [box0, dot0] = TONE[tone];
+  const box = onColor ? 'bg-white/15 text-on-highlight ring-1 ring-inset ring-white/25' : box0;
+  const dot = onColor ? SOBRE_AZUL[tone] : dot0;
   return (
-    <motion.span
-      layout
-      transition={spring.snappy}
-      className={`inline-flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-xs font-semibold ${box}`}
+    <span
+      className={`inline-flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-xs font-semibold transition-colors duration-300 ${box}`}
     >
       <span className="relative flex h-1.5 w-1.5">
         {pulse && <span className={`absolute inset-0 animate-ping rounded-full opacity-60 ${dot}`} />}
         <span className={`relative h-1.5 w-1.5 rounded-full ${dot}`} />
       </span>
       {children}
-    </motion.span>
+    </span>
   );
 }
 
-export function StatusBadge({ status }: { status: Status }) {
+export function StatusBadge({ status, onColor }: { status: Status; onColor?: boolean }) {
   const s = STATUS[status];
   return (
-    <Badge tone={s.tone} pulse={status === 'em_analise'}>
+    <Badge tone={s.tone} pulse={status === 'em_analise'} onColor={onColor}>
       {s.label}
     </Badge>
   );
 }
 
 /** Enquadramento: Baixa Tensão em azul da marca, Média Tensão em âmbar (hoje era roxo numa tela e âmbar na outra). */
-export function TensionBadge({ media }: { media: boolean }) {
-  return <Badge tone={media ? 'warning' : 'brand'}>{media ? 'Média Tensão' : 'Baixa Tensão'}</Badge>;
+export function TensionBadge({ media, onColor }: { media: boolean; onColor?: boolean }) {
+  return (
+    <Badge tone={media ? 'warning' : 'brand'} onColor={onColor}>
+      {media ? 'Média Tensão' : 'Baixa Tensão'}
+    </Badge>
+  );
 }
