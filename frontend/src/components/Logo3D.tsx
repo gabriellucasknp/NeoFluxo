@@ -14,19 +14,19 @@ import { MARK_PATH } from '@/ds/Mark';
  */
 
 const ARGILA = {
-  depth: 12, // na unidade do path (caixa 66 × 92)
-  // chanfro grande e com muitos segmentos: é o que arredonda a peça como massinha. Chanfro curto com
-  // poucos degraus aparecia como faixas na borda (Mateus, 24/10)
-  bevelThickness: 7,
-  bevelSize: 4.5,
-  bevelSegments: 18,
+  depth: 16, // na unidade do path (caixa 66 × 92)
+  // chanfro curto: o contorno é o do logo (cantos de raio 5 e as pontas). Chanfro grande inchava a
+  // silhueta e a peça virou "massinha" demais (Mateus, 24/10). Muitos segmentos pra borda não fazer faixa
+  bevelThickness: 2.6,
+  bevelSize: 1.4,
+  bevelSegments: 12,
   scale: 2.3, // menor que o camelo: a peça é apoio, o recado embaixo é o que se lê
-  color: '#eef2ff', // argila clara, um fio de azul pra conversar com o painel
+  color: '#4d7cff', // azul vivo da marca: no painel #0033A0 ele destaca sem virar branco (o claro sumia)
   roughness: 0.82,
   env: 0.55,
   exposure: 1.05,
-  yaw: -0.32,
-  pitch: 0.08,
+  yaw: -0.5, // de frente a lateral some e a peça lê chapada
+  pitch: 0.12,
 };
 
 /** Path do manual (só M, Q, L, Z) → THREE.Shape, com o y virado (SVG cresce pra baixo). */
@@ -216,8 +216,8 @@ export default function Logo3D() {
     >
       <Estudio />
       {/* luz de estúdio de argila: céu claro em cima, rebote azul do painel embaixo, uma chave suave */}
-      <hemisphereLight args={['#ffffff', '#2a44a8', 0.9]} />
-      <directionalLight position={[-3, 5, 6]} intensity={1.5} color="#ffffff" />
+      <hemisphereLight args={['#ffffff', '#1a2c80', 0.55]} />
+      <directionalLight position={[-5, 6, 4]} intensity={2} color="#ffffff" />
       <directionalLight position={[5, -2, 2]} intensity={0.35} color="#9db6ff" />
       <Marca />
     </Canvas>

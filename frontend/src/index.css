@@ -80,8 +80,9 @@
   h1, h2, h3, h4 {
     @apply font-display;
   }
-  /* Foco visível em tudo que é clicável (não existia nenhum) */
-  :focus-visible {
+  /* Foco visível em tudo que é clicável (não existia nenhum). Campo de texto fica de fora: ele tem o
+     anel próprio por dentro, e os dois juntos davam a borda dupla (Mateus, 24/10) */
+  :focus-visible:not(input, textarea) {
     @apply outline-none ring-2 ring-focus ring-offset-2 ring-offset-canvas;
   }
   .tabular {
