@@ -90,6 +90,9 @@ export function DesignSystemPage() {
           <main className="min-w-0 flex-1 space-y-16">
             <header className="flex flex-wrap items-end justify-between gap-6">
               <div>
+                <p className="mb-3 inline-flex h-7 items-center rounded-full bg-warning-soft px-3 text-xs font-semibold text-warning-fg">
+                  Proposta: ainda não é o padrão do produto
+                </p>
                 <p className="mb-2 text-sm text-muted">NeoFluxo · design system novo</p>
                 <h1 className="max-w-[14ch] font-display text-5xl font-medium leading-[1.02] tracking-tight text-fg sm:text-6xl">Uma versão de cada coisa</h1>
                 <p className="mt-4 max-w-2xl text-fg-2">

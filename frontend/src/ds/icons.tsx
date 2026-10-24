@@ -2,6 +2,8 @@ import type { CSSProperties } from 'react';
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react';
 import {
   Activity01Icon,
+  BookOpen01Icon,
+  PaintBoardIcon,
   Add01Icon,
   Alert02Icon,
   AlertCircleIcon,
@@ -161,3 +163,5 @@ export const Wrench = cria(Wrench01Icon);
 export const X = cria(Cancel01Icon);
 export const XCircle = cria(CancelCircleIcon);
 export const Zap = cria(FlashIcon);
+export const Palette = cria(PaintBoardIcon);
+export const BookOpen = cria(BookOpen01Icon);
