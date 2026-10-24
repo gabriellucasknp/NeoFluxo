@@ -33,7 +33,8 @@ const ELEMENTOS: [string, string][] = [
   ['stepper', 'Stepper'],
 ];
 
-const ANTES = 'http://localhost:5175/design-system';
+// o retrato de como está hoje (branch ds-atual): na prévia publicada vem de VITE_DS_ANTES; local, a porta 5175
+const ANTES = import.meta.env.VITE_DS_ANTES ?? 'http://localhost:5175/design-system';
 
 function Section({ id, title, intro, children }: { id: string; title: string; intro?: ReactNode; children: ReactNode }) {
   return (
