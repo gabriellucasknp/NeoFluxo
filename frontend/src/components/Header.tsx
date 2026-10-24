@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Bell } from '@/ds/icons';
+import { Bell, Settings } from '@/ds/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { IconButton, SearchField, UserMenu } from '@/ds';
@@ -36,6 +36,7 @@ export function Header() {
         <UserMenu
           name={user.name}
           role={roleLabels[user.role]}
+          items={user.role === 'admin' ? [{ icon: <Settings className="h-4 w-4" />, label: 'Configurações', onClick: () => navigate('/app/admin/configuracoes') }] : []}
           onLogout={() => {
             logout();
             navigate('/');

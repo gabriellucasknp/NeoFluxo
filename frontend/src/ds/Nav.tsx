@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ChevronDown, LogOut, Menu, Settings, User, X } from './icons';
+import { ChevronDown, LogOut, Menu, X } from './icons';
 import { IconButton } from './Button';
 import { NeoFluxoMark } from './Mark';
 import { Popover } from './Popover';
@@ -95,7 +95,18 @@ export function SideNav({
 }
 
 /** Menu do usuário no topo: pílula com foto e nome (refs 8, 9); a lista abre num Popover a partir do botão. */
-export function UserMenu({ name, role, onLogout }: { name: string; role: string; onLogout?: () => void }) {
+export function UserMenu({
+  name,
+  role,
+  onLogout,
+  items = [],
+}: {
+  name: string;
+  role: string;
+  onLogout?: () => void;
+  /** só o que a tela de fato tem; item sem destino não entra */
+  items?: { icon: ReactNode; label: string; onClick: () => void }[];
+}) {
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useCallback(() => setOpen(false), []);
@@ -122,16 +133,13 @@ export function UserMenu({ name, role, onLogout }: { name: string; role: string;
         </motion.span>
       </button>
       <Popover open={open} onClose={close} anchor={trigger} align="end" minWidth={224} role="menu">
-        {[
-          { icon: <User className="h-4 w-4" />, label: 'Meu perfil' },
-          { icon: <Settings className="h-4 w-4" />, label: 'Configurações' },
-        ].map((i) => (
-          <button key={i.label} role="menuitem" onClick={close} className={`${item} text-fg-2 hover:bg-surface-2 hover:text-fg`}>
+        {items.map((i) => (
+          <button key={i.label} role="menuitem" onClick={() => (close(), i.onClick())} className={`${item} text-fg-2 hover:bg-surface-2 hover:text-fg`}>
             {i.icon}
             {i.label}
           </button>
         ))}
-        <div className="my-1 h-px bg-line" />
+        {items.length > 0 && <div className="my-1 h-px bg-line" />}
         <button role="menuitem" onClick={() => (close(), onLogout?.())} className={`${item} text-danger-fg hover:bg-danger-soft`}>
           <LogOut className="h-4 w-4" />
           Sair

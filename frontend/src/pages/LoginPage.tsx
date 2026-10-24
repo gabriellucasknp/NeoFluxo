@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, ShieldCheck, ArrowLeft } from '@/ds/icons';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
@@ -10,7 +10,49 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { authService } from '@/services/api';
 import type { User, UserRole } from '@/types';
-import { Logo, Segmented, Select as DsSelect, TextField } from '@/ds';
+import { Logo, NeoFluxoMark, Segmented, Select as DsSelect, TextField } from '@/ds';
+
+// o 3D (three.js) só baixa no desktop, que é onde o painel azul existe
+const Logo3D = lazy(() => import('@/components/Logo3D'));
+
+function MarcaPlana() {
+  return (
+    <div className="flex h-full items-center justify-center text-on-panel/90">
+      <NeoFluxoMark className="h-40" />
+    </div>
+  );
+}
+
+/** Sem WebGL (ou se a cena quebrar), fica o N plano no lugar. */
+class SemWebGL extends Component<{ children: ReactNode }, { erro: boolean }> {
+  state = { erro: false };
+  static getDerivedStateFromError() {
+    return { erro: true };
+  }
+  render() {
+    return this.state.erro ? <MarcaPlana /> : this.props.children;
+  }
+}
+
+function Marca3D() {
+  const [desktop, setDesktop] = useState(() => window.matchMedia('(min-width: 1024px)').matches);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const on = () => setDesktop(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  if (!desktop) return null;
+  return (
+    <div aria-hidden className="h-full min-h-[240px] w-full">
+      <SemWebGL>
+        <Suspense fallback={<MarcaPlana />}>
+          <Logo3D />
+        </Suspense>
+      </SemWebGL>
+    </div>
+  );
+}
 
 interface GoogleAccountData {
   uid: string;
@@ -271,52 +313,30 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left panel — branding corporativo Neoenergia */}
-      <div className="relative hidden w-1/2 flex-col justify-between bg-panel p-12 lg:flex">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-accent/20" />
-          <div className="absolute -bottom-32 -left-10 h-96 w-96 rounded-full bg-accent/10" />
-          <div className="absolute right-1/4 top-1/3 h-40 w-40 rounded-full bg-accent/10" />
+      {/* Painel azul (só desktop), no molde do login de Camelo: marca em cima, o N 3D no centro, recado curto embaixo.
+          select-none: arrastar o N pra girar não pode sair selecionando o texto do painel. */}
+      <aside className="relative hidden w-1/2 select-none flex-col overflow-hidden bg-panel p-12 lg:flex">
+        <div aria-hidden className="pointer-events-none absolute -right-28 -top-28 h-96 w-96 rounded-full" style={{ background: 'radial-gradient(circle, rgb(90 130 255 / 0.35), transparent 70%)' }} />
+        <div aria-hidden className="pointer-events-none absolute -bottom-32 -left-16 h-80 w-80 rounded-full" style={{ background: 'radial-gradient(circle, rgb(90 130 255 / 0.25), transparent 70%)' }} />
+        <div className="relative z-10">
+          <Logo onNav size="lg" />
         </div>
-        <div className="relative">
-          <div className="flex items-center gap-3">
-            <Logo onNav size="lg" />
-          </div>
+        {/* min-h-0 + bloco simples: o Canvas mede o PAI pra se dimensionar */}
+        <div className="relative z-10 flex min-h-0 flex-1 justify-center py-6">
+          <Marca3D />
         </div>
-        <div className="relative">
-          <h1 className="text-3xl font-extrabold leading-tight text-on-panel">
-            Portal de Projetos
-            <br />
-            Elétricos
+        <div className="relative z-10">
+          <h1 className="max-w-md font-display text-[2rem] font-semibold leading-tight tracking-tight text-on-panel">
+            Do memorial ao atestado, num lugar só.
           </h1>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-on-panel/70">
-            Cálculo automatizado de demanda elétrica, enquadramento normativo entre
-            DIS-NOR-030 e DIS-NOR-053, e ciclo de aprovação técnica auditável com emissão de atestados digitais.
+          <p className="mt-3 max-w-md text-[15px] leading-relaxed text-on-panel/70">
+            A demanda sai calculada pela DIS-NOR-030, o enquadramento em BT ou MT na hora e o atestado com QR de validação.
           </p>
-          <div className="mt-8 space-y-3">
-            {[
-              'Cálculo automático de demanda conforme DIS-NOR-030',
-              'Classificação automática entre Baixa Tensão (BT) e Média Tensão (MT)',
-              'Memória de cálculo auditável discriminada por carga',
-              'Gestão de rascunhos em 6 etapas e retomada contínua',
-              'Autenticação corporativa integrada com Google e Firestore',
-            ].map((item) => (
-              <div key={item} className="flex items-center gap-3 text-sm text-on-panel/70">
-                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/40">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-on-panel/70" />
-                </div>
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
         </div>
-        <div className="relative text-xs text-on-panel/70">
-          © 2026 Neoenergia Pernambuco. Sistema corporativo de uso restrito e auditado.
-        </div>
-      </div>
+      </aside>
 
       {/* Right panel — formulário dinâmico */}
-      <div className="relative flex w-full flex-col items-center justify-center bg-surface-2 p-6 lg:w-1/2">
+      <div className="relative flex w-full flex-col items-center bg-surface-2 px-6 pb-16 pt-16 lg:w-1/2 lg:pt-[max(5rem,12vh)]">
         <ThemeToggle className="absolute right-4 top-4" />
         <div className="w-full max-w-md">
           {/* Mobile logo */}
@@ -369,15 +389,7 @@ export function LoginPage() {
 
                 <TextField label="Senha" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
 
-                <div className="flex items-center justify-between text-sm">
-                  <label className="flex items-center gap-2 text-muted">
-                    <input
-                      type="checkbox"
-                      defaultChecked
-                      className="h-4 w-4 accent-primary"
-                    />
-                    Lembrar credenciais
-                  </label>
+                <div className="flex justify-end text-sm">
                   <button
                     type="button"
                     onClick={() => { setForgotOpen(true); setForgotEmail(email); setForgotMsg(''); }}
@@ -686,10 +698,6 @@ export function LoginPage() {
             </div>
           )}
 
-          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-subtle">
-            <ShieldCheck className="h-4 w-4 text-success-fg" />
-            <span>Autenticação auditada com Cloud Firestore & Firebase Auth</span>
-          </div>
         </div>
       </div>
 
