@@ -9,9 +9,8 @@ import { ease } from './motion';
  * vira pra cima quando falta espaço embaixo (regra da /site); abre e fecha animada a partir do gatilho.
  */
 
-const ABERTA = 'inset(-25% -12% -25% -12% round 20px)';
-const FECHADA_BAIXO = 'inset(-25% -12% 100% -12% round 20px)';
-const FECHADA_CIMA = 'inset(100% -12% -25% -12% round 20px)';
+const ABRE = 0.32;
+const FECHA = 0.2;
 
 export function Popover({
   open,
@@ -96,15 +95,30 @@ export function Popover({
           ref={box}
           id={id}
           role={role}
-          style={{ ...style, transformOrigin: `${align === 'end' ? 'right' : 'left'} ${up ? 'bottom' : 'top'}` }}
-          // desenrola a partir do gatilho já opaca: nada de baixo aparece através da lista no meio da abertura
-          // recorte final com folga negativa pra sombra não ficar cortada
-          initial={{ clipPath: up ? FECHADA_CIMA : FECHADA_BAIXO, y: up ? 6 : -6 }}
-          animate={{ clipPath: ABERTA, y: 0, transition: { duration: 0.32, ease } }}
-          exit={{ clipPath: up ? FECHADA_CIMA : FECHADA_BAIXO, y: up ? 4 : -4, transition: { duration: 0.2, ease } }}
-          className={`z-[60] max-h-72 overflow-auto rounded-tile bg-raised p-1.5 shadow-pop ring-1 ring-line ${className}`}
+          style={style}
+          initial={{ y: up ? 6 : -6 }}
+          animate={{ y: 0, transition: { duration: ABRE, ease } }}
+          exit={{ y: up ? 4 : -4, transition: { duration: FECHA, ease } }}
+          className={`z-[60] ${className}`}
         >
-          {children}
+          {/* fundo com a sombra: cresce a partir do gatilho, sem recorte (o recorte cortava a sombra num retângulo) */}
+          <motion.span
+            aria-hidden
+            className="absolute inset-0 rounded-tile bg-raised shadow-[0_16px_36px_-14px_rgb(15_20_32/0.24),0_2px_6px_-2px_rgb(15_20_32/0.08)] ring-1 ring-line"
+            style={{ originY: up ? 1 : 0 }}
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1, transition: { duration: ABRE, ease } }}
+            exit={{ scaleY: 0, transition: { duration: FECHA, ease } }}
+          />
+          {/* conteúdo: desenrola no mesmo passo do fundo, então nada de baixo aparece através da lista */}
+          <motion.div
+            className="relative max-h-72 overflow-auto p-1.5"
+            initial={{ clipPath: up ? 'inset(100% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)' }}
+            animate={{ clipPath: 'inset(0% 0% 0% 0%)', transition: { duration: ABRE, ease } }}
+            exit={{ clipPath: up ? 'inset(100% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)', transition: { duration: FECHA, ease } }}
+          >
+            {children}
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>,
