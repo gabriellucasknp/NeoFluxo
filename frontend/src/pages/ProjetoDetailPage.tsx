@@ -22,7 +22,7 @@ import { StatusBadge, EnquadramentoBadge } from '@/components/ui/Badge';
 import { Alert } from '@/components/ui/Alert';
 import { Loading, EmptyState } from '@/components/ui/States';
 import { formatKw } from '@/services/calcEngine';
-import { Logo } from '@/ds';
+import { IconButton, Logo, VazioLinha } from '@/ds';
 
 export function ProjetoDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -45,7 +45,6 @@ export function ProjetoDetailPage() {
     return (
       <Card>
         <EmptyState
-          icon={<AlertTriangle className="h-12 w-12" />}
           title="Projeto não encontrado"
           message="O projeto solicitado não existe ou foi removido."
           action={<Button onClick={() => navigate('/app/meus-projetos')}>Voltar para Meus Projetos</Button>}
@@ -66,12 +65,9 @@ export function ProjetoDetailPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="rounded-lg p-2 text-subtle transition-colors hover:bg-surface-2 hover:text-muted"
-          >
+          <IconButton label="Voltar" tone="outline" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-5 w-5" />
-          </button>
+          </IconButton>
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold text-fg">{project.code}</h1>
@@ -213,7 +209,7 @@ export function ProjetoDetailPage() {
             <tbody className="divide-y divide-line">
               {(project.units ?? []).length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-5 py-6 text-center text-sm text-muted">Nenhuma unidade cadastrada.</td>
+                  <td colSpan={4} className="p-4"><VazioLinha>Nenhuma unidade cadastrada neste projeto.</VazioLinha></td>
                 </tr>
               )}
               {(project.units ?? []).map((u) => {

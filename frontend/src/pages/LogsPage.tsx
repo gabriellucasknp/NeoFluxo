@@ -1,14 +1,12 @@
 import { mockLogs } from '@/data/mockData';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { History } from '@/ds/icons';
+import { PageHeader } from '@/ds';
 
 export function LogsPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-fg">Logs do Sistema</h1>
-        <p className="text-sm text-muted">Registro de auditoria de todas as ações relevantes.</p>
-      </div>
+      <PageHeader greeting="Administração" title="Logs do sistema" description="Registro de auditoria de todas as ações relevantes." />
 
       <Card padding="none">
         <div className="border-b border-line px-5 py-4">

@@ -1,5 +1,5 @@
 {
-  "_origem": "Respostas reais do back Spring (localhost:8081) em 23/10/2026: /auth/me dos 3 perfis, /projects e /projects/{id}. Fatores de demanda e transformadores: o back não tem essas rotas (responde 500), então vêm do fallback que o front já mostra (src/data/mockData.ts). Sem senha e sem token.",
+  "_origem": "Respostas reais do back Spring (localhost:8081) em 23/10/2026: /auth/me dos 3 perfis, /projects e /projects/{id}. Fatores de demanda e transformadores: o back não tem essas rotas (responde 500), então vêm do fallback que o front já mostra (src/data/mockData.ts). Sem senha e sem token. Unidades e cargas de serviço de PE-2024-001/002/003 inventadas pra demonstração (o back devolve null); a demanda é recalculada ao carregar.",
   "users": [
     {
       "id": "63b2733f-149a-4283-b0b1-2c4850797273",
@@ -57,15 +57,64 @@
         "neighborhood": "Graças",
         "technicalResponsible": "Carlos Mendes — Eng. Eletricista"
       },
-      "units": null,
-      "serviceLoads": null,
-      "calcResult": {
-        "enquadramento": "baixa_tensao",
-        "normaAplicada": "DIS-NOR-030",
-        "needsSubstation": false,
-        "calculatedDemand": 42.5,
-        "totalInstalledPower": 68
-      },
+      "units": [
+        {
+          "id": "u3a",
+          "name": "Apartamentos",
+          "unitType": "Residencial",
+          "unitCount": 6,
+          "tugCount": 0,
+          "tueCount": 0,
+          "lightingPoints": 0,
+          "loads": [
+            {
+              "id": "u3a-0",
+              "type": "iluminacao",
+              "label": "Iluminação",
+              "quantity": 8,
+              "powerPerUnit": 100
+            },
+            {
+              "id": "u3a-1",
+              "type": "tug",
+              "label": "TUG",
+              "quantity": 12,
+              "powerPerUnit": 100
+            },
+            {
+              "id": "u3a-2",
+              "type": "tue",
+              "label": "Chuveiro",
+              "quantity": 1,
+              "powerPerUnit": 4400
+            },
+            {
+              "id": "u3a-3",
+              "type": "tue",
+              "label": "Ar-condicionado",
+              "quantity": 1,
+              "powerPerUnit": 1400
+            }
+          ]
+        }
+      ],
+      "serviceLoads": [
+        {
+          "id": "s3b",
+          "category": "bombas",
+          "name": "Bomba de recalque",
+          "quantity": 2,
+          "power": 2200
+        },
+        {
+          "id": "s3c",
+          "category": "iluminacao_comum",
+          "name": "Iluminação das áreas comuns",
+          "quantity": 1,
+          "power": 1800
+        }
+      ],
+      "calcResult": null,
       "subestacao": null,
       "review": null,
       "rejection": null,
@@ -119,15 +168,96 @@
         "neighborhood": "Pina",
         "technicalResponsible": "Carlos Mendes — Eng. Eletricista"
       },
-      "units": null,
-      "serviceLoads": null,
-      "calcResult": {
-        "enquadramento": "media_tensao",
-        "normaAplicada": "DIS-NOR-053",
-        "needsSubstation": true,
-        "calculatedDemand": 168.4,
-        "totalInstalledPower": 280.5
-      },
+      "units": [
+        {
+          "id": "u2a",
+          "name": "Salas comerciais",
+          "unitType": "Comercial",
+          "unitCount": 40,
+          "tugCount": 0,
+          "tueCount": 0,
+          "lightingPoints": 0,
+          "loads": [
+            {
+              "id": "u2a-0",
+              "type": "iluminacao",
+              "label": "Iluminação",
+              "quantity": 10,
+              "powerPerUnit": 60
+            },
+            {
+              "id": "u2a-1",
+              "type": "tug",
+              "label": "TUG",
+              "quantity": 10,
+              "powerPerUnit": 150
+            },
+            {
+              "id": "u2a-2",
+              "type": "tue",
+              "label": "Ar-condicionado",
+              "quantity": 2,
+              "powerPerUnit": 2200
+            }
+          ]
+        },
+        {
+          "id": "u2b",
+          "name": "Lojas do térreo",
+          "unitType": "Comercial",
+          "unitCount": 6,
+          "tugCount": 0,
+          "tueCount": 0,
+          "lightingPoints": 0,
+          "loads": [
+            {
+              "id": "u2b-0",
+              "type": "iluminacao",
+              "label": "Iluminação",
+              "quantity": 20,
+              "powerPerUnit": 60
+            },
+            {
+              "id": "u2b-1",
+              "type": "tug",
+              "label": "TUG",
+              "quantity": 16,
+              "powerPerUnit": 150
+            },
+            {
+              "id": "u2b-2",
+              "type": "tue",
+              "label": "Ar-condicionado",
+              "quantity": 3,
+              "powerPerUnit": 3500
+            }
+          ]
+        }
+      ],
+      "serviceLoads": [
+        {
+          "id": "s2a",
+          "category": "elevadores",
+          "name": "Elevadores",
+          "quantity": 3,
+          "power": 11000
+        },
+        {
+          "id": "s2b",
+          "category": "bombas",
+          "name": "Bombas de incêndio",
+          "quantity": 2,
+          "power": 7500
+        },
+        {
+          "id": "s2c",
+          "category": "portoes",
+          "name": "Portão da garagem",
+          "quantity": 1,
+          "power": 750
+        }
+      ],
+      "calcResult": null,
       "subestacao": {
         "quantidade": 1,
         "configuracao": "Subestação abrigada em alvenaria 13.8kV/380V",
@@ -165,8 +295,48 @@
         "neighborhood": "Boa Viagem",
         "technicalResponsible": "Carlos Mendes — Eng. Eletricista"
       },
-      "units": null,
-      "serviceLoads": null,
+      "units": [
+        {
+          "id": "u1a",
+          "name": "Apartamentos",
+          "unitType": "Residencial",
+          "unitCount": 24,
+          "tugCount": 0,
+          "tueCount": 0,
+          "lightingPoints": 0,
+          "loads": [
+            {
+              "id": "u1a-0",
+              "type": "iluminacao",
+              "label": "Iluminação",
+              "quantity": 8,
+              "powerPerUnit": 100
+            },
+            {
+              "id": "u1a-1",
+              "type": "tug",
+              "label": "TUG",
+              "quantity": 12,
+              "powerPerUnit": 100
+            },
+            {
+              "id": "u1a-2",
+              "type": "tue",
+              "label": "Chuveiro",
+              "quantity": 1,
+              "powerPerUnit": 5500
+            },
+            {
+              "id": "u1a-3",
+              "type": "tue",
+              "label": "Ar-condicionado",
+              "quantity": 1,
+              "powerPerUnit": 1400
+            }
+          ]
+        }
+      ],
+      "serviceLoads": [],
       "calcResult": null,
       "subestacao": null,
       "review": null,

@@ -178,6 +178,9 @@ export const userService = {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
+
+  delete: (id: string) =>
+    fetchApi<void>(`/users/${id}`, { method: 'DELETE' }),
 };
 
 // =====================================================
@@ -214,6 +217,9 @@ export const transformerService = {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
+
+  delete: (id: string) =>
+    fetchApi<void>(`/transformers/${id}`, { method: 'DELETE' }),
 };
 
 // =====================================================

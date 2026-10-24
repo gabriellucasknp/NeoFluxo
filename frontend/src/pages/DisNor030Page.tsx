@@ -6,6 +6,7 @@ import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input, Select, Textarea } from '@/components/ui/FormFields';
+import { PageHeader } from '@/ds';
 import type { DemandFactor } from '@/types';
 
 export function DisNor030Page() {
@@ -65,20 +66,14 @@ export function DisNor030Page() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-fg">Gestão da DIS-NOR-030</h1>
-          <p className="text-sm text-muted">Tabelas de fatores de demanda e regras de cálculo.</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" icon={<History className="h-4 w-4" />} onClick={() => setShowHistory(true)}>
+      <PageHeader greeting="Normas" title="DIS-NOR-030" description="Tabelas de fatores de demanda e regras de cálculo." actions={<>
+<Button variant="outline" icon={<History className="h-4 w-4" />} onClick={() => setShowHistory(true)}>
             Histórico de Versões
           </Button>
           <Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>
             Novo Fator
           </Button>
-        </div>
-      </div>
+      </>} />
 
       {/* Version info */}
       <Card className="bg-accent-soft">

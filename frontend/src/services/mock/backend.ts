@@ -60,6 +60,8 @@ function carregar(): MockDb {
   }
   const { _origem, ...dados } = seed as Json;
   db = JSON.parse(JSON.stringify(dados)) as MockDb;
+  // exemplos com unidades mas sem cálculo salvo: a demanda sai do mesmo motor das telas
+  for (const p of db.projects) if (Array.isArray(p.units) && p.units.length && p.status !== 'rascunho' && !p.calcResult) calcularProjeto(p);
   salvar();
   return db;
 }

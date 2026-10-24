@@ -4,6 +4,7 @@ import { mockNormVersions } from '@/data/mockData';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
+import { PageHeader } from '@/ds';
 import { Input, Select, Textarea } from '@/components/ui/FormFields';
 
 interface Regra053 {
@@ -50,18 +51,12 @@ export function DisNor053Page() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-fg">Gestão da DIS-NOR-053</h1>
-          <p className="text-sm text-muted">Regras de enquadramento, módulos de transformadores e configurações de subestação.</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" icon={<History className="h-4 w-4" />} onClick={() => setShowHistory(true)}>
+      <PageHeader greeting="Normas" title="DIS-NOR-053" description="Regras de enquadramento, módulos de transformadores e configurações de subestação." actions={<>
+<Button variant="outline" icon={<History className="h-4 w-4" />} onClick={() => setShowHistory(true)}>
             Histórico de Versões
           </Button>
           <Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>Nova Regra</Button>
-        </div>
-      </div>
+      </>} />
 
       <Card className="bg-accent-soft">
         <div className="flex items-center justify-between">

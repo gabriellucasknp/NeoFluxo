@@ -6,6 +6,8 @@ import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/FormFields';
+import { ConfirmDialog, PageHeader } from '@/ds';
+import { Alert } from '@/components/ui/Alert';
 import type { TransformerModel } from '@/types';
 
 export function TransformadoresPage() {
@@ -58,25 +60,27 @@ export function TransformadoresPage() {
     }
   };
 
-  const deleteTransformer = async (id: string) => {
-    if (!window.confirm('Excluir este módulo de transformador padronizado?')) return;
+  const [excluir, setExcluir] = useState<string | null>(null);
+  const [erroExcluir, setErroExcluir] = useState('');
+  const deleteTransformer = (id: string) => setExcluir(id);
+  const confirmarExclusao = async () => {
+    if (!excluir) return;
     try {
-      await transformerService.delete(id);
+      await transformerService.delete(excluir);
+      setErroExcluir('');
       fetchTransformers();
     } catch (err: any) {
-      alert(err.message || 'Erro ao excluir transformador');
+      setErroExcluir(err.message || 'Não foi possível excluir.');
     }
+    setExcluir(null);
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-fg">Transformadores</h1>
-          <p className="text-sm text-muted">Módulos de transformadores para dimensionamento de subestações (DIS-NOR-053).</p>
-        </div>
-        <Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>Novo Transformador</Button>
-      </div>
+      <PageHeader greeting="Administração" title="Transformadores" description="Módulos de transformadores para dimensionamento de subestações (DIS-NOR-053)." actions={<>
+<Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>Novo Transformador</Button>
+      </>} />
+      {erroExcluir && <Alert type="error">{erroExcluir}</Alert>}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {transformers.map((t) => (
@@ -125,6 +129,15 @@ export function TransformadoresPage() {
           </div>
         )}
       </Modal>
+      <ConfirmDialog
+        open={!!excluir}
+        onClose={() => setExcluir(null)}
+        onConfirm={confirmarExclusao}
+        title="Excluir este transformador?"
+        description="O módulo sai da lista usada no dimensionamento de subestações."
+        confirmLabel="Excluir"
+        danger
+      />
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Button, ConfirmDialog } from '@/ds';
 import { restaurarDadosDemo } from '@/services/mock/backend';
 
 /**
@@ -5,27 +7,35 @@ import { restaurarDadosDemo } from '@/services/mock/backend';
  * Montado no App só nesse modo, então não entra no bundle normal.
  */
 export function DemoBanner() {
+  const [confirmar, setConfirmar] = useState(false);
   const restaurar = () => {
-    if (!window.confirm('Apagar o que foi feito nesta demonstração e voltar aos dados iniciais?')) return;
     restaurarDadosDemo();
     window.location.reload();
   };
 
   return (
-    <div
-      role="status"
-      className="fixed bottom-3 left-1/2 z-[60] flex w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 items-center justify-between gap-3 rounded-full bg-surface px-4 py-2 text-xs text-muted shadow-card ring-1 ring-line"
-    >
-      <span>
-        <strong className="font-semibold text-fg">Modo demonstração:</strong> os dados ficam só neste navegador
-      </span>
-      <button
-        type="button"
-        onClick={restaurar}
-        className="shrink-0 rounded-full bg-primary px-3 py-1 font-medium text-on-primary transition-colors hover:bg-primary-hover"
+    <>
+      <div
+        role="status"
+        className="fixed bottom-3 left-1/2 z-[60] flex w-[calc(100%-2rem)] max-w-xl items-center justify-between gap-3 rounded-full bg-surface py-1.5 pl-5 pr-1.5 text-xs text-muted shadow-pop ring-1 ring-line"
+        style={{ transform: 'translateX(-50%)' }}
       >
-        Restaurar dados
-      </button>
-    </div>
+        <span>
+          <strong className="font-semibold text-fg">Demonstração:</strong> os dados ficam só neste navegador
+        </span>
+        <Button size="sm" variant="secondary" onClick={() => setConfirmar(true)}>
+          Restaurar dados
+        </Button>
+      </div>
+      <ConfirmDialog
+        open={confirmar}
+        onClose={() => setConfirmar(false)}
+        onConfirm={restaurar}
+        title="Restaurar os dados?"
+        description="Tudo o que foi criado, aprovado ou reprovado nesta demonstração some, e os projetos de exemplo voltam."
+        confirmLabel="Restaurar"
+        danger
+      />
+    </>
   );
 }

@@ -18,8 +18,11 @@ export function PageHeader({
   greeting,
   stats,
   actions,
+  description,
 }: {
   title: string;
+  /** uma linha de apoio embaixo do título */
+  description?: string;
   /** linha pequena acima do título: "Bom dia, Carlos" */
   greeting?: string;
   stats?: HeaderStat[];
@@ -30,6 +33,7 @@ export function PageHeader({
       <motion.div variants={rise} className="min-w-0">
         {greeting && <p className="mb-2 text-sm text-muted">{greeting}</p>}
         <h1 className="max-w-[12ch] font-display text-4xl font-medium leading-[1.05] tracking-tight text-fg sm:text-5xl">{title}</h1>
+        {description && <p className="mt-3 max-w-xl text-sm text-muted">{description}</p>}
       </motion.div>
       {stats && (
         <div className="flex flex-wrap gap-x-10 gap-y-4">

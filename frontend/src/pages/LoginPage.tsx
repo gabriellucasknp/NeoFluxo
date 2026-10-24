@@ -1,21 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Mail,
-  Lock,
-  User as UserIcon,
-  ArrowRight,
-  Info,
-  CheckCircle2,
-  ShieldCheck,
-  Building,
-  ShieldAlert,
-  Clock,
-  Briefcase,
-  Layers,
-  ChevronRight,
-  ArrowLeft,
-} from '@/ds/icons';
+import { CheckCircle2, ShieldCheck, ArrowLeft } from '@/ds/icons';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/firebase/config';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -25,8 +10,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { authService } from '@/services/api';
 import type { User, UserRole } from '@/types';
-import { Logo } from '@/ds';
-import { Select as DsSelect } from '@/ds';
+import { Logo, Segmented, Select as DsSelect, TextField } from '@/ds';
 
 interface GoogleAccountData {
   uid: string;
@@ -342,29 +326,17 @@ export function LoginPage() {
 
           {/* TAB SELECTOR (Apenas visível em modo login / register) */}
           {(mode === 'login' || mode === 'register') && (
-            <div className="mb-6 flex rounded-xl bg-surface-3/70 p-1">
-              <button
-                type="button"
-                onClick={() => { setMode('login'); setError(''); setSuccessMsg(''); }}
-                className={`flex-1 rounded-lg py-2 text-center text-sm font-semibold transition-all ${
-                  mode === 'login'
-                    ? 'bg-surface text-fg shadow-sm'
-                    : 'text-muted hover:text-fg'
-                }`}
-              >
-                Entrar no Portal
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMode('register'); setError(''); setSuccessMsg(''); }}
-                className={`flex-1 rounded-lg py-2 text-center text-sm font-semibold transition-all ${
-                  mode === 'register'
-                    ? 'bg-surface text-fg shadow-sm'
-                    : 'text-muted hover:text-fg'
-                }`}
-              >
-                Cadastrar Usuário
-              </button>
+            <div className="mb-8">
+              <Segmented
+                full
+                label="Acesso"
+                value={mode}
+                onChange={(v) => { setMode(v as 'login' | 'register'); setError(''); setSuccessMsg(''); }}
+                items={[
+                  { value: 'login', label: 'Entrar' },
+                  { value: 'register', label: 'Criar conta' },
+                ]}
+              />
             </div>
           )}
 
@@ -386,79 +358,36 @@ export function LoginPage() {
           {mode === 'login' && (
             <div>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold tracking-tight text-fg">Identificação do Usuário</h2>
+                <h2 className="font-display text-3xl font-semibold tracking-tight text-fg">Bem-vindo de volta</h2>
                 <p className="mt-1 text-sm text-muted">
-                  Acesse o sistema com suas credenciais corporativas ou autenticação Google.
+                  Entre com o e-mail corporativo pra acompanhar seus projetos.
                 </p>
               </div>
 
               <form onSubmit={handleLoginSubmit} className="space-y-4">
-                <div>
-                  <label className="label-base">
-                    E-mail corporativo <span className="text-danger-fg">*</span>
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="seu.nome@neoenergia.com"
-                      required
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="E-mail corporativo" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="seu.nome@neoenergia.com" required />
 
-                <div>
-                  <label className="label-base">
-                    Senha de acesso <span className="text-danger-fg">*</span>
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      required
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Senha" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
 
                 <div className="flex items-center justify-between text-sm">
                   <label className="flex items-center gap-2 text-muted">
                     <input
                       type="checkbox"
                       defaultChecked
-                      className="h-4 w-4 rounded border-line-strong text-accent-fg focus:ring-accent"
+                      className="h-4 w-4 accent-primary"
                     />
                     Lembrar credenciais
                   </label>
                   <button
                     type="button"
                     onClick={() => { setForgotOpen(true); setForgotEmail(email); setForgotMsg(''); }}
-                    className="font-medium text-accent-fg hover:text-accent-fg hover:underline"
+                    className="font-medium text-accent-fg underline-offset-4 transition-colors hover:text-fg hover:underline"
                   >
                     Esqueci minha senha
                   </button>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-on-primary shadow-sm transition-all hover:bg-primary-hover disabled:opacity-50"
-                >
-                  {loading ? (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-transparent" />
-                  ) : (
-                    <>
-                      Entrar no Sistema
-                      <ArrowRight className="h-4 w-4" />
-                    </>
-                  )}
-                </button>
+                <Button type="submit" size="lg" loading={loading} arrow className="w-full">Entrar</Button>
 
                 {/* Modo demonstração (VITE_MOCK) não tem Google: some o divisor e o botão */}
                 {!import.meta.env.VITE_MOCK && (<>
@@ -466,22 +395,13 @@ export function LoginPage() {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-line" />
                   </div>
-                  <div className="relative bg-surface-2 px-3 text-xs uppercase tracking-wider text-subtle">
-                    Ou continue com
+                  <div className="relative bg-surface-2 px-3 text-xs text-subtle">
+                    ou
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleGoogleLogin}
-                  disabled={googleLoading || loading}
-                  className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-line-strong bg-surface py-2.5 text-sm font-medium text-fg-2 shadow-sm transition-all hover:bg-surface-2 hover:text-fg disabled:opacity-50"
-                >
-                  {googleLoading ? (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-                  ) : (
-                    <>
-                      <svg className="h-4 w-4" viewBox="0 0 24 24">
+                <Button variant="secondary" size="lg" className="w-full" onClick={handleGoogleLogin} loading={googleLoading} disabled={loading} icon={!googleLoading && (
+<svg className="h-4 w-4" viewBox="0 0 24 24">
                         <path
                           fill="#4285F4"
                           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -499,10 +419,9 @@ export function LoginPage() {
                           d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                         />
                       </svg>
-                      <span>Entrar com Google</span>
-                    </>
-                  )}
-                </button>
+                )}>
+                  Entrar com Google
+                </Button>
                 </>)}
               </form>
             </div>
@@ -514,47 +433,16 @@ export function LoginPage() {
           {mode === 'register' && (
             <div>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold tracking-tight text-fg">Novo Cadastro no Portal</h2>
+                <h2 className="font-display text-3xl font-semibold tracking-tight text-fg">Criar conta</h2>
                 <p className="mt-1 text-sm text-muted">
                   Cadastre suas credenciais para submeter e acompanhar projetos elétricos.
                 </p>
               </div>
 
               <form onSubmit={handleRegisterSubmit} className="space-y-4">
-                <div>
-                  <label className="label-base">
-                    Nome Completo <span className="text-danger-fg">*</span>
-                  </label>
-                  <div className="relative">
-                    <UserIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                    <input
-                      type="text"
-                      value={regName}
-                      onChange={(e) => setRegName(e.target.value)}
-                      placeholder="Ex: Carlos Eduardo Mendes"
-                      required
-                      minLength={3}
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Nome completo" type="text" value={regName} onChange={(e) => setRegName(e.target.value)} placeholder="Ex: Carlos Eduardo Mendes" required minLength={3} />
 
-                <div>
-                  <label className="label-base">
-                    E-mail Corporativo <span className="text-danger-fg">*</span>
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                    <input
-                      type="email"
-                      value={regEmail}
-                      onChange={(e) => setRegEmail(e.target.value)}
-                      placeholder="carlos.mendes@neoenergia.com"
-                      required
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="E-mail corporativo" type="email" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} placeholder="carlos.mendes@neoenergia.com" required />
 
                 <div className="grid grid-cols-2 gap-3">
                   <DsSelect
@@ -567,71 +455,14 @@ export function LoginPage() {
                       { value: 'admin', label: 'Administrador' },
                     ]}
                   />
-                  <div>
-                    <label className="label-base">
-                      Departamento <span className="text-danger-fg">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={regDepartment}
-                      onChange={(e) => setRegDepartment(e.target.value)}
-                      placeholder="Projetos Elétricos"
-                      required
-                      className="input-base"
-                    />
-                  </div>
+                  <TextField label="Departamento" type="text" value={regDepartment} onChange={(e) => setRegDepartment(e.target.value)} placeholder="Projetos Elétricos" required />
                 </div>
 
-                <div>
-                  <label className="label-base">
-                    Senha <span className="text-danger-fg">*</span>
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                    <input
-                      type="password"
-                      value={regPassword}
-                      onChange={(e) => setRegPassword(e.target.value)}
-                      placeholder="Mínimo de 6 caracteres"
-                      required
-                      minLength={6}
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Senha" type="password" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} placeholder="Mínimo de 6 caracteres" required minLength={6} />
 
-                <div>
-                  <label className="label-base">
-                    Confirmar Senha <span className="text-danger-fg">*</span>
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                    <input
-                      type="password"
-                      value={regConfirmPassword}
-                      onChange={(e) => setRegConfirmPassword(e.target.value)}
-                      placeholder="Repita sua senha"
-                      required
-                      minLength={6}
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Confirmar senha" type="password" value={regConfirmPassword} onChange={(e) => setRegConfirmPassword(e.target.value)} placeholder="Repita sua senha" required minLength={6} />
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-on-primary shadow-sm transition-all hover:bg-primary-hover disabled:opacity-50"
-                >
-                  {loading ? (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-transparent" />
-                  ) : (
-                    <>
-                      Concluir Cadastro e Acessar
-                      <ArrowRight className="h-4 w-4" />
-                    </>
-                  )}
-                </button>
+                <Button type="submit" size="lg" loading={loading} arrow className="w-full">Criar conta e entrar</Button>
               </form>
             </div>
           )}
@@ -663,7 +494,7 @@ export function LoginPage() {
                   </svg>
                   <span>Conta Google Autenticada</span>
                 </div>
-                <h2 className="text-2xl font-bold tracking-tight text-fg">
+                <h2 className="font-display text-3xl font-semibold tracking-tight text-fg">
                   Complete seu cadastro
                 </h2>
                 <p className="mt-1 text-sm text-muted">
@@ -673,43 +504,10 @@ export function LoginPage() {
 
               <form onSubmit={handleGoogleProfileSubmit} className="space-y-4">
                 {/* Nome Completo */}
-                <div>
-                  <label className="label-base">
-                    Nome Completo <span className="text-danger-fg">*</span>
-                  </label>
-                  <div className="relative">
-                    <UserIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                    <input
-                      type="text"
-                      value={googleName}
-                      onChange={(e) => setGoogleName(e.target.value)}
-                      placeholder="Seu nome completo"
-                      required
-                      minLength={3}
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Nome completo" type="text" value={googleName} onChange={(e) => setGoogleName(e.target.value)} placeholder="Seu nome completo" required minLength={3} />
 
                 {/* E-mail Corporativo (Preenchido e Travado) */}
-                <div>
-                  <label className="label-base">
-                    E-mail Corporativo Autenticado
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                    <input
-                      type="email"
-                      value={googleData.email}
-                      disabled
-                      className="input-base pl-9 bg-surface-2 text-muted font-medium cursor-not-allowed"
-                    />
-                    <CheckCircle2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-success-fg" />
-                  </div>
-                  <p className="mt-1 text-[11px] text-muted">
-                    E-mail validado pelo provedor Google e vinculado ao Cloud Firestore.
-                  </p>
-                </div>
+                <TextField label="E-mail autenticado" type="email" value={googleData.email} disabled hint="E-mail validado pelo provedor Google e vinculado ao Cloud Firestore." />
 
                 {/* Perfil de Acesso — Opções detalhadas conforme especificação */}
                 <div>
@@ -814,22 +612,7 @@ export function LoginPage() {
                 </div>
 
                 {/* Departamento */}
-                <div>
-                  <label className="label-base">
-                    Departamento ou Área <span className="text-danger-fg">*</span>
-                  </label>
-                  <div className="relative">
-                    <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                    <input
-                      type="text"
-                      value={googleDepartment}
-                      onChange={(e) => setGoogleDepartment(e.target.value)}
-                      placeholder="Ex: Projetos Elétricos / Engenharia"
-                      required
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Departamento ou área" type="text" value={googleDepartment} onChange={(e) => setGoogleDepartment(e.target.value)} placeholder="Ex: Projetos Elétricos / Engenharia" required />
 
                 {/* Alerta Contextual Informativo */}
                 {selectedRole === 'admin' ? (
@@ -866,75 +649,39 @@ export function LoginPage() {
 
                 {/* Botões de Ação */}
                 <div className="pt-2 space-y-2">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-semibold text-on-primary shadow-md transition-all hover:bg-primary-hover disabled:opacity-50"
-                  >
-                    {loading ? (
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-transparent" />
-                    ) : (
-                      <>
-                        Confirmar e Acessar Portal
-                        <ArrowRight className="h-4 w-4" />
-                      </>
-                    )}
-                  </button>
+                  <Button type="submit" size="lg" loading={loading} arrow className="w-full">Confirmar e entrar</Button>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMode('login');
-                      setGoogleData(null);
-                      setError('');
-                    }}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold text-muted hover:text-fg-2 hover:bg-surface-2 transition-colors"
-                  >
-                    <ArrowLeft className="h-3.5 w-3.5" />
-                    Cancelar e voltar ao início
-                  </button>
+                  <Button variant="ghost" icon={<ArrowLeft className="h-4 w-4" />} className="w-full" onClick={() => { setMode('login'); setGoogleData(null); setError(''); }}>Voltar ao início</Button>
                 </div>
               </form>
             </div>
           )}
 
-          {/* Demo accounts helper (Apenas exibido no modo login) */}
+          {/* Perfis de teste: um clique preenche e-mail e senha */}
           {mode === 'login' && (
-            <div className="mt-6 rounded-xl border border-info/30 bg-info-soft/80 p-4">
-              <div className="flex gap-2.5">
-                <Info className="h-4 w-4 shrink-0 text-info-fg" />
-                <div className="text-xs text-info-fg">
-                  <p className="font-semibold text-info-fg">Perfis de Teste Pré-Configurados:</p>
-                  <p className="mt-1 opacity-90">
-                    Clique em um dos perfis para preencher as credenciais e testar o fluxo completo:
-                  </p>
-                  <div className="mt-2.5 space-y-1.5">
+            <div className="mt-8">
+              <p className="mb-3 text-sm font-medium text-fg-2">Entrar com um perfil de teste</p>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {[
+                  { email: 'carlos.mendes@neoenergia.com', papel: 'Projetista', quem: 'Carlos Mendes' },
+                  { email: 'ana.silva@neoenergia.com', papel: 'Analista', quem: 'Ana Silva' },
+                  { email: 'roberto.fonseca@neoenergia.com', papel: 'Administrador', quem: 'Roberto Fonseca' },
+                ].map((p) => {
+                  const on = email === p.email;
+                  return (
                     <button
+                      key={p.email}
                       type="button"
-                      onClick={() => fillDemo('carlos.mendes@neoenergia.com')}
-                      className="flex w-full items-center justify-between rounded-lg bg-surface/70 px-2.5 py-1.5 text-left font-medium text-info-fg transition-colors hover:bg-surface"
+                      onClick={() => fillDemo(p.email)}
+                      className={`rounded-tile px-4 py-3 text-left ring-1 ring-inset transition-[background-color,box-shadow] duration-200 ${
+                        on ? 'bg-accent-soft ring-2 ring-focus' : 'bg-raised ring-line hover:bg-surface-3/60'
+                      }`}
                     >
-                      <span><strong>Projetista:</strong> carlos.mendes@neoenergia.com</span>
-                      <span className="rounded bg-info-soft px-1.5 py-0.5 text-[10px] text-info-fg">US-04 / US-05</span>
+                      <span className="block text-sm font-semibold text-fg">{p.papel}</span>
+                      <span className="block truncate text-xs text-muted">{p.quem}</span>
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => fillDemo('ana.silva@neoenergia.com')}
-                      className="flex w-full items-center justify-between rounded-lg bg-surface/70 px-2.5 py-1.5 text-left font-medium text-info-fg transition-colors hover:bg-surface"
-                    >
-                      <span><strong>Analista:</strong> ana.silva@neoenergia.com</span>
-                      <span className="rounded bg-info-soft px-1.5 py-0.5 text-[10px] text-info-fg">US-06 Parecer</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => fillDemo('roberto.fonseca@neoenergia.com')}
-                      className="flex w-full items-center justify-between rounded-lg bg-surface/70 px-2.5 py-1.5 text-left font-medium text-info-fg transition-colors hover:bg-surface"
-                    >
-                      <span><strong>Administrador:</strong> roberto.fonseca@neoenergia.com</span>
-                      <span className="rounded bg-info-soft px-1.5 py-0.5 text-[10px] text-info-fg">Gestão & Normas</span>
-                    </button>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -971,16 +718,7 @@ export function LoginPage() {
           {forgotMsg ? (
             <Alert type="success">{forgotMsg}</Alert>
           ) : (
-            <div>
-              <label className="label-base">E-mail corporativo</label>
-              <input
-                type="email"
-                value={forgotEmail}
-                onChange={(e) => setForgotEmail(e.target.value)}
-                placeholder="seu.nome@neoenergia.com"
-                className="input-base"
-              />
-            </div>
+            <TextField label="E-mail corporativo" type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="seu.nome@neoenergia.com" />
           )}
         </div>
       </Modal>

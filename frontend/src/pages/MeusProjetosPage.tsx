@@ -64,8 +64,8 @@ export function MeusProjetosPage() {
       />
 
       <Card padding="lg">
-        <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <SearchField value={search} onChange={setSearch} placeholder="Buscar por código, nome ou endereço" className="w-full lg:max-w-sm" />
+        <div className="mb-5 flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:justify-between">
+          <SearchField value={search} onChange={setSearch} placeholder="Buscar por código, nome ou endereço" className="w-full max-w-md 2xl:max-w-sm" />
           <Segmented label="Filtrar por status" size="sm" value={filter} onChange={setFilter} items={statusFilters.map((f) => ({ value: f.value, label: f.label, count: contagem(f.value) }))} />
         </div>
 

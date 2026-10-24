@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   FolderPlus,
   Building2,
@@ -25,6 +25,7 @@ import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input, Textarea, Select } from '@/components/ui/FormFields';
 import { Alert } from '@/components/ui/Alert';
+import { VazioLinha, VazioMedidor } from '@/ds';
 import { StatusBadge, EnquadramentoBadge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import {
@@ -36,6 +37,7 @@ import {
 import { mockTransformers } from '@/data/mockData';
 import { useProjects } from '@/hooks/useProjects';
 import { useAuth } from '@/hooks/useAuth';
+import { PageHeader } from '@/ds';
 import type {
   ProjectData,
   ConsumerUnitGroup,
@@ -90,7 +92,12 @@ const genId = (prefix: string) => `${prefix}-${Date.now()}-${idCounter++}`;
 
 export function NovoProjetoPage() {
   const navigate = useNavigate();
-  const { addProject } = useProjects();
+  const { projects, addProject, saveStep, submitProject } = useProjects();
+  // "Continuar edição" abre o assistente com ?id= do rascunho ou do reprovado
+  const [params] = useSearchParams();
+  const editId = params.get('id');
+  const [enviando, setEnviando] = useState(false);
+  const [erroEnvio, setErroEnvio] = useState('');
   const { user } = useAuth();
 
   const [step, setStep] = useState(0);
@@ -112,8 +119,25 @@ export function NovoProjetoPage() {
   const [subestacao, setSubestacao] = useState<SubestacaoConfig | undefined>(undefined);
   const [calcResult, setCalcResult] = useState<CalcResult | null>(null);
 
-  // Carrega rascunho do localStorage no mount
+  // Projeto existente: carrega do back (uma vez, quando a lista chega)
+  const [carregado, setCarregado] = useState(false);
   useEffect(() => {
+    if (!editId || carregado) return;
+    const p = projects.find((x) => x.id === editId);
+    if (!p) return;
+    if (p.data) setProjectData((d) => ({ ...d, ...p.data }));
+    setUnits(p.units ?? []);
+    setServiceLoads(p.serviceLoads ?? []);
+    setSubestacao(p.subestacao ?? undefined);
+    setCalcResult(p.calcResult ?? null);
+    const pedido = Number(params.get('step'));
+    setStep(pedido >= 1 && pedido <= 6 ? pedido - 1 : 0);
+    setCarregado(true);
+  }, [editId, projects, carregado, params]);
+
+  // Carrega rascunho do localStorage no mount (só no projeto novo)
+  useEffect(() => {
+    if (editId) return;
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
       if (raw) {
@@ -132,13 +156,14 @@ export function NovoProjetoPage() {
 
   // Salva o objeto do formulário no localStorage toda vez que ele mudar
   useEffect(() => {
+    if (editId) return;
     try {
       const draft = { projectData, units, serviceLoads, subestacao, calcResult, step };
       localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
     } catch {
       // ignora erro de quota
     }
-  }, [projectData, units, serviceLoads, subestacao, calcResult, step]);
+  }, [projectData, units, serviceLoads, subestacao, calcResult, step, editId]);
 
   const liveCalc = useMemo(() => {
     if (units.length === 0 && serviceLoads.length === 0) return null;
@@ -269,7 +294,7 @@ export function NovoProjetoPage() {
     setServiceLoads(serviceLoads.filter((s) => s.id !== id));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const projectCode = `PRJ-2026-${String(Date.now()).slice(-3)}`;
     const now = new Date().toISOString().split('T')[0];
     const result = calcResult || calculateProjectDemand(units, serviceLoads);
@@ -296,8 +321,21 @@ export function NovoProjetoPage() {
       ],
     };
 
-    addProject(newProject);
-    setSubmittedProjectCode(projectCode);
+    // criar só deixa o projeto em rascunho: o envio é uma chamada própria, senão ele nunca chega na fila do analista
+    setEnviando(true);
+    setErroEnvio('');
+    try {
+      // o back guarda o corpo do POST como dados da etapa 1; o resto vai na etapa 6
+      const id = editId || (await addProject(projectData as any)).id;
+      await saveStep(id, 6, { data: projectData, units, serviceLoads, subestacao: newProject.subestacao, calcResult: result });
+      const enviado = await submitProject(id);
+      setSubmittedProjectCode(enviado.code || projectCode);
+    } catch (err: any) {
+      setErroEnvio(err?.message || 'Não foi possível enviar o projeto.');
+      return;
+    } finally {
+      setEnviando(false);
+    }
     setSubmitSuccess(true);
     setShowSubmitModal(false);
     try {
@@ -440,11 +478,12 @@ export function NovoProjetoPage() {
           </div>
 
           {units.length === 0 ? (
-            <div className="py-12 text-center">
-              <Building2 className="mx-auto h-12 w-12 text-subtle" />
-              <p className="mt-3 text-sm text-subtle">Nenhuma unidade cadastrada.</p>
-              <p className="text-xs text-subtle">Clique em "Adicionar Grupo" para começar.</p>
-            </div>
+            <VazioMedidor
+              title="Nenhum grupo de unidades ainda"
+              action={<Button icon={<Plus className="h-4 w-4" />} onClick={addUnit}>Adicionar grupo</Button>}
+            >
+              A demanda sai de cada grupo de apartamentos, casas ou salas. Adicione o primeiro pra o cálculo começar.
+            </VazioMedidor>
           ) : (
             <div className="space-y-3">
               {units.map((unit) => {
@@ -644,11 +683,9 @@ export function NovoProjetoPage() {
           </div>
 
           {serviceLoads.length === 0 ? (
-            <div className="py-12 text-center">
-              <Wrench className="mx-auto h-12 w-12 text-subtle" />
-              <p className="mt-3 text-sm text-subtle">Nenhuma carga de serviço cadastrada.</p>
-              <p className="text-xs text-subtle">Adicione elevadores, bombas, motores e outros equipamentos comuns.</p>
-            </div>
+            <VazioLinha action={<Button size="sm" variant="secondary" icon={<Plus className="h-4 w-4" />} onClick={addServiceLoad}>Adicionar carga</Button>}>
+              Elevador, bomba, portão: o que o condomínio usa em comum. Sem carga de serviço, siga em frente.
+            </VazioLinha>
           ) : (
             <div className="space-y-3">
               {serviceLoads.map((load) => (
@@ -1082,12 +1119,7 @@ export function NovoProjetoPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-fg">Novo Projeto</h1>
-          <p className="text-sm text-muted">O sistema calcula automaticamente a demanda e o enquadramento normativo.</p>
-        </div>
-      </div>
+      <PageHeader greeting="Projetista" title="Novo projeto" description="O sistema calcula automaticamente a demanda e o enquadramento normativo." />
 
       <Card>
         <Stepper
@@ -1128,11 +1160,12 @@ export function NovoProjetoPage() {
         footer={
           <>
             <Button variant="outline" onClick={() => setShowSubmitModal(false)}>Cancelar</Button>
-            <Button icon={<Send className="h-4 w-4" />} onClick={handleSubmit}>Confirmar Envio</Button>
+            <Button icon={<Send className="h-4 w-4" />} loading={enviando} onClick={handleSubmit}>Confirmar envio</Button>
           </>
         }
       >
         <div className="space-y-3">
+          {erroEnvio && <Alert type="error">{erroEnvio}</Alert>}
           <p className="text-sm text-muted">
             Ao enviar o projeto para análise, o sistema irá:
           </p>

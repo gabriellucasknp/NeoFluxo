@@ -5,6 +5,7 @@ import { Settings, FileText, Shield, Database, CheckCircle2, RefreshCw, AlertCir
 import { mockNormVersions } from '@/data/mockData';
 import { testConnection } from '@/firebase/config';
 import { firebaseBackendService } from '@/services/api';
+import { PageHeader } from '@/ds';
 
 export function ConfiguracoesPage() {
   const [firebaseStatus, setFirebaseStatus] = useState<any>(null);
@@ -39,10 +40,7 @@ export function ConfiguracoesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-fg">Configurações do Sistema</h1>
-        <p className="text-sm text-muted">Parâmetros normativos, arquitetura de persistência e integração com Firebase.</p>
-      </div>
+      <PageHeader greeting="Administração" title="Configurações" description="Parâmetros normativos, arquitetura de persistência e integração com Firebase." />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Firebase & Firestore Card */}

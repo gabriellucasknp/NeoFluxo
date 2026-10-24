@@ -6,6 +6,8 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input, Select } from '@/components/ui/FormFields';
+import { ConfirmDialog, PageHeader } from '@/ds';
+import { Alert } from '@/components/ui/Alert';
 import type { User, UserRole } from '@/types';
 
 const roleLabels: Record<UserRole, string> = {
@@ -52,25 +54,27 @@ export function UsuariosPage() {
     setEditing(null);
   };
 
-  const deleteUser = async (id: string) => {
-    if (!window.confirm('Tem certeza que deseja desativar/excluir este usuário?')) return;
+  const [excluir, setExcluir] = useState<string | null>(null);
+  const [erroExcluir, setErroExcluir] = useState('');
+  const deleteUser = (id: string) => setExcluir(id);
+  const confirmarExclusao = async () => {
+    if (!excluir) return;
     try {
-      await userService.delete(id);
+      await userService.delete(excluir);
+      setErroExcluir('');
       fetchUsers();
     } catch (err: any) {
-      alert(err.message || 'Erro ao excluir usuário');
+      setErroExcluir(err.message || 'Não foi possível excluir.');
     }
+    setExcluir(null);
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-fg">Usuários</h1>
-          <p className="text-sm text-muted">Gestão de usuários e permissões do sistema.</p>
-        </div>
-        <Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>Novo Usuário</Button>
-      </div>
+      <PageHeader greeting="Administração" title="Usuários" description="Gestão de usuários e permissões do sistema." actions={<>
+<Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>Novo Usuário</Button>
+      </>} />
+      {erroExcluir && <Alert type="error">{erroExcluir}</Alert>}
 
       <Card padding="none">
         <div className="overflow-x-auto scrollbar-thin">
@@ -147,6 +151,15 @@ export function UsuariosPage() {
           </div>
         )}
       </Modal>
+      <ConfirmDialog
+        open={!!excluir}
+        onClose={() => setExcluir(null)}
+        onConfirm={confirmarExclusao}
+        title="Excluir este usuário?"
+        description="A pessoa perde o acesso ao portal. Os projetos que ela criou continuam no sistema."
+        confirmLabel="Excluir usuário"
+        danger
+      />
     </div>
   );
 }

@@ -8,7 +8,6 @@ import {
   FileText,
   CheckCircle2,
   XCircle,
-  AlertTriangle,
   ShieldCheck,
   FileCheck,
   Clock,
@@ -27,7 +26,7 @@ import { Alert } from '@/components/ui/Alert';
 import { EmptyState } from '@/components/ui/States';
 import { Textarea, Select } from '@/components/ui/FormFields';
 import { formatKw } from '@/services/calcEngine';
-import { Select as DsSelect } from '@/ds';
+import { Segmented, Select as DsSelect, TextArea, VazioLinha } from '@/ds';
 
 const rejectionReasons = [
   'Divergência com a planta ou memorial de cargas',
@@ -58,7 +57,6 @@ export function AnaliseDetailPage() {
     return (
       <Card>
         <EmptyState
-          icon={<AlertTriangle className="h-12 w-12 text-subtle" />}
           title="Projeto não encontrado"
           message="O projeto solicitado não foi localizado na fila de análise técnica."
           action={<Button onClick={() => navigate('/app/analise')}>Voltar para a Fila</Button>}
@@ -262,31 +260,18 @@ export function AnaliseDetailPage() {
       </div>
 
       {/* Navigation Tabs for Technical Deep-dive */}
-      <div className="border-b border-line">
-        <nav className="flex space-x-6">
-          {[
-            { id: 'dados', label: '1. Dados Cadastrais & ART', icon: <FileText className="h-4 w-4" /> },
-            { id: 'cargas', label: '2. Memorial de Cargas', icon: <Building2 className="h-4 w-4" /> },
-            { id: 'memoria', label: '3. Memória de Cálculo Auditável', icon: <FileSpreadsheet className="h-4 w-4" /> },
-            { id: 'subestacao', label: isMt ? '4. Subestação (Obrigatória)' : '4. Subestação (BT)', icon: <Building2 className="h-4 w-4" /> },
-            { id: 'historico', label: '5. Histórico de Auditoria', icon: <History className="h-4 w-4" /> },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 pb-3 text-sm font-semibold border-b-2 transition-all ${
-                activeTab === tab.id
-                  ? 'border-accent text-accent-fg'
-                  : 'border-transparent text-muted hover:text-fg'
-              }`}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-      </div>
+      <Segmented
+        label="Seções do projeto"
+        value={activeTab}
+        onChange={(v) => setActiveTab(v as any)}
+        items={[
+          { value: 'dados', label: 'Dados e ART' },
+          { value: 'cargas', label: 'Memorial de cargas' },
+          { value: 'memoria', label: 'Memória de cálculo' },
+          { value: 'subestacao', label: isMt ? 'Subestação' : 'Subestação (BT)' },
+          { value: 'historico', label: 'Histórico' },
+        ]}
+      />
 
       {/* Tab 1: Dados Cadastrais */}
       {activeTab === 'dados' && (
@@ -391,7 +376,7 @@ export function AnaliseDetailPage() {
                 })}
               </div>
             ) : (
-              <p className="text-sm text-subtle py-6 text-center">Nenhuma unidade cadastrada.</p>
+              <VazioLinha>Nenhuma unidade cadastrada neste projeto.</VazioLinha>
             )}
           </Card>
 
@@ -434,7 +419,7 @@ export function AnaliseDetailPage() {
                 </table>
               </div>
             ) : (
-              <p className="text-sm text-subtle py-4 text-center">Nenhuma carga de serviço cadastrada.</p>
+              <VazioLinha>Sem cargas de serviço neste projeto.</VazioLinha>
             )}
           </Card>
         </div>
@@ -581,7 +566,7 @@ export function AnaliseDetailPage() {
                 </div>
               ))
             ) : (
-              <p className="text-sm text-subtle py-4 text-center">Nenhum evento registrado.</p>
+              <VazioLinha>Nenhum evento registrado ainda.</VazioLinha>
             )}
           </div>
         </Card>
@@ -697,18 +682,13 @@ export function AnaliseDetailPage() {
             options={rejectionReasons.map((r) => ({ value: r, label: r }))}
           />
 
-          <div>
-            <label className="label-base">
-              Observações Técnicas & Diretrizes de Correção
-            </label>
-            <textarea
-              rows={4}
-              value={rejectObs}
-              onChange={(e) => setRejectObs(e.target.value)}
-              placeholder="Descreva detalhadamente os pontos que precisam ser corrigidos pelo projetista..."
-              className="input-base text-sm"
-            />
-          </div>
+          <TextArea
+            label="Observações e o que corrigir"
+            rows={4}
+            value={rejectObs}
+            onChange={(e) => setRejectObs(e.target.value)}
+            placeholder="Descreva os pontos que o projetista precisa corrigir"
+          />
         </div>
       </Modal>
     </div>

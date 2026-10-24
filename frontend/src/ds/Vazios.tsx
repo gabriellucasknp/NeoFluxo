@@ -39,8 +39,8 @@ export function VazioMedidor({ title, children, action }: { title: string; child
       <svg viewBox="0 0 220 124" className="mb-1 h-auto w-44" aria-hidden>
         <path d="M22 112a88 88 0 0 1 176 0" fill="none" stroke="rgb(var(--surface-3))" strokeWidth="22" strokeLinecap="round" />
         <path d="M84 28l-6-18" stroke="rgb(var(--fg))" strokeWidth="3" strokeLinecap="round" />
+        {/* gira em torno do próprio centro, como a seta do DemandGauge (origem em px no SVG some com ela) */}
         <motion.g
-          style={{ originX: '110px', originY: '96px' }}
           initial={{ rotate: -60 }}
           animate={{ rotate: -90 }}
           transition={{ type: 'spring', stiffness: 80, damping: 12 }}
