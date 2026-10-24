@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, type RouteProps } from 'react-router-dom';
-import { type ReactNode } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { ProjectProvider } from '@/hooks/useProjects';
 import { AppLayout } from '@/layouts/AppLayout';
@@ -21,6 +21,11 @@ import { LogsPage } from '@/pages/LogsPage';
 import { ConfiguracoesPage } from '@/pages/ConfiguracoesPage';
 import { DesignSystemPage } from '@/pages/design-system/DesignSystemPage';
 import type { UserRole } from '@/types';
+
+// Aviso do modo demonstração: só carrega no build com VITE_MOCK=1
+const DemoBanner = import.meta.env.VITE_MOCK
+  ? lazy(() => import('@/components/DemoBanner').then((m) => ({ default: m.DemoBanner })))
+  : null;
 
 function ProtectedRoute({ children, roles }: { children: ReactNode; roles?: UserRole[] }) {
   const { user, loading } = useAuth();
@@ -75,6 +80,7 @@ function App() {
       <ProjectProvider>
         <BrowserRouter>
           <AppRoutes />
+          {DemoBanner && <Suspense fallback={null}><DemoBanner /></Suspense>}
         </BrowserRouter>
       </ProjectProvider>
     </AuthProvider>

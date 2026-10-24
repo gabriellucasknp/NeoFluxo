@@ -459,6 +459,8 @@ export function LoginPage() {
                   )}
                 </button>
 
+                {/* Modo demonstração (VITE_MOCK) não tem Google: some o divisor e o botão */}
+                {!import.meta.env.VITE_MOCK && (<>
                 <div className="relative my-4 flex items-center justify-center">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-line" />
@@ -500,6 +502,7 @@ export function LoginPage() {
                     </>
                   )}
                 </button>
+                </>)}
               </form>
             </div>
           )}

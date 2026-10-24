@@ -33,10 +33,14 @@ export async function fetchApi<T>(
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  });
+  // Modo demonstração (build com VITE_MOCK=1): responde do back em memória, sem rede.
+  // Sem VITE_MOCK o Vite troca a condição por false e o mock nem entra no bundle.
+  const response = import.meta.env.VITE_MOCK
+    ? await (await import('./mock/backend')).mockFetch(endpoint, { ...options, headers })
+    : await fetch(url, {
+      ...options,
+      headers,
+    });
 
   /*
    * Token inválido ou expirado.
