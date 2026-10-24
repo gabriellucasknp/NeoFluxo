@@ -32,11 +32,13 @@ export function Stepper({ steps, current, onStep }: { steps: string[]; current: 
                 aria-current={on ? 'step' : undefined}
                 aria-label={`Passo ${i + 1}: ${s}`}
                 animate={{ scale: on ? 1.08 : 1 }}
-                whileHover={onStep ? { scale: on ? 1.12 : 1.06 } : undefined}
-                whileTap={onStep ? { scale: 0.94 } : undefined}
                 transition={spring.snappy}
                 className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition-colors duration-300 ${
-                  on ? 'bg-primary text-on-primary shadow-glow' : done ? 'bg-accent-soft text-accent-fg' : 'bg-raised text-muted ring-1 ring-inset ring-line-strong'
+                  on
+                    ? 'bg-primary text-on-primary shadow-glow'
+                    : done
+                      ? 'bg-accent-soft text-accent-fg hover:bg-accent hover:text-on-accent'
+                      : 'bg-raised text-muted ring-1 ring-inset ring-line-strong hover:text-fg hover:ring-fg'
                 }`}
               >
                 {done ? (

@@ -99,7 +99,6 @@ export function DataTable<T>({
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0, scale: on ? 1.015 : 1, transition: { ...spring.soft, delay: i * 0.03 } }}
                 exit={{ opacity: 0, x: -12, transition: { duration: 0.18, ease } }}
-                whileHover={on ? undefined : { x: 2 }}
                 className={`relative grid cursor-pointer grid-cols-2 items-center gap-x-4 gap-y-2 rounded-tile px-5 py-4 outline-none transition-[background-color,box-shadow,color] duration-300 focus-visible:ring-2 focus-visible:ring-focus md:gap-y-0 ${
                   on ? 'z-10 bg-highlight text-on-highlight shadow-glow md:-mx-2.5 md:px-7' : 'bg-surface text-fg-2 ring-1 ring-inset ring-line hover:bg-surface-2'
                 } md:[grid-template-columns:var(--cols)]`}

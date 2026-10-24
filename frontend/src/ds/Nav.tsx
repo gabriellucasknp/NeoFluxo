@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ChevronDown, LogOut, Menu, Settings, User, X, Zap } from 'lucide-react';
 import { IconButton } from './Button';
-import { pop, spring } from './motion';
+import { Popover } from './Popover';
+import { spring } from './motion';
 
 /*
  * Menus e logo. Menu lateral azul cheio com o item ativo numa aba da cor da página que "sai" do menu,
@@ -56,7 +57,7 @@ export function SideNav({
           return (
             <li key={it.id} className="relative">
               {on && (
-                <motion.span layoutId={layoutId} transition={spring.layout} className="absolute inset-0 rounded-l-full bg-canvas">
+                <motion.span layoutId={layoutId} transition={spring.layout} className="absolute inset-0 z-0 rounded-l-full bg-canvas">
                   {/* cantos côncavos que ligam a aba ao conteúdo */}
                   <span className="absolute -top-5 right-0 h-5 w-5 rounded-br-[20px] shadow-[8px_8px_0_8px_rgb(var(--canvas))]" />
                   <span className="absolute -bottom-5 right-0 h-5 w-5 rounded-tr-[20px] shadow-[8px_-8px_0_8px_rgb(var(--canvas))]" />
@@ -66,13 +67,11 @@ export function SideNav({
                 type="button"
                 onClick={() => onChange(it.id)}
                 aria-current={on ? 'page' : undefined}
-                className={`relative flex h-12 w-full items-center gap-3 rounded-l-full pl-4 pr-5 text-sm font-medium transition-colors duration-300 ${
-                  on ? 'text-accent-fg' : 'text-on-nav/80 hover:text-on-nav'
+                className={`relative z-10 flex h-12 w-full items-center gap-3 rounded-l-full pl-4 pr-5 text-sm font-medium transition-colors duration-300 ${
+                  on ? 'text-accent-fg' : 'text-on-nav/80 hover:bg-white/10 hover:text-on-nav'
                 }`}
               >
-                <motion.span whileHover={{ scale: 1.12 }} transition={spring.snappy} className="flex">
-                  {it.icon}
-                </motion.span>
+                <span className="flex">{it.icon}</span>
                 <span className="flex-1 text-left">{it.label}</span>
                 {it.count !== undefined && (
                   <span className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold ${on ? 'bg-primary text-on-primary' : 'bg-white/20'}`}>
@@ -89,70 +88,50 @@ export function SideNav({
   );
 }
 
-/** Menu do usuário no topo: pílula com foto e nome (refs 8, 9); a lista abre crescendo do botão. */
+/** Menu do usuário no topo: pílula com foto e nome (refs 8, 9); a lista abre num Popover a partir do botão. */
 export function UserMenu({ name, role, onLogout }: { name: string; role: string; onLogout?: () => void }) {
   const [open, setOpen] = useState(false);
-  const root = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const close = (e: MouseEvent) => !root.current?.contains(e.target as Node) && setOpen(false);
-    const esc = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
-    document.addEventListener('mousedown', close);
-    document.addEventListener('keydown', esc);
-    return () => {
-      document.removeEventListener('mousedown', close);
-      document.removeEventListener('keydown', esc);
-    };
-  }, [open]);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const close = useCallback(() => setOpen(false), []);
   const initials = name.split(' ').map((p) => p[0]).slice(0, 2).join('');
+  const item = 'flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-sm transition-colors duration-150';
 
   return (
-    <div ref={root} className="relative">
-      <motion.button
+    <>
+      <button
+        ref={trigger}
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        whileTap={{ scale: 0.97 }}
-        transition={spring.snappy}
-        className="flex items-center gap-3 rounded-full bg-raised py-1.5 pl-1.5 pr-4 ring-1 ring-inset ring-line transition-colors hover:bg-surface-2"
+        aria-haspopup="menu"
+        className={`flex items-center gap-3 rounded-full bg-raised py-1.5 pl-1.5 pr-4 ring-1 ring-inset transition-colors duration-200 ${open ? 'ring-focus' : 'ring-line hover:bg-surface-2'}`}
       >
         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-xs font-semibold text-on-primary">{initials}</span>
         <span className="hidden text-left leading-tight sm:block">
           <span className="block text-xs text-muted">{role}</span>
           <span className="block text-sm font-semibold text-fg">{name}</span>
         </span>
-        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={spring.snappy} className="text-muted">
+        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={spring.snappy} className="flex text-muted">
           <ChevronDown className="h-4 w-4" />
         </motion.span>
-      </motion.button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            variants={pop}
-            initial="hidden"
-            animate="show"
-            exit="exit"
-            style={{ transformOrigin: 'top right' }}
-            className="absolute right-0 z-30 mt-2 w-56 rounded-tile bg-raised p-1.5 shadow-pop ring-1 ring-line"
-          >
-            {[
-              { icon: <User className="h-4 w-4" />, label: 'Meu perfil' },
-              { icon: <Settings className="h-4 w-4" />, label: 'Configurações' },
-            ].map((i) => (
-              <button key={i.label} className="flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-sm text-fg-2 transition-colors hover:bg-surface-2 hover:text-fg">
-                {i.icon}
-                {i.label}
-              </button>
-            ))}
-            <div className="my-1 h-px bg-line" />
-            <button onClick={onLogout} className="flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-sm text-danger-fg transition-colors hover:bg-danger-soft">
-              <LogOut className="h-4 w-4" />
-              Sair
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      </button>
+      <Popover open={open} onClose={close} anchor={trigger} align="end" minWidth={224} role="menu">
+        {[
+          { icon: <User className="h-4 w-4" />, label: 'Meu perfil' },
+          { icon: <Settings className="h-4 w-4" />, label: 'Configurações' },
+        ].map((i) => (
+          <button key={i.label} role="menuitem" onClick={close} className={`${item} text-fg-2 hover:bg-surface-2 hover:text-fg`}>
+            {i.icon}
+            {i.label}
+          </button>
+        ))}
+        <div className="my-1 h-px bg-line" />
+        <button role="menuitem" onClick={() => (close(), onLogout?.())} className={`${item} text-danger-fg hover:bg-danger-soft`}>
+          <LogOut className="h-4 w-4" />
+          Sair
+        </button>
+      </Popover>
+    </>
   );
 }
 

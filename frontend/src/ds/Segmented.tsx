@@ -38,15 +38,22 @@ export function Segmented({
             role="tab"
             aria-selected={on}
             onClick={() => onChange(it.value)}
-            className={`relative shrink-0 rounded-full font-medium transition-colors duration-200 ${size === 'sm' ? 'h-8 px-3.5 text-xs' : 'h-9 px-4 text-sm'} ${
+            className={`group relative shrink-0 rounded-full font-medium transition-colors duration-300 ${size === 'sm' ? 'h-8 px-3.5 text-xs' : 'h-9 px-4 text-sm'} ${
               on ? 'text-fg' : 'text-muted hover:text-fg'
             }`}
           >
-            {on && <motion.span layoutId={`${id}-pilula`} transition={spring.snappy} className="absolute inset-0 rounded-full bg-raised shadow-card" />}
-            <span className="relative flex items-center gap-2">
+            {/* hover: pílula translúcida acende no lugar, sem mexer em nada */}
+            {!on && <span aria-hidden className="absolute inset-0 rounded-full bg-raised/0 transition-colors duration-200 group-hover:bg-raised/60" />}
+            {/* a pílula desliza por baixo dos rótulos (z-0); os rótulos ficam em z-10 pra ela nunca apagar letra no caminho */}
+            {on && <motion.span layoutId={`${id}-pilula`} transition={spring.snappy} className="absolute inset-0 z-0 rounded-full bg-raised shadow-card" />}
+            <span className="relative z-10 flex items-center gap-2">
               {it.label}
               {it.count !== undefined && (
-                <span className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular ${on ? 'bg-primary text-on-primary' : 'bg-surface text-fg-2'}`}>
+                <span
+                  className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular transition-colors duration-300 ${
+                    on ? 'bg-primary text-on-primary' : 'bg-surface text-fg-2'
+                  }`}
+                >
                   {it.count}
                 </span>
               )}

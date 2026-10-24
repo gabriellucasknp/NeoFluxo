@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { animate, motion, useInView, useReducedMotion } from 'motion/react';
 import { ArrowButton } from './Button';
-import { lift, spring } from './motion';
+import { spring } from './motion';
 
 /*
  * Card de número (hoje são 2 jeitos, e o número grande não existia).
@@ -61,7 +61,6 @@ export function StatCard({
   const keep = inLayout ? ({ layout: 'position', transition: spring.layout } as const) : {};
   return (
     <motion.article
-      {...lift}
       className={`flex min-h-[176px] flex-col justify-between gap-6 rounded-card p-5 ${on ? 'bg-highlight text-on-highlight' : 'bg-surface text-fg ring-1 ring-inset ring-line'}`}
     >
       <motion.div {...keep} className="flex items-start justify-between gap-3">
@@ -99,7 +98,7 @@ export function RingStat({ label, percent, value, tone = 'chart-1' }: { label: s
   const c = 2 * Math.PI * r;
   const color = { 'chart-1': 'rgb(var(--chart-1))', success: 'rgb(var(--success))', warning: 'rgb(var(--warning))' }[tone];
   return (
-    <motion.div {...lift} className="flex items-center gap-4 rounded-full bg-surface py-2.5 pl-2.5 pr-7 ring-1 ring-inset ring-line">
+    <motion.div className="flex items-center gap-4 rounded-full bg-surface py-2.5 pl-2.5 pr-7 ring-1 ring-inset ring-line">
       <svg ref={ref} viewBox="0 0 56 56" className="h-14 w-14 -rotate-90" aria-hidden>
         <circle cx="28" cy="28" r={r} fill="none" stroke="rgb(var(--surface-3))" strokeWidth="6" />
         <motion.circle

@@ -1,7 +1,7 @@
 import type { Transition, Variants } from 'motion/react';
 
 /*
- * Movimento do design system. Tudo anima (Mateus, refs 14): hover, clique, abrir, fechar.
+ * Movimento do design system. Tudo anima (Mateus, ref 14): hover, clique, abrir, fechar, mas a caixa clicável fica parada no hover.
  * Só transform e opacity, pra não travar; quem pede menos movimento no sistema recebe a versão curta (MotionConfig "user").
  */
 
@@ -16,18 +16,7 @@ export const spring = {
 
 export const ease = [0.22, 1, 0.36, 1] as const;
 
-/** hover e clique de tudo que é clicável */
-export const press = {
-  whileHover: { y: -1 },
-  whileTap: { scale: 0.97 },
-  transition: spring.snappy,
-};
-
-/** card que levanta no hover */
-export const lift = {
-  whileHover: { y: -3 },
-  transition: spring.soft,
-};
+// Hover nunca move nem cresce a caixa (regra da /site): o hover de botão é o fluxo do Button.tsx.
 
 /** entrada em cascata de listas e grades */
 export const stagger: Variants = {

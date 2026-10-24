@@ -22,7 +22,8 @@ function point(f: number, r = R) {
 function arc(f0: number, f1: number) {
   const [x0, y0] = point(f0);
   const [x1, y1] = point(f1);
-  return `M ${x0} ${y0} A ${R} ${R} 0 ${f1 - f0 > 0.5 ? 1 : 0} 1 ${x1} ${y1}`;
+  // meia-volta no máximo: o arco é sempre o "pequeno" (flag 0). Com 1, acima da metade ele dava a volta pelo outro lado.
+  return `M ${x0} ${y0} A ${R} ${R} 0 0 1 ${x1} ${y1}`;
 }
 
 export function DemandGauge({

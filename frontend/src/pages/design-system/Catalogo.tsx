@@ -235,7 +235,8 @@ export function Catalogo() {
             <Plus className="h-5 w-5" />
           </IconButton>
           <ArrowButton label="Abrir detalhe" />
-          <span className="rounded-full bg-highlight p-2">
+          <span className="flex items-center gap-3 rounded-full bg-highlight py-1.5 pl-5 pr-1.5 text-sm font-medium text-on-highlight">
+            No card azul
             <ArrowButton label="Abrir no card azul" tone="onColor" />
           </span>
         </Stage>

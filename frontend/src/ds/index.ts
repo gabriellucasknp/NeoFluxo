@@ -14,4 +14,5 @@ export { Logo, SideNav, UserMenu, MobileNav, type NavItem } from './Nav';
 export { Stepper } from './Stepper';
 export { Card } from './Card';
 export { PillBars, AreaTrend, PieShare, ChartTable } from './charts';
-export { spring, press, lift, stagger, rise, pop } from './motion';
+export { Popover } from './Popover';
+export { spring, stagger, rise, pop } from './motion';
