@@ -450,10 +450,10 @@ Dessa forma, a entrega fortalece a proposta do MVP ao reunir recursos que melhor
 
 #### 5. Screencast da Entrega 04
 
-- **Screencast de Apresentação — Front-end:** [▶️ Assistir no YouTube](LINK AQUI)
+- **Screencast de Apresentação — Front-end:** [▶️ Assistir no YouTube]([LINK AQUI](https://youtu.be/_Q98KarSiYs))
   - Vídeo demonstrando a navegação e o funcionamento das funcionalidades implementadas (US-02, US-03 e US-07) na interface do Portal de Projetos Elétricos.
 
-- **Screencast de Apresentação — Back-end:** [▶️ Assistir no YouTube](LINK AQUI)
+- **Screencast de Apresentação — Back-end:** [▶️ Assistir no YouTube]([LINK AQUI](https://youtu.be/Al9WnydURqc))
   - Vídeo demonstrando o funcionamento das funcionalidades implementadas (US-02, US-03 e US-07) no back-end da aplicação, incluindo as regras de negócio e o processamento das operações.
 
 
