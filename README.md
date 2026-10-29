@@ -563,3 +563,36 @@ As configurações utilizadas no ambiente Docker são:
 | Usuário | `neofluxo` |
 | Porta externa | `3307` |
 | Porta interna | `3306` |
+
+### 9. Recuperação de senha por e-mail (US-02)
+
+O "Esqueci minha senha" manda um e-mail de verdade pelo SMTP do Gmail. O link vale **60 minutos**, é de **uso único** e pedir um novo invalida o anterior. A nova senha segue a mesma política do cadastro: **mínimo de 6 caracteres**.
+
+**Configurar o envio (uma vez):**
+
+1. Copie o modelo: `cp .env.example .env` (o `.env` não vai pro git).
+2. Na conta Google que vai enviar, ative a verificação em 2 etapas e crie uma **senha de app** em https://myaccount.google.com/apppasswords.
+3. Preencha no `.env`: `MAIL_USERNAME` (o Gmail que envia) e `MAIL_PASSWORD` (a senha de app, 16 caracteres, sem espaços). `MAIL_FROM` é opcional (vazio = o próprio `MAIL_USERNAME`; o Gmail só aceita outro remetente se ele estiver cadastrado como alias na conta).
+4. Suba de novo: `docker compose up --build -d`.
+
+| Variável | Padrão | Para que serve |
+|---|---|---|
+| `MAIL_HOST` / `MAIL_PORT` | `smtp.gmail.com` / `587` | Servidor SMTP (STARTTLS) |
+| `MAIL_USERNAME` / `MAIL_PASSWORD` | vazio | Conta e senha de app do Gmail |
+| `MAIL_FROM` | `MAIL_USERNAME` | Remetente do e-mail |
+| `APP_FRONTEND_URL` | `http://localhost:5173` | Base do link: `<APP_FRONTEND_URL>/redefinir-senha?token=...` |
+
+**Sem credencial também dá pra testar:** com `MAIL_USERNAME` vazio o back sobe normalmente, não envia nada e escreve o link no log. Para pegar o link:
+
+```bash
+docker compose logs backend | grep "redefinir-senha"
+```
+
+**Testar a US-02:**
+
+1. Em http://localhost:5173, clique em **Esqueci minha senha** e informe um e-mail cadastrado (ex.: `carlos.mendes@neoenergia.com`).
+2. Abra o e-mail **Redefinição de senha — NeoFluxo** (ou o link do log) e clique em **Redefinir senha**.
+3. Digite e confirme a nova senha → aparece **"Senha redefinida com sucesso"** e você volta ao login.
+4. Entre com a nova senha. Abrir o mesmo link de novo mostra "Este link já foi utilizado"; depois de 60 minutos, "Este link expirou".
+
+Endpoints: `POST /auth/forgot-password {email}` (resposta sempre igual, exista ou não o e-mail) e `POST /auth/reset-password {token, password}`. No banco fica só o hash SHA-256 do token (tabela `password_reset_tokens`, migração `V2`). No modo demonstração (`VITE_MOCK=1`) não há e-mail: depois de pedir, o modal mostra o link "Demonstração: abrir o link de redefinição".

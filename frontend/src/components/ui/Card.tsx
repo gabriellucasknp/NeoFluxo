@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+/* Ponte pro design system: card de raio grande e fio de 1 px, sem sombra (refs 1, 8, 10). */
 interface CardProps {
   children: ReactNode;
   className?: string;
@@ -9,18 +10,12 @@ interface CardProps {
 const paddingClasses = {
   none: '',
   sm: 'p-4',
-  md: 'p-5',
-  lg: 'p-6',
+  md: 'p-5 sm:p-6',
+  lg: 'p-6 sm:p-7',
 };
 
 export function Card({ children, className = '', padding = 'md' }: CardProps) {
-  return (
-    <div
-      className={`rounded-xl border border-slate-200 bg-white shadow-card ${paddingClasses[padding]} ${className}`}
-    >
-      {children}
-    </div>
-  );
+  return <div className={`rounded-card bg-surface ring-1 ring-inset ring-line ${paddingClasses[padding]} ${className}`}>{children}</div>;
 }
 
 interface CardHeaderProps {
@@ -32,16 +27,12 @@ interface CardHeaderProps {
 
 export function CardHeader({ title, subtitle, icon, action }: CardHeaderProps) {
   return (
-    <div className="mb-4 flex items-start justify-between gap-4">
-      <div className="flex items-start gap-3">
-        {icon && (
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neo-50 text-neo-600">
-            {icon}
-          </div>
-        )}
+    <div className="mb-5 flex items-start justify-between gap-4">
+      <div className="flex items-center gap-3">
+        {icon && <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-fg">{icon}</div>}
         <div>
-          <h3 className="text-base font-semibold text-slate-800">{title}</h3>
-          {subtitle && <p className="mt-0.5 text-sm text-slate-500">{subtitle}</p>}
+          <h3 className="font-display text-lg font-semibold text-fg">{title}</h3>
+          {subtitle && <p className="text-sm text-muted">{subtitle}</p>}
         </div>
       </div>
       {action}

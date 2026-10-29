@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Power } from 'lucide-react';
+import { Plus, Edit2, Trash2, Power } from '@/ds/icons';
 import { mockTransformers } from '@/data/mockData';
 import { transformerService } from '@/services/api';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/FormFields';
+import { ConfirmDialog, PageHeader } from '@/ds';
+import { Alert } from '@/components/ui/Alert';
 import type { TransformerModel } from '@/types';
 
 export function TransformadoresPage() {
@@ -58,36 +60,38 @@ export function TransformadoresPage() {
     }
   };
 
-  const deleteTransformer = async (id: string) => {
-    if (!window.confirm('Excluir este módulo de transformador padronizado?')) return;
+  const [excluir, setExcluir] = useState<string | null>(null);
+  const [erroExcluir, setErroExcluir] = useState('');
+  const deleteTransformer = (id: string) => setExcluir(id);
+  const confirmarExclusao = async () => {
+    if (!excluir) return;
     try {
-      await transformerService.delete(id);
+      await transformerService.delete(excluir);
+      setErroExcluir('');
       fetchTransformers();
     } catch (err: any) {
-      alert(err.message || 'Erro ao excluir transformador');
+      setErroExcluir(err.message || 'Não foi possível excluir.');
     }
+    setExcluir(null);
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800">Transformadores</h1>
-          <p className="text-sm text-slate-500">Módulos de transformadores para dimensionamento de subestações (DIS-NOR-053).</p>
-        </div>
-        <Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>Novo Transformador</Button>
-      </div>
+      <PageHeader greeting="Administração" title="Transformadores" description="Módulos de transformadores para dimensionamento de subestações (DIS-NOR-053)." actions={<>
+<Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>Novo Transformador</Button>
+      </>} />
+      {erroExcluir && <Alert type="error">{erroExcluir}</Alert>}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {transformers.map((t) => (
           <Card key={t.id} className={t.active ? '' : 'opacity-50'}>
             <div className="flex items-start justify-between">
               <div>
-                <p className="font-semibold text-slate-800">{t.label}</p>
-                <p className="mt-1 text-2xl font-bold text-neo-700">{t.powerKva} <span className="text-sm font-normal text-slate-500">kVA</span></p>
-                <p className="text-xs text-slate-500">{t.voltage}</p>
+                <p className="font-semibold text-fg">{t.label}</p>
+                <p className="mt-1 text-2xl font-bold text-accent-fg">{t.powerKva} <span className="text-sm font-normal text-muted">kVA</span></p>
+                <p className="text-xs text-muted">{t.voltage}</p>
               </div>
-              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${t.active ? 'bg-success-100 text-success-700' : 'bg-slate-100 text-slate-500'}`}>
+              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${t.active ? 'bg-success-soft text-success-fg' : 'bg-surface-2 text-muted'}`}>
                 {t.active ? 'Ativo' : 'Inativo'}
               </span>
             </div>
@@ -125,6 +129,15 @@ export function TransformadoresPage() {
           </div>
         )}
       </Modal>
+      <ConfirmDialog
+        open={!!excluir}
+        onClose={() => setExcluir(null)}
+        onConfirm={confirmarExclusao}
+        title="Excluir este transformador?"
+        description="O módulo sai da lista usada no dimensionamento de subestações."
+        confirmLabel="Excluir"
+        danger
+      />
     </div>
   );
 }

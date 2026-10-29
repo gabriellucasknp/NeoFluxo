@@ -1,0 +1,144 @@
+/*
+ * Design tokens do NeoFluxo.
+ * Cada cor tem um PAPEL (fundo, texto, linha, primário...), não um nome de tom.
+ * Linguagem das refs da pasta Dashboard: menu azul com aba branca (7, 13), card destacado e botão ↗ redondo (8, 10),
+ * número grande (3, 9), preto profundo no escuro (4, 5, 6), tudo arredondado (1, 2, 11). Cor = azul Neoenergia.
+ * Valores em canais RGB pra o Tailwind aceitar opacidade (bg-surface/80).
+ *
+ * Tema: <html data-theme="light|dark">; sem atributo = segue o sistema.
+ */
+:root {
+  /* superfícies */
+  --canvas: 236 238 243;      /* fundo da página (é também a cor da aba ativa do menu) */
+  --surface: 250 251 253;     /* card, painel, modal */
+  --surface-2: 241 243 247;   /* tile dentro de card, linha de tabela, hover */
+  --surface-3: 226 230 238;   /* trilho de barra, segmentado */
+  --raised: 255 255 255;      /* input, pílula sobre card */
+
+  /* texto */
+  --fg: 15 20 32;             /* título e valor */
+  --fg-2: 52 60 76;           /* corpo */
+  --muted: 88 97 115;         /* apoio — 6,2:1 na superfície */
+  --subtle: 124 133 150;      /* placeholder, desativado, ícone decorativo */
+
+  /* linhas */
+  --line: 220 225 234;
+  --line-strong: 198 205 218;
+
+  /* ação principal: azul Neoenergia (#0033A0) */
+  --primary: 0 51 160;
+  --primary-hover: 0 42 130;
+  --on-primary: 255 255 255;
+
+  /* acento de marca */
+  --accent: 47 91 234;
+  --accent-soft: 230 236 252;
+  --accent-fg: 0 51 160;      /* texto na cor da marca, legível */
+  --on-accent: 255 255 255;
+
+  /* card destacado (um por linha, refs 7, 8, 10) */
+  --highlight: 0 51 160;
+  --on-highlight: 255 255 255;
+
+  /* menu lateral azul cheio (refs 7, 13) */
+  --nav: 0 51 160;
+  --on-nav: 255 255 255;
+
+  /* status — sólidos iguais nos dois temas (texto branco por cima) */
+  --success: 31 157 69;   --success-soft: 220 245 225; --success-fg: 20 101 43;
+  --warning: 185 120 0;   --warning-soft: 255 243 214; --warning-fg: 122 82 0;
+  --danger: 217 48 37;    --danger-soft: 253 226 224;  --danger-fg: 155 28 20;
+  --info: 47 98 217;      --info-soft: 227 234 251;    --info-fg: 30 64 160;
+
+  /* gráficos: série única em azul, barra em destaque na marca, resto recessivo (ref 10) */
+  /* fatias em ordem fixa, validadas (validate_palette.js da skill dataviz); sempre com rótulo direto */
+  --chart-1: 47 91 234;       /* série principal / fatia 1 */
+  --chart-2: 143 176 255;     /* fatia 2 */
+  --chart-3: 14 154 167;      /* fatia 3 */
+  --chart-rest: 208 215 228;  /* barras fora de destaque */
+  --chart-grid: 226 230 238;
+
+  /* painel de marca (lado esquerdo do login) */
+  --panel: 0 38 120;
+  --on-panel: 255 255 255;
+
+  --focus: 0 51 160;
+  color-scheme: light;
+}
+
+/* Escuro: preto profundo e neutro (refs 4, 5, 6); o azul é a cor que marca */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --canvas: 5 6 9;
+    --surface: 19 21 26;
+    --surface-2: 28 31 38;
+    --surface-3: 40 44 53;
+    --raised: 30 33 41;
+    --fg: 242 244 248;
+    --fg-2: 208 213 224;
+    --muted: 150 158 175;
+    --subtle: 110 117 133;
+    --line: 36 40 49;
+    --line-strong: 54 59 71;
+    --primary: 115 152 255;
+    --primary-hover: 145 175 255;
+    --on-primary: 8 14 32;
+    --accent: 115 152 255;
+    --accent-soft: 24 33 62;
+    --accent-fg: 150 180 255;
+    --on-accent: 8 14 32;
+    --highlight: 47 91 234;
+    --on-highlight: 255 255 255;
+    --nav: 0 40 128;
+    --on-nav: 255 255 255;
+    --success-soft: 20 46 27;  --success-fg: 127 240 141;
+    --warning-soft: 52 42 18;  --warning-fg: 255 207 107;
+    --danger-soft: 54 24 24;   --danger-fg: 255 143 143;
+    --info-soft: 24 33 62;     --info-fg: 143 176 255;
+    --chart-1: 90 130 255;
+    --chart-2: 47 79 208;
+    --chart-3: 18 156 166;
+    --chart-rest: 48 53 64;
+    --chart-grid: 36 40 49;
+    --panel: 19 21 26;
+    --focus: 115 152 255;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --canvas: 5 6 9;
+  --surface: 19 21 26;
+  --surface-2: 28 31 38;
+  --surface-3: 40 44 53;
+  --raised: 30 33 41;
+  --fg: 242 244 248;
+  --fg-2: 208 213 224;
+  --muted: 150 158 175;
+  --subtle: 110 117 133;
+  --line: 36 40 49;
+  --line-strong: 54 59 71;
+  --primary: 115 152 255;
+  --primary-hover: 145 175 255;
+  --on-primary: 8 14 32;
+  --accent: 115 152 255;
+  --accent-soft: 24 33 62;
+  --accent-fg: 150 180 255;
+  --on-accent: 8 14 32;
+  --highlight: 47 91 234;
+  --on-highlight: 255 255 255;
+  --nav: 0 40 128;
+  --on-nav: 255 255 255;
+  --success-soft: 20 46 27;  --success-fg: 127 240 141;
+  --warning-soft: 52 42 18;  --warning-fg: 255 207 107;
+  --danger-soft: 54 24 24;   --danger-fg: 255 143 143;
+  --info-soft: 24 33 62;     --info-fg: 143 176 255;
+  --chart-1: 90 130 255;
+  --chart-2: 47 79 208;
+  --chart-3: 18 156 166;
+  --chart-rest: 48 53 64;
+  --chart-grid: 36 40 49;
+  --panel: 19 21 26;
+  --focus: 115 152 255;
+  color-scheme: dark;
+}

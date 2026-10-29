@@ -1,30 +1,16 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  Zap,
-  Mail,
-  Lock,
-  User as UserIcon,
-  ArrowRight,
-  Info,
-  CheckCircle2,
-  ShieldCheck,
-  Building,
-  ShieldAlert,
-  Clock,
-  Briefcase,
-  Layers,
-  ChevronRight,
-  ArrowLeft,
-} from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { CheckCircle2, ShieldCheck, ArrowLeft } from '@/ds/icons';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/firebase/config';
+import { AuthShell } from '@/components/AuthShell';
 import { useAuth } from '@/hooks/useAuth';
 import { Alert } from '@/components/ui/Alert';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { authService } from '@/services/api';
 import type { User, UserRole } from '@/types';
+import { Segmented, Select as DsSelect, TextField } from '@/ds';
 
 interface GoogleAccountData {
   uid: string;
@@ -37,6 +23,8 @@ interface GoogleAccountData {
 export function LoginPage() {
   const { login, register } = useAuth();
   const navigate = useNavigate();
+  // volta da tela de redefinição (US-02) com o aviso de sucesso
+  const senhaRedefinida = Boolean((useLocation().state as { senhaRedefinida?: boolean } | null)?.senhaRedefinida);
 
   // Mode: 'login' | 'register' | 'google-profile'
   const [mode, setMode] = useState<'login' | 'register' | 'google-profile'>('login');
@@ -45,7 +33,7 @@ export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState(senhaRedefinida ? 'Senha redefinida com sucesso. Entre com a nova senha.' : '');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -67,7 +55,10 @@ export function LoginPage() {
   const [forgotOpen, setForgotOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotMsg, setForgotMsg] = useState('');
+  const [forgotErro, setForgotErro] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
+  // só no modo demonstração (VITE_MOCK): não tem e-mail, então o link aparece no modal
+  const [forgotDemoToken, setForgotDemoToken] = useState('');
 
   /**
    * FLUXO GOOGLE AUTH:
@@ -265,12 +256,14 @@ export function LoginPage() {
   const handleForgotSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!forgotEmail) return;
+    setForgotErro('');
     setForgotLoading(true);
     try {
       const res = await authService.forgotPassword(forgotEmail);
       setForgotMsg(res.message);
-    } catch {
-      setForgotMsg('Link de recuperação enviado com sucesso para o e-mail informado.');
+      setForgotDemoToken(res.demoToken ?? '');
+    } catch (err: any) {
+      setForgotErro(err.message || 'Não foi possível enviar o link agora. Tente de novo em instantes.');
     } finally {
       setForgotLoading(false);
     }
@@ -284,100 +277,21 @@ export function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left panel — branding corporativo Neoenergia */}
-      <div className="relative hidden w-1/2 flex-col justify-between bg-neo-600 p-12 lg:flex">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-neo-500/20" />
-          <div className="absolute -bottom-32 -left-10 h-96 w-96 rounded-full bg-neo-700/30" />
-          <div className="absolute right-1/4 top-1/3 h-40 w-40 rounded-full bg-neo-400/10" />
-        </div>
-        <div className="relative">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-md">
-              <Zap className="h-7 w-7 text-neo-600" fill="currentColor" />
-            </div>
-            <div>
-              <div className="text-xl font-bold tracking-tight text-white">Neoenergia</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-neo-200">
-                Pernambuco
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="relative">
-          <h1 className="text-3xl font-extrabold leading-tight text-white">
-            Portal de Projetos
-            <br />
-            Elétricos
-          </h1>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-neo-100">
-            Cálculo automatizado de demanda elétrica, enquadramento normativo entre
-            DIS-NOR-030 e DIS-NOR-053, e ciclo de aprovação técnica auditável com emissão de atestados digitais.
-          </p>
-          <div className="mt-8 space-y-3">
-            {[
-              'Cálculo automático de demanda conforme DIS-NOR-030',
-              'Classificação automática entre Baixa Tensão (BT) e Média Tensão (MT)',
-              'Memória de cálculo auditável discriminada por carga',
-              'Gestão de rascunhos em 6 etapas e retomada contínua',
-              'Autenticação corporativa integrada com Google e Firestore',
-            ].map((item) => (
-              <div key={item} className="flex items-center gap-3 text-sm text-neo-100">
-                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-neo-500/40">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-neo-200" />
-                </div>
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="relative text-xs text-neo-200">
-          © 2026 Neoenergia Pernambuco. Sistema corporativo de uso restrito e auditado.
-        </div>
-      </div>
-
-      {/* Right panel — formulário dinâmico */}
-      <div className="flex w-full flex-col items-center justify-center bg-slate-50 p-6 lg:w-1/2">
-        <div className="w-full max-w-md">
-          {/* Mobile logo */}
-          <div className="mb-6 flex items-center gap-3 lg:hidden">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-neo-600 shadow-md">
-              <Zap className="h-7 w-7 text-white" fill="white" />
-            </div>
-            <div>
-              <div className="text-xl font-bold text-slate-800">Neoenergia</div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                Pernambuco
-              </div>
-            </div>
-          </div>
-
+    <>
+      <AuthShell>
           {/* TAB SELECTOR (Apenas visível em modo login / register) */}
           {(mode === 'login' || mode === 'register') && (
-            <div className="mb-6 flex rounded-xl bg-slate-200/70 p-1">
-              <button
-                type="button"
-                onClick={() => { setMode('login'); setError(''); setSuccessMsg(''); }}
-                className={`flex-1 rounded-lg py-2 text-center text-sm font-semibold transition-all ${
-                  mode === 'login'
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Entrar no Portal
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMode('register'); setError(''); setSuccessMsg(''); }}
-                className={`flex-1 rounded-lg py-2 text-center text-sm font-semibold transition-all ${
-                  mode === 'register'
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Cadastrar Usuário
-              </button>
+            <div className="mb-8">
+              <Segmented
+                full
+                label="Acesso"
+                value={mode}
+                onChange={(v) => { setMode(v as 'login' | 'register'); setError(''); setSuccessMsg(''); }}
+                items={[
+                  { value: 'login', label: 'Entrar' },
+                  { value: 'register', label: 'Criar conta' },
+                ]}
+              />
             </div>
           )}
 
@@ -399,100 +313,42 @@ export function LoginPage() {
           {mode === 'login' && (
             <div>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold tracking-tight text-slate-800">Identificação do Usuário</h2>
-                <p className="mt-1 text-sm text-slate-500">
-                  Acesse o sistema com suas credenciais corporativas ou autenticação Google.
+                <h2 className="font-display text-3xl font-semibold tracking-tight text-fg">Bem-vindo de volta</h2>
+                <p className="mt-1 text-sm text-muted">
+                  Entre com o e-mail corporativo pra acompanhar seus projetos.
                 </p>
               </div>
 
               <form onSubmit={handleLoginSubmit} className="space-y-4">
-                <div>
-                  <label className="label-base">
-                    E-mail corporativo <span className="text-danger-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="seu.nome@neoenergia.com"
-                      required
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="E-mail corporativo" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="seu.nome@neoenergia.com" required />
 
-                <div>
-                  <label className="label-base">
-                    Senha de acesso <span className="text-danger-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      required
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Senha" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
 
-                <div className="flex items-center justify-between text-sm">
-                  <label className="flex items-center gap-2 text-slate-600">
-                    <input
-                      type="checkbox"
-                      defaultChecked
-                      className="h-4 w-4 rounded border-slate-300 text-neo-600 focus:ring-neo-500"
-                    />
-                    Lembrar credenciais
-                  </label>
+                <div className="flex justify-end text-sm">
                   <button
                     type="button"
-                    onClick={() => { setForgotOpen(true); setForgotEmail(email); setForgotMsg(''); }}
-                    className="font-medium text-neo-600 hover:text-neo-700 hover:underline"
+                    onClick={() => { setForgotOpen(true); setForgotEmail(email); setForgotMsg(''); setForgotErro(''); setForgotDemoToken(''); }}
+                    className="font-medium text-accent-fg underline-offset-4 transition-colors hover:text-fg hover:underline"
                   >
                     Esqueci minha senha
                   </button>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-neo-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-neo-700 disabled:opacity-50"
-                >
-                  {loading ? (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  ) : (
-                    <>
-                      Entrar no Sistema
-                      <ArrowRight className="h-4 w-4" />
-                    </>
-                  )}
-                </button>
+                <Button type="submit" size="lg" loading={loading} arrow className="w-full">Entrar</Button>
 
+                {/* Modo demonstração (VITE_MOCK) não tem Google: some o divisor e o botão */}
+                {!import.meta.env.VITE_MOCK && (<>
                 <div className="relative my-4 flex items-center justify-center">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-200" />
+                    <div className="w-full border-t border-line" />
                   </div>
-                  <div className="relative bg-slate-50 px-3 text-xs uppercase tracking-wider text-slate-400">
-                    Ou continue com
+                  <div className="relative bg-surface-2 px-3 text-xs text-subtle">
+                    ou
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleGoogleLogin}
-                  disabled={googleLoading || loading}
-                  className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-300 bg-white py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
-                >
-                  {googleLoading ? (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-neo-600 border-t-transparent" />
-                  ) : (
-                    <>
-                      <svg className="h-4 w-4" viewBox="0 0 24 24">
+                <Button variant="secondary" size="lg" className="w-full" onClick={handleGoogleLogin} loading={googleLoading} disabled={loading} icon={!googleLoading && (
+<svg className="h-4 w-4" viewBox="0 0 24 24">
                         <path
                           fill="#4285F4"
                           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -510,10 +366,10 @@ export function LoginPage() {
                           d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                         />
                       </svg>
-                      <span>Entrar com Google</span>
-                    </>
-                  )}
-                </button>
+                )}>
+                  Entrar com Google
+                </Button>
+                </>)}
               </form>
             </div>
           )}
@@ -524,128 +380,36 @@ export function LoginPage() {
           {mode === 'register' && (
             <div>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold tracking-tight text-slate-800">Novo Cadastro no Portal</h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <h2 className="font-display text-3xl font-semibold tracking-tight text-fg">Criar conta</h2>
+                <p className="mt-1 text-sm text-muted">
                   Cadastre suas credenciais para submeter e acompanhar projetos elétricos.
                 </p>
               </div>
 
               <form onSubmit={handleRegisterSubmit} className="space-y-4">
-                <div>
-                  <label className="label-base">
-                    Nome Completo <span className="text-danger-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <UserIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="text"
-                      value={regName}
-                      onChange={(e) => setRegName(e.target.value)}
-                      placeholder="Ex: Carlos Eduardo Mendes"
-                      required
-                      minLength={3}
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Nome completo" type="text" value={regName} onChange={(e) => setRegName(e.target.value)} placeholder="Ex: Carlos Eduardo Mendes" required minLength={3} />
 
-                <div>
-                  <label className="label-base">
-                    E-mail Corporativo <span className="text-danger-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="email"
-                      value={regEmail}
-                      onChange={(e) => setRegEmail(e.target.value)}
-                      placeholder="carlos.mendes@neoenergia.com"
-                      required
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="E-mail corporativo" type="email" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} placeholder="carlos.mendes@neoenergia.com" required />
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="label-base">
-                      Perfil Inicial <span className="text-danger-500">*</span>
-                    </label>
-                    <select
-                      value={regRole}
-                      onChange={(e) => setRegRole(e.target.value as any)}
-                      className="input-base text-xs"
-                    >
-                      <option value="projetista">Projetista</option>
-                      <option value="analista">Analista Neoenergia</option>
-                      <option value="admin">Administrador</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="label-base">
-                      Departamento <span className="text-danger-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={regDepartment}
-                      onChange={(e) => setRegDepartment(e.target.value)}
-                      placeholder="Projetos Elétricos"
-                      required
-                      className="input-base"
-                    />
-                  </div>
+                  <DsSelect
+                    label="Perfil inicial *"
+                    value={regRole}
+                    onChange={(v) => setRegRole(v as any)}
+                    options={[
+                      { value: 'projetista', label: 'Projetista' },
+                      { value: 'analista', label: 'Analista Neoenergia' },
+                      { value: 'admin', label: 'Administrador' },
+                    ]}
+                  />
+                  <TextField label="Departamento" type="text" value={regDepartment} onChange={(e) => setRegDepartment(e.target.value)} placeholder="Projetos Elétricos" required />
                 </div>
 
-                <div>
-                  <label className="label-base">
-                    Senha <span className="text-danger-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="password"
-                      value={regPassword}
-                      onChange={(e) => setRegPassword(e.target.value)}
-                      placeholder="Mínimo de 6 caracteres"
-                      required
-                      minLength={6}
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Senha" type="password" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} placeholder="Mínimo de 6 caracteres" required minLength={6} />
 
-                <div>
-                  <label className="label-base">
-                    Confirmar Senha <span className="text-danger-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="password"
-                      value={regConfirmPassword}
-                      onChange={(e) => setRegConfirmPassword(e.target.value)}
-                      placeholder="Repita sua senha"
-                      required
-                      minLength={6}
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Confirmar senha" type="password" value={regConfirmPassword} onChange={(e) => setRegConfirmPassword(e.target.value)} placeholder="Repita sua senha" required minLength={6} />
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-neo-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-neo-700 disabled:opacity-50"
-                >
-                  {loading ? (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  ) : (
-                    <>
-                      Concluir Cadastro e Acessar
-                      <ArrowRight className="h-4 w-4" />
-                    </>
-                  )}
-                </button>
+                <Button type="submit" size="lg" loading={loading} arrow className="w-full">Criar conta e entrar</Button>
               </form>
             </div>
           )}
@@ -654,9 +418,9 @@ export function LoginPage() {
           {/* TELA 3: ESCOLHA DE PERFIL NO LOGIN GOOGLE (NOVA ESPECIFICAÇÃO)   */}
           {/* ================================================================ */}
           {mode === 'google-profile' && googleData && (
-            <div className="rounded-2xl border border-neo-200 bg-white p-6 shadow-md">
+            <div className="rounded-2xl border border-accent/40 bg-surface p-6 shadow-md">
               <div className="mb-5">
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200 mb-3">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-info-soft px-3 py-1 text-xs font-semibold text-info-fg border border-info/30 mb-3">
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24">
                     <path
                       fill="#4285F4"
@@ -677,58 +441,25 @@ export function LoginPage() {
                   </svg>
                   <span>Conta Google Autenticada</span>
                 </div>
-                <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+                <h2 className="font-display text-3xl font-semibold tracking-tight text-fg">
                   Complete seu cadastro
                 </h2>
-                <p className="mt-1 text-sm text-slate-600">
+                <p className="mt-1 text-sm text-muted">
                   Selecione seu perfil de acesso para continuar no Portal de Projetos Elétricos.
                 </p>
               </div>
 
               <form onSubmit={handleGoogleProfileSubmit} className="space-y-4">
                 {/* Nome Completo */}
-                <div>
-                  <label className="label-base">
-                    Nome Completo <span className="text-danger-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <UserIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="text"
-                      value={googleName}
-                      onChange={(e) => setGoogleName(e.target.value)}
-                      placeholder="Seu nome completo"
-                      required
-                      minLength={3}
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Nome completo" type="text" value={googleName} onChange={(e) => setGoogleName(e.target.value)} placeholder="Seu nome completo" required minLength={3} />
 
                 {/* E-mail Corporativo (Preenchido e Travado) */}
-                <div>
-                  <label className="label-base">
-                    E-mail Corporativo Autenticado
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="email"
-                      value={googleData.email}
-                      disabled
-                      className="input-base pl-9 bg-slate-100 text-slate-600 font-medium cursor-not-allowed"
-                    />
-                    <CheckCircle2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-600" />
-                  </div>
-                  <p className="mt-1 text-[11px] text-slate-500">
-                    E-mail validado pelo provedor Google e vinculado ao Cloud Firestore.
-                  </p>
-                </div>
+                <TextField label="E-mail autenticado" type="email" value={googleData.email} disabled hint="E-mail validado pelo provedor Google e vinculado ao Cloud Firestore." />
 
                 {/* Perfil de Acesso — Opções detalhadas conforme especificação */}
                 <div>
                   <label className="label-base">
-                    Perfil de Acesso <span className="text-danger-500">*</span>
+                    Perfil de Acesso <span className="text-danger-fg">*</span>
                   </label>
 
                   <div className="mt-2 space-y-2.5">
@@ -737,8 +468,8 @@ export function LoginPage() {
                       onClick={() => setSelectedRole('projetista')}
                       className={`cursor-pointer rounded-xl border p-3.5 transition-all ${
                         selectedRole === 'projetista'
-                          ? 'border-neo-600 bg-neo-50/70 ring-2 ring-neo-500/20 shadow-sm'
-                          : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50'
+                          ? 'border-accent bg-accent-soft/70 ring-2 ring-accent/20 shadow-sm'
+                          : 'border-line bg-surface hover:border-line-strong hover:bg-surface-2/50'
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -747,16 +478,16 @@ export function LoginPage() {
                           name="profileRole"
                           checked={selectedRole === 'projetista'}
                           onChange={() => setSelectedRole('projetista')}
-                          className="mt-1 h-4 w-4 text-neo-600 focus:ring-neo-500"
+                          className="mt-1 h-4 w-4 text-accent-fg focus:ring-accent"
                         />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-slate-900">Projetista</span>
-                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                            <span className="text-sm font-bold text-fg">Projetista</span>
+                            <span className="rounded-full bg-success-soft px-2 py-0.5 text-[10px] font-bold text-success-fg">
                               Acesso Imediato
                             </span>
                           </div>
-                          <p className="mt-0.5 text-xs text-slate-600">
+                          <p className="mt-0.5 text-xs text-muted">
                             Elaboração e gerenciamento de projetos elétricos, dimensionamento em 6 etapas e cálculo de demanda.
                           </p>
                         </div>
@@ -768,8 +499,8 @@ export function LoginPage() {
                       onClick={() => setSelectedRole('analista')}
                       className={`cursor-pointer rounded-xl border p-3.5 transition-all ${
                         selectedRole === 'analista'
-                          ? 'border-neo-600 bg-neo-50/70 ring-2 ring-neo-500/20 shadow-sm'
-                          : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50'
+                          ? 'border-accent bg-accent-soft/70 ring-2 ring-accent/20 shadow-sm'
+                          : 'border-line bg-surface hover:border-line-strong hover:bg-surface-2/50'
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -778,16 +509,16 @@ export function LoginPage() {
                           name="profileRole"
                           checked={selectedRole === 'analista'}
                           onChange={() => setSelectedRole('analista')}
-                          className="mt-1 h-4 w-4 text-neo-600 focus:ring-neo-500"
+                          className="mt-1 h-4 w-4 text-accent-fg focus:ring-accent"
                         />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-slate-900">Analista</span>
-                            <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-800">
+                            <span className="text-sm font-bold text-fg">Analista</span>
+                            <span className="rounded-full bg-info-soft px-2 py-0.5 text-[10px] font-bold text-info-fg">
                               Corpo Técnico
                             </span>
                           </div>
-                          <p className="mt-0.5 text-xs text-slate-600">
+                          <p className="mt-0.5 text-xs text-muted">
                             Análise técnica de projetos e emissão de pareceres, conforme as permissões autorizadas da Neoenergia.
                           </p>
                         </div>
@@ -799,8 +530,8 @@ export function LoginPage() {
                       onClick={() => setSelectedRole('admin')}
                       className={`cursor-pointer rounded-xl border p-3.5 transition-all ${
                         selectedRole === 'admin'
-                          ? 'border-amber-600 bg-amber-50/70 ring-2 ring-amber-500/20 shadow-sm'
-                          : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50'
+                          ? 'border-warning bg-warning-soft/70 ring-2 ring-warning/20 shadow-sm'
+                          : 'border-line bg-surface hover:border-line-strong hover:bg-surface-2/50'
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -809,16 +540,16 @@ export function LoginPage() {
                           name="profileRole"
                           checked={selectedRole === 'admin'}
                           onChange={() => setSelectedRole('admin')}
-                          className="mt-1 h-4 w-4 text-amber-600 focus:ring-amber-500"
+                          className="mt-1 h-4 w-4 text-warning-fg focus:ring-warning"
                         />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-slate-900">Administrador</span>
-                            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-900">
+                            <span className="text-sm font-bold text-fg">Administrador</span>
+                            <span className="rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-bold text-warning-fg">
                               Requer Homologação
                             </span>
                           </div>
-                          <p className="mt-0.5 text-xs text-slate-600">
+                          <p className="mt-0.5 text-xs text-muted">
                             Gerenciamento de usuários, perfis e configurações administrativas, conforme as permissões autorizadas.
                           </p>
                         </div>
@@ -828,28 +559,13 @@ export function LoginPage() {
                 </div>
 
                 {/* Departamento */}
-                <div>
-                  <label className="label-base">
-                    Departamento ou Área <span className="text-danger-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="text"
-                      value={googleDepartment}
-                      onChange={(e) => setGoogleDepartment(e.target.value)}
-                      placeholder="Ex: Projetos Elétricos / Engenharia"
-                      required
-                      className="input-base pl-9"
-                    />
-                  </div>
-                </div>
+                <TextField label="Departamento ou área" type="text" value={googleDepartment} onChange={(e) => setGoogleDepartment(e.target.value)} placeholder="Ex: Projetos Elétricos / Engenharia" required />
 
                 {/* Alerta Contextual Informativo */}
                 {selectedRole === 'admin' ? (
-                  <div className="rounded-xl border border-blue-200 bg-blue-50/80 p-3 text-xs text-blue-900">
+                  <div className="rounded-xl border border-info/30 bg-info-soft/80 p-3 text-xs text-info-fg">
                     <div className="flex gap-2">
-                      <ShieldCheck className="h-4 w-4 shrink-0 text-blue-700 mt-0.5" />
+                      <ShieldCheck className="h-4 w-4 shrink-0 text-info-fg mt-0.5" />
                       <div>
                         <strong className="block font-semibold">Acesso ao Portal Liberado:</strong>
                         Seu acesso às funcionalidades de cálculo de demanda, memorial e emissão de atestados está autorizado imediatamente como Projetista.
@@ -857,9 +573,9 @@ export function LoginPage() {
                     </div>
                   </div>
                 ) : selectedRole === 'analista' ? (
-                  <div className="rounded-xl border border-blue-200 bg-blue-50/80 p-3 text-xs text-blue-900">
+                  <div className="rounded-xl border border-info/30 bg-info-soft/80 p-3 text-xs text-info-fg">
                     <div className="flex gap-2">
-                      <ShieldCheck className="h-4 w-4 shrink-0 text-blue-700 mt-0.5" />
+                      <ShieldCheck className="h-4 w-4 shrink-0 text-info-fg mt-0.5" />
                       <div>
                         <strong className="block font-semibold">Perfil de Analista Técnico:</strong>
                         Acesso liberado à fila de análise técnica de projetos e homologação de atestados de viabilidade.
@@ -867,9 +583,9 @@ export function LoginPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 p-3 text-xs text-emerald-900">
+                  <div className="rounded-xl border border-success/30 bg-success-soft/80 p-3 text-xs text-success-fg">
                     <div className="flex gap-2">
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-700 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-success-fg mt-0.5" />
                       <div>
                         <strong className="block font-semibold">Liberação Imediata:</strong>
                         Seu perfil de Projetista será ativado instantaneamente para iniciar projetos elétricos, calcular demandas e emitir atestados.
@@ -880,85 +596,44 @@ export function LoginPage() {
 
                 {/* Botões de Ação */}
                 <div className="pt-2 space-y-2">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-neo-600 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-neo-700 disabled:opacity-50"
-                  >
-                    {loading ? (
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    ) : (
-                      <>
-                        Confirmar e Acessar Portal
-                        <ArrowRight className="h-4 w-4" />
-                      </>
-                    )}
-                  </button>
+                  <Button type="submit" size="lg" loading={loading} arrow className="w-full">Confirmar e entrar</Button>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMode('login');
-                      setGoogleData(null);
-                      setError('');
-                    }}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                  >
-                    <ArrowLeft className="h-3.5 w-3.5" />
-                    Cancelar e voltar ao início
-                  </button>
+                  <Button variant="ghost" icon={<ArrowLeft className="h-4 w-4" />} className="w-full" onClick={() => { setMode('login'); setGoogleData(null); setError(''); }}>Voltar ao início</Button>
                 </div>
               </form>
             </div>
           )}
 
-          {/* Demo accounts helper (Apenas exibido no modo login) */}
+          {/* Perfis de teste: um clique preenche e-mail e senha */}
           {mode === 'login' && (
-            <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50/80 p-4">
-              <div className="flex gap-2.5">
-                <Info className="h-4 w-4 shrink-0 text-blue-600" />
-                <div className="text-xs text-blue-800">
-                  <p className="font-semibold text-blue-900">Perfis de Teste Pré-Configurados:</p>
-                  <p className="mt-1 opacity-90">
-                    Clique em um dos perfis para preencher as credenciais e testar o fluxo completo:
-                  </p>
-                  <div className="mt-2.5 space-y-1.5">
+            <div className="mt-8">
+              <p className="mb-3 text-sm font-medium text-fg-2">Entrar com um perfil de teste</p>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {[
+                  { email: 'carlos.mendes@neoenergia.com', papel: 'Projetista', quem: 'Carlos Mendes' },
+                  { email: 'ana.silva@neoenergia.com', papel: 'Analista', quem: 'Ana Silva' },
+                  { email: 'roberto.fonseca@neoenergia.com', papel: 'Administrador', quem: 'Roberto Fonseca' },
+                ].map((p) => {
+                  const on = email === p.email;
+                  return (
                     <button
+                      key={p.email}
                       type="button"
-                      onClick={() => fillDemo('carlos.mendes@neoenergia.com')}
-                      className="flex w-full items-center justify-between rounded-lg bg-white/70 px-2.5 py-1.5 text-left font-medium text-blue-950 transition-colors hover:bg-white"
+                      onClick={() => fillDemo(p.email)}
+                      className={`rounded-tile px-4 py-3 text-left ring-1 ring-inset transition-[background-color,box-shadow] duration-200 ${
+                        on ? 'bg-accent-soft ring-2 ring-focus' : 'bg-raised ring-line hover:bg-surface-3/60'
+                      }`}
                     >
-                      <span><strong>Projetista:</strong> carlos.mendes@neoenergia.com</span>
-                      <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">US-04 / US-05</span>
+                      <span className="block text-sm font-semibold text-fg">{p.papel}</span>
+                      <span className="block truncate text-xs text-muted">{p.quem}</span>
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => fillDemo('ana.silva@neoenergia.com')}
-                      className="flex w-full items-center justify-between rounded-lg bg-white/70 px-2.5 py-1.5 text-left font-medium text-blue-950 transition-colors hover:bg-white"
-                    >
-                      <span><strong>Analista:</strong> ana.silva@neoenergia.com</span>
-                      <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">US-06 Parecer</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => fillDemo('roberto.fonseca@neoenergia.com')}
-                      className="flex w-full items-center justify-between rounded-lg bg-white/70 px-2.5 py-1.5 text-left font-medium text-blue-950 transition-colors hover:bg-white"
-                    >
-                      <span><strong>Administrador:</strong> roberto.fonseca@neoenergia.com</span>
-                      <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">Gestão & Normas</span>
-                    </button>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
             </div>
           )}
 
-          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <ShieldCheck className="h-4 w-4 text-emerald-600" />
-            <span>Autenticação auditada com Cloud Firestore & Firebase Auth</span>
-          </div>
-        </div>
-      </div>
+      </AuthShell>
 
       {/* Forgot Password Modal (US-02) */}
       <Modal
@@ -979,25 +654,26 @@ export function LoginPage() {
         }
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">
-            Informe o e-mail corporativo cadastrado. Você receberá um link de verificação para cadastrar uma nova senha.
+          <p className="text-sm text-muted">
+            Informe o e-mail corporativo cadastrado. Você receberá um link para cadastrar uma nova senha, válido por 60 minutos.
           </p>
           {forgotMsg ? (
-            <Alert type="success">{forgotMsg}</Alert>
+            <>
+              <Alert type="success">{forgotMsg}</Alert>
+              {forgotDemoToken && (
+                <Link
+                  to={`/redefinir-senha?token=${encodeURIComponent(forgotDemoToken)}`}
+                  className="block text-sm font-medium text-accent-fg underline-offset-4 transition-colors hover:text-fg hover:underline"
+                >
+                  Demonstração: abrir o link de redefinição
+                </Link>
+              )}
+            </>
           ) : (
-            <div>
-              <label className="label-base">E-mail corporativo</label>
-              <input
-                type="email"
-                value={forgotEmail}
-                onChange={(e) => setForgotEmail(e.target.value)}
-                placeholder="seu.nome@neoenergia.com"
-                className="input-base"
-              />
-            </div>
+            <TextField label="E-mail corporativo" type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="seu.nome@neoenergia.com" error={forgotErro || undefined} />
           )}
         </div>
       </Modal>
-    </div>
+    </>
   );
 }

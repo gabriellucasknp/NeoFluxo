@@ -1,0 +1,570 @@
+{
+  "_origem": "Respostas reais do back Spring (localhost:8081) em 23/10/2026: /auth/me dos 3 perfis, /projects e /projects/{id}. Fatores de demanda e transformadores: o back não tem essas rotas (responde 500), então vêm do fallback que o front já mostra (src/data/mockData.ts). Sem senha e sem token. Unidades e cargas de serviço de PE-2024-001/002/003 inventadas pra demonstração (o back devolve null); a demanda é recalculada ao carregar.",
+  "users": [
+    {
+      "id": "63b2733f-149a-4283-b0b1-2c4850797273",
+      "name": "Carlos Mendes",
+      "email": "carlos.mendes@neoenergia.com",
+      "role": "PROJETISTA",
+      "department": "Projetos Elétricos",
+      "active": true,
+      "createdAt": "2026-10-21T18:15:01Z"
+    },
+    {
+      "id": "525f0969-3b87-409b-9ea3-c32dbd8d1084",
+      "name": "Ana Beatriz Silva",
+      "email": "ana.silva@neoenergia.com",
+      "role": "ANALISTA",
+      "department": "Análise Técnica",
+      "active": true,
+      "createdAt": "2026-10-21T18:15:01Z"
+    },
+    {
+      "id": "c5165681-5ce7-4481-8609-0c7fd1b81c59",
+      "name": "Roberto Fonseca",
+      "email": "roberto.fonseca@neoenergia.com",
+      "role": "ADMIN",
+      "department": "Engenharia",
+      "active": true,
+      "createdAt": "2026-10-21T18:15:02Z"
+    },
+    {
+      "id": "a2b2e4db-a15a-457d-98cc-cc3cf0ef38c9",
+      "name": "Administrador",
+      "email": "admin@example.com",
+      "role": "ADMIN",
+      "department": "Governança e TI",
+      "active": true,
+      "createdAt": "2026-10-21T18:15:02Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": "0cf3a255-0bf0-4782-8156-bd878413b49d",
+      "code": "PE-2024-003",
+      "projetistaId": "63b2733f-149a-4283-b0b1-2c4850797273",
+      "projetistaName": "Carlos Mendes",
+      "status": "aprovado",
+      "currentStep": 6,
+      "data": {
+        "cep": "52011-000",
+        "city": "Recife",
+        "name": "Condomínio Solar das Palmeiras",
+        "number": "450",
+        "address": "Rua das Graças",
+        "document": "45.123.890/0001-34",
+        "artNumber": "PE2024033211",
+        "neighborhood": "Graças",
+        "technicalResponsible": "Carlos Mendes — Eng. Eletricista"
+      },
+      "units": [
+        {
+          "id": "u3a",
+          "name": "Apartamentos",
+          "unitType": "Residencial",
+          "unitCount": 6,
+          "tugCount": 0,
+          "tueCount": 0,
+          "lightingPoints": 0,
+          "loads": [
+            {
+              "id": "u3a-0",
+              "type": "iluminacao",
+              "label": "Iluminação",
+              "quantity": 8,
+              "powerPerUnit": 100
+            },
+            {
+              "id": "u3a-1",
+              "type": "tug",
+              "label": "TUG",
+              "quantity": 12,
+              "powerPerUnit": 100
+            },
+            {
+              "id": "u3a-2",
+              "type": "tue",
+              "label": "Chuveiro",
+              "quantity": 1,
+              "powerPerUnit": 4400
+            },
+            {
+              "id": "u3a-3",
+              "type": "tue",
+              "label": "Ar-condicionado",
+              "quantity": 1,
+              "powerPerUnit": 1400
+            }
+          ]
+        }
+      ],
+      "serviceLoads": [
+        {
+          "id": "s3b",
+          "category": "bombas",
+          "name": "Bomba de recalque",
+          "quantity": 2,
+          "power": 2200
+        },
+        {
+          "id": "s3c",
+          "category": "iluminacao_comum",
+          "name": "Iluminação das áreas comuns",
+          "quantity": 1,
+          "power": 1800
+        }
+      ],
+      "calcResult": null,
+      "subestacao": null,
+      "review": null,
+      "rejection": null,
+      "history": [],
+      "certificate": {
+        "id": "7fb630d7-b4c4-49e3-b6bb-7214603f9777",
+        "code": "AT-2024-0003",
+        "analystId": "525f0969-3b87-409b-9ea3-c32dbd8d1084",
+        "issueDate": "2026-10-20T18:15:01.610760961Z",
+        "projectId": "p3",
+        "qrCodeData": "/api/certificates/validate/AT-2024-0003",
+        "analystName": "Ana Beatriz Silva",
+        "projectCode": "PE-2024-003",
+        "validationUrl": "/api/certificates/validate/AT-2024-0003",
+        "uniqueIdentifier": "NEO-AT-2024-8F7E6D5C4B3A"
+      },
+      "atestado": {
+        "id": "7fb630d7-b4c4-49e3-b6bb-7214603f9777",
+        "code": "AT-2024-0003",
+        "analystId": "525f0969-3b87-409b-9ea3-c32dbd8d1084",
+        "issueDate": "2026-10-20T18:15:01.610760961Z",
+        "projectId": "p3",
+        "qrCodeData": "/api/certificates/validate/AT-2024-0003",
+        "analystName": "Ana Beatriz Silva",
+        "projectCode": "PE-2024-003",
+        "validationUrl": "/api/certificates/validate/AT-2024-0003",
+        "uniqueIdentifier": "NEO-AT-2024-8F7E6D5C4B3A"
+      },
+      "certificateCode": "AT-2024-0003",
+      "createdAt": "2026-10-21T18:15:02Z",
+      "updatedAt": "2026-10-21T18:15:02Z",
+      "submittedAt": "2026-10-18T18:15:02Z",
+      "analyzedAt": "2026-10-20T18:15:02Z",
+      "approvedAt": "2026-10-20T18:15:02Z"
+    },
+    {
+      "id": "48dc36b3-871c-4a76-bcd0-8478fa20da7e",
+      "code": "PE-2024-002",
+      "projetistaId": "63b2733f-149a-4283-b0b1-2c4850797273",
+      "projetistaName": "Carlos Mendes",
+      "status": "enviado_analise",
+      "currentStep": 6,
+      "data": {
+        "cep": "51110-160",
+        "city": "Recife",
+        "name": "Empresarial RioMar Trade Center",
+        "number": "251",
+        "address": "Av. República do Líbano",
+        "document": "98.765.432/0001-11",
+        "artNumber": "PE2024099412",
+        "neighborhood": "Pina",
+        "technicalResponsible": "Carlos Mendes — Eng. Eletricista"
+      },
+      "units": [
+        {
+          "id": "u2a",
+          "name": "Salas comerciais",
+          "unitType": "Comercial",
+          "unitCount": 40,
+          "tugCount": 0,
+          "tueCount": 0,
+          "lightingPoints": 0,
+          "loads": [
+            {
+              "id": "u2a-0",
+              "type": "iluminacao",
+              "label": "Iluminação",
+              "quantity": 10,
+              "powerPerUnit": 60
+            },
+            {
+              "id": "u2a-1",
+              "type": "tug",
+              "label": "TUG",
+              "quantity": 10,
+              "powerPerUnit": 150
+            },
+            {
+              "id": "u2a-2",
+              "type": "tue",
+              "label": "Ar-condicionado",
+              "quantity": 2,
+              "powerPerUnit": 2200
+            }
+          ]
+        },
+        {
+          "id": "u2b",
+          "name": "Lojas do térreo",
+          "unitType": "Comercial",
+          "unitCount": 6,
+          "tugCount": 0,
+          "tueCount": 0,
+          "lightingPoints": 0,
+          "loads": [
+            {
+              "id": "u2b-0",
+              "type": "iluminacao",
+              "label": "Iluminação",
+              "quantity": 20,
+              "powerPerUnit": 60
+            },
+            {
+              "id": "u2b-1",
+              "type": "tug",
+              "label": "TUG",
+              "quantity": 16,
+              "powerPerUnit": 150
+            },
+            {
+              "id": "u2b-2",
+              "type": "tue",
+              "label": "Ar-condicionado",
+              "quantity": 3,
+              "powerPerUnit": 3500
+            }
+          ]
+        }
+      ],
+      "serviceLoads": [
+        {
+          "id": "s2a",
+          "category": "elevadores",
+          "name": "Elevadores",
+          "quantity": 3,
+          "power": 11000
+        },
+        {
+          "id": "s2b",
+          "category": "bombas",
+          "name": "Bombas de incêndio",
+          "quantity": 2,
+          "power": 7500
+        },
+        {
+          "id": "s2c",
+          "category": "portoes",
+          "name": "Portão da garagem",
+          "quantity": 1,
+          "power": 750
+        }
+      ],
+      "calcResult": null,
+      "subestacao": {
+        "quantidade": 1,
+        "configuracao": "Subestação abrigada em alvenaria 13.8kV/380V",
+        "potenciaNominal": 225,
+        "transformadorId": "t3",
+        "transformadorLabel": "Transformador Padronizado 225 kVA"
+      },
+      "review": null,
+      "rejection": null,
+      "history": [],
+      "certificate": null,
+      "atestado": null,
+      "certificateCode": null,
+      "createdAt": "2026-10-21T18:15:02Z",
+      "updatedAt": "2026-10-21T18:15:02Z",
+      "submittedAt": "2026-10-21T18:15:02Z",
+      "analyzedAt": null,
+      "approvedAt": null
+    },
+    {
+      "id": "c0a845f1-3c86-472c-8a0e-5ba97973aa00",
+      "code": "PE-2024-001",
+      "projetistaId": "63b2733f-149a-4283-b0b1-2c4850797273",
+      "projetistaName": "Carlos Mendes",
+      "status": "rascunho",
+      "currentStep": 2,
+      "data": {
+        "cep": "51020-000",
+        "city": "Recife",
+        "name": "Residencial Boa Viagem",
+        "number": "1250",
+        "address": "Av. Boa Viagem",
+        "document": "12.345.678/0001-90",
+        "artNumber": "PE2024018293",
+        "neighborhood": "Boa Viagem",
+        "technicalResponsible": "Carlos Mendes — Eng. Eletricista"
+      },
+      "units": [
+        {
+          "id": "u1a",
+          "name": "Apartamentos",
+          "unitType": "Residencial",
+          "unitCount": 24,
+          "tugCount": 0,
+          "tueCount": 0,
+          "lightingPoints": 0,
+          "loads": [
+            {
+              "id": "u1a-0",
+              "type": "iluminacao",
+              "label": "Iluminação",
+              "quantity": 8,
+              "powerPerUnit": 100
+            },
+            {
+              "id": "u1a-1",
+              "type": "tug",
+              "label": "TUG",
+              "quantity": 12,
+              "powerPerUnit": 100
+            },
+            {
+              "id": "u1a-2",
+              "type": "tue",
+              "label": "Chuveiro",
+              "quantity": 1,
+              "powerPerUnit": 5500
+            },
+            {
+              "id": "u1a-3",
+              "type": "tue",
+              "label": "Ar-condicionado",
+              "quantity": 1,
+              "powerPerUnit": 1400
+            }
+          ]
+        }
+      ],
+      "serviceLoads": [],
+      "calcResult": null,
+      "subestacao": null,
+      "review": null,
+      "rejection": null,
+      "history": [],
+      "certificate": null,
+      "atestado": null,
+      "certificateCode": null,
+      "createdAt": "2026-10-21T18:15:02Z",
+      "updatedAt": "2026-10-21T18:15:02Z",
+      "submittedAt": null,
+      "analyzedAt": null,
+      "approvedAt": null
+    },
+    {
+      "id": "ffdba3ae-5a99-4595-8edc-5a728607682c",
+      "code": "PE-2024-004",
+      "projetistaId": "63b2733f-149a-4283-b0b1-2c4850797273",
+      "projetistaName": "Carlos Mendes",
+      "status": "reprovado",
+      "currentStep": 4,
+      "data": {
+        "cep": "55590-000",
+        "city": "Ipojuca",
+        "name": "Galpão Logístico Suape",
+        "number": "KM 12",
+        "address": "Rodovia PE-060",
+        "document": "33.222.111/0001-44",
+        "artNumber": "PE2024077889",
+        "neighborhood": "Distrito Industrial",
+        "technicalResponsible": "Carlos Mendes — Eng. Eletricista"
+      },
+      "units": null,
+      "serviceLoads": null,
+      "calcResult": null,
+      "subestacao": null,
+      "review": null,
+      "rejection": {
+        "date": "2026-10-21T06:15:01.615165086Z",
+        "reason": "Subdimensionamento de cargas de climatização / TUE",
+        "analyst": "Ana Beatriz Silva",
+        "analystId": "525f0969-3b87-409b-9ea3-c32dbd8d1084",
+        "observations": "Memorial não considerou fatores de demanda para os aparelhos de ar condicionado central das docas."
+      },
+      "history": [],
+      "certificate": null,
+      "atestado": null,
+      "certificateCode": null,
+      "createdAt": "2026-10-21T18:15:02Z",
+      "updatedAt": "2026-10-21T18:15:02Z",
+      "submittedAt": "2026-10-19T18:15:02Z",
+      "analyzedAt": "2026-10-21T06:15:02Z",
+      "approvedAt": null
+    }
+  ],
+  "reviews": [],
+  "demandFactors": [
+    {
+      "id": "df1",
+      "category": "iluminacao",
+      "label": "Iluminação — até 1000W",
+      "minPower": 0,
+      "maxPower": 1000,
+      "factor": 1,
+      "active": true
+    },
+    {
+      "id": "df2",
+      "category": "iluminacao",
+      "label": "Iluminação — 1001W a 2000W",
+      "minPower": 1001,
+      "maxPower": 2000,
+      "factor": 0.8,
+      "active": true
+    },
+    {
+      "id": "df3",
+      "category": "iluminacao",
+      "label": "Iluminação — 2001W a 3000W",
+      "minPower": 2001,
+      "maxPower": 3000,
+      "factor": 0.65,
+      "active": true
+    },
+    {
+      "id": "df4",
+      "category": "iluminacao",
+      "label": "Iluminação — acima de 3000W",
+      "minPower": 3001,
+      "maxPower": 0,
+      "factor": 0.55,
+      "active": true
+    },
+    {
+      "id": "df5",
+      "category": "tug",
+      "label": "TUG — até 1000W",
+      "minPower": 0,
+      "maxPower": 1000,
+      "factor": 1,
+      "active": true
+    },
+    {
+      "id": "df6",
+      "category": "tug",
+      "label": "TUG — 1001W a 2000W",
+      "minPower": 1001,
+      "maxPower": 2000,
+      "factor": 0.8,
+      "active": true
+    },
+    {
+      "id": "df7",
+      "category": "tug",
+      "label": "TUG — 2001W a 3000W",
+      "minPower": 2001,
+      "maxPower": 3000,
+      "factor": 0.6,
+      "active": true
+    },
+    {
+      "id": "df8",
+      "category": "tug",
+      "label": "TUG — acima de 3000W",
+      "minPower": 3001,
+      "maxPower": 0,
+      "factor": 0.4,
+      "active": true
+    },
+    {
+      "id": "df9",
+      "category": "tue",
+      "label": "TUE — fator único",
+      "minPower": 0,
+      "maxPower": 0,
+      "factor": 1,
+      "active": true
+    },
+    {
+      "id": "df10",
+      "category": "elevador",
+      "label": "Elevador — 1 motor",
+      "minPower": 0,
+      "maxPower": 0,
+      "factor": 1,
+      "active": true
+    },
+    {
+      "id": "df11",
+      "category": "elevador",
+      "label": "Elevador — 2 ou mais",
+      "minPower": 0,
+      "maxPower": 0,
+      "factor": 0.7,
+      "active": true
+    },
+    {
+      "id": "df12",
+      "category": "bomba",
+      "label": "Bomba — fator de agrupamento",
+      "minPower": 0,
+      "maxPower": 0,
+      "factor": 0.85,
+      "active": true
+    },
+    {
+      "id": "df13",
+      "category": "motor",
+      "label": "Motor — fator de demanda",
+      "minPower": 0,
+      "maxPower": 0,
+      "factor": 0.75,
+      "active": true
+    },
+    {
+      "id": "df14",
+      "category": "seguranca",
+      "label": "Sistemas de segurança",
+      "minPower": 0,
+      "maxPower": 0,
+      "factor": 1,
+      "active": true
+    },
+    {
+      "id": "df15",
+      "category": "iluminacao_comum",
+      "label": "Iluminação de áreas comuns",
+      "minPower": 0,
+      "maxPower": 0,
+      "factor": 0.9,
+      "active": true
+    }
+  ],
+  "transformers": [
+    {
+      "id": "t1",
+      "label": "Transformador 1 — placeholder",
+      "powerKva": 75,
+      "voltage": "13.8kV / 380V",
+      "active": true
+    },
+    {
+      "id": "t2",
+      "label": "Transformador 2 — placeholder",
+      "powerKva": 112.5,
+      "voltage": "13.8kV / 380V",
+      "active": true
+    },
+    {
+      "id": "t3",
+      "label": "Transformador 3 — placeholder",
+      "powerKva": 150,
+      "voltage": "13.8kV / 380V",
+      "active": true
+    },
+    {
+      "id": "t4",
+      "label": "Transformador 4 — placeholder",
+      "powerKva": 225,
+      "voltage": "13.8kV / 380V",
+      "active": true
+    },
+    {
+      "id": "t5",
+      "label": "Transformador 5 — placeholder",
+      "powerKva": 300,
+      "voltage": "13.8kV / 380V",
+      "active": true
+    }
+  ]
+}

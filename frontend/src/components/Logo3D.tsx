@@ -1,0 +1,225 @@
+import { useEffect, useMemo, useRef } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import * as THREE from 'three';
+import { MARK_PATH } from '@/ds/Mark';
+
+/*
+ * O "N em ponta" em 3D pro painel azul do login (técnica do login de Camelo, mxc/camelo-distribuidora):
+ * o path do manual extrudado em argila fosca (era cromo; Mateus achou reflexivo demais, 24/10). Parado ele balança devagar; o mouse empurra e
+ * ele gira, perde força no atrito e volta de frente.
+ *
+ * Herdado de Camelo: sem soldar os vértices, cada tira da parede lateral fica com normal própria
+ * e a luz listra. O estúdio de manchas redondas segue como preenchimento fraco do ambiente.
+ */
+
+const ARGILA = {
+  depth: 16, // na unidade do path (caixa 66 × 92)
+  // chanfro curto: o contorno é o do logo (cantos de raio 5 e as pontas). Chanfro grande inchava a
+  // silhueta e a peça virou "massinha" demais (Mateus, 24/10). Muitos segmentos pra borda não fazer faixa
+  bevelThickness: 2.6,
+  bevelSize: 1.4,
+  bevelSegments: 12,
+  scale: 2.3, // menor que o camelo: a peça é apoio, o recado embaixo é o que se lê
+  color: '#4d7cff', // azul vivo da marca: no painel #0033A0 ele destaca sem virar branco (o claro sumia)
+  roughness: 0.82,
+  env: 0.55,
+  exposure: 1.05,
+  yaw: -0.5, // de frente a lateral some e a peça lê chapada
+  pitch: 0.12,
+};
+
+/** Path do manual (só M, Q, L, Z) → THREE.Shape, com o y virado (SVG cresce pra baixo). */
+function shapeDoPath(d: string) {
+  const s = new THREE.Shape();
+  const tk = d.match(/[MQLZ]|-?\d*\.?\d+/g) ?? [];
+  let i = 0;
+  const n = () => Number(tk[i++]);
+  while (i < tk.length) {
+    const c = tk[i++];
+    if (c === 'M') s.moveTo(n(), -n());
+    else if (c === 'L') s.lineTo(n(), -n());
+    else if (c === 'Q') {
+      const cx = n(), cy = -n(), x = n(), y = -n();
+      s.quadraticCurveTo(cx, cy, x, y);
+    } else if (c === 'Z') s.closePath();
+  }
+  return s;
+}
+
+function geometria() {
+  const g = new THREE.ExtrudeGeometry(shapeDoPath(MARK_PATH), {
+    depth: ARGILA.depth,
+    bevelEnabled: true,
+    bevelThickness: ARGILA.bevelThickness,
+    bevelSize: ARGILA.bevelSize,
+    bevelSegments: ARGILA.bevelSegments,
+    curveSegments: 24,
+  });
+  let out: THREE.BufferGeometry = g;
+  try {
+    out = mergeVertices(g, 1e-3);
+  } catch {
+    /* fica a original */
+  }
+  out.computeVertexNormals();
+  out.center();
+  out.computeBoundingBox();
+  const size = new THREE.Vector3();
+  out.boundingBox!.getSize(size);
+  const k = ARGILA.scale / Math.max(size.x, size.y);
+  out.scale(k, k, k);
+  return out;
+}
+
+/** Estúdio escuro com poucos estouros de luz: é o contraste que faz o metal parecer metal. */
+function texturaEstudio() {
+  const W = 1024;
+  const H = 512; // equirretangular: 2:1
+  const c = document.createElement('canvas');
+  c.width = W;
+  c.height = H;
+  const ctx = c.getContext('2d')!;
+  const base = ctx.createLinearGradient(0, 0, 0, H);
+  // mais claro que o ouro de Camelo: cromo sobre azul precisa ler prata, e a faixa escura vira só o contorno
+  base.addColorStop(0, '#f4f7ff');
+  base.addColorStop(0.32, '#c3cfee');
+  base.addColorStop(0.5, '#6f82c2');
+  base.addColorStop(0.7, '#1a2763');
+  base.addColorStop(0.86, '#2a44a8'); // rebote azul do painel
+  base.addColorStop(1, '#0a1240');
+  ctx.fillStyle = base;
+  ctx.fillRect(0, 0, W, H);
+
+  const mancha = (cx: number, cy: number, r: number, rgb: string, a: number) => {
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    for (const [t, k] of [[0, 1], [0.25, 0.88], [0.45, 0.62], [0.65, 0.33], [0.82, 0.12], [1, 0]]) {
+      g.addColorStop(t, `rgba(${rgb},${(a * k).toFixed(3)})`);
+    }
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+  };
+  ctx.globalCompositeOperation = 'lighter';
+  mancha(W * 0.26, H * 0.22, W * 0.055, '255,255,255', 1);
+  mancha(W * 0.26, H * 0.22, W * 0.16, '235,242,255', 0.4);
+  mancha(W * 0.6, H * 0.14, W * 0.038, '255,255,255', 0.95);
+  mancha(W * 0.86, H * 0.34, W * 0.03, '230,238,255', 0.9);
+  mancha(W * 0.44, H * 0.44, W * 0.026, '220,232,255', 0.8);
+  mancha(W * 0.95, H * 0.56, W * 0.075, '90,130,255', 0.6); // contraluz azul da marca
+  mancha(W * 0.05, H * 0.44, W * 0.055, '120,160,255', 0.5);
+  mancha(W * 0.5, H * 0.86, W * 0.22, '40,80,220', 0.45);
+  ctx.globalCompositeOperation = 'source-over';
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function Estudio() {
+  const gl = useThree((s) => s.gl);
+  const scene = useThree((s) => s.scene);
+  useEffect(() => {
+    const pmrem = new THREE.PMREMGenerator(gl);
+    const src = texturaEstudio();
+    const env = pmrem.fromEquirectangular(src).texture;
+    scene.environment = env;
+    return () => {
+      scene.environment = null;
+      env.dispose();
+      src.dispose();
+      pmrem.dispose();
+    };
+  }, [gl, scene]);
+  return null;
+}
+
+const TAU = Math.PI * 2;
+// arrasto empurra (vira velocidade), atrito freia, e só volta pro repouso quando já está devagar
+const FLICK = { toSpin: 0.02, toTumble: 0.013, maxPixels: 320, maxSpin: 15, drag: 1.25, settle: 2.8, calmBelow: 1.2 };
+const clamp = (v: number, m: number) => Math.max(-m, Math.min(m, v));
+
+function Marca() {
+  const geo = useMemo(geometria, []);
+  const mat = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(ARGILA.color),
+        metalness: 0,
+        roughness: ARGILA.roughness,
+        envMapIntensity: ARGILA.env,
+        // sheen dá a penugem fosca da argila nas bordas, sem brilho de espelho
+        sheen: 0.4,
+        sheenRoughness: 0.8,
+        sheenColor: new THREE.Color('#c9d6ff'),
+      }),
+    [],
+  );
+  const tilt = useRef<THREE.Group>(null);
+  const idle = useRef<THREE.Group>(null);
+  const drag = useRef({ x: 0, y: 0, vYaw: 0, vPitch: 0, yaw: 0, pitch: 0 });
+  const reduced = useMemo(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches, []);
+
+  useFrame((state, dt) => {
+    const d = Math.min(dt, 0.05);
+    const t = state.clock.elapsedTime;
+    const m = drag.current;
+    if (idle.current && !reduced) {
+      m.vYaw = clamp(m.vYaw + clamp(m.x, FLICK.maxPixels) * FLICK.toSpin, FLICK.maxSpin);
+      m.vPitch = clamp(m.vPitch + clamp(m.y, FLICK.maxPixels) * FLICK.toTumble, FLICK.maxSpin * 0.5);
+      m.x = 0;
+      m.y = 0;
+      m.yaw += m.vYaw * d;
+      m.pitch += m.vPitch * d;
+      const f = Math.exp(-FLICK.drag * d);
+      m.vYaw *= f;
+      m.vPitch *= f;
+      const volta = (a: number, v: number) => a + (Math.round(a / TAU) * TAU - a) * FLICK.settle * d * (1 - Math.min(1, Math.abs(v) / FLICK.calmBelow));
+      m.yaw = volta(m.yaw, m.vYaw);
+      m.pitch = volta(m.pitch, m.vPitch);
+      // frequências "quebradas" pra o balanço nunca repetir o desenho
+      idle.current.rotation.y = m.yaw + Math.sin(t * 0.42) * 0.3 + Math.sin(t * 0.19 + 1) * 0.12;
+      idle.current.rotation.x = m.pitch + Math.sin(t * 0.33 + 1) * 0.11;
+      idle.current.rotation.z = Math.sin(t * 0.27 + 2) * 0.06;
+      idle.current.position.y = Math.sin(t * 0.55) * 0.12;
+    }
+    if (tilt.current && !reduced) {
+      tilt.current.rotation.x = THREE.MathUtils.damp(tilt.current.rotation.x, -0.05 + state.pointer.y * 0.18, 4, d);
+      tilt.current.rotation.y = THREE.MathUtils.damp(tilt.current.rotation.y, state.pointer.x * 0.18, 4, d);
+    }
+  });
+
+  return (
+    <group
+      ref={tilt}
+      onPointerMove={(e) => {
+        drag.current.x += e.nativeEvent.movementX;
+        drag.current.y += e.nativeEvent.movementY;
+      }}
+    >
+      <group ref={idle}>
+        <group rotation={[ARGILA.pitch, ARGILA.yaw, 0]}>
+          <mesh geometry={geo} material={mat} />
+        </group>
+      </group>
+    </group>
+  );
+}
+
+export default function Logo3D() {
+  return (
+    <Canvas
+      camera={{ position: [0, 0, 6.4], fov: 38 }}
+      dpr={[1, 2]}
+      gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: ARGILA.exposure }}
+      style={{ width: '100%', height: '100%' }}
+    >
+      <Estudio />
+      {/* luz de estúdio de argila: céu claro em cima, rebote azul do painel embaixo, uma chave suave */}
+      <hemisphereLight args={['#ffffff', '#1a2c80', 0.55]} />
+      <directionalLight position={[-5, 6, 4]} intensity={2} color="#ffffff" />
+      <directionalLight position={[5, -2, 2]} intensity={0.35} color="#9db6ff" />
+      <Marca />
+    </Canvas>
+  );
+}

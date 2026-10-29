@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import {
   ArrowLeft,
-  Zap,
   Building2,
   Wrench,
   Calculator,
@@ -15,7 +14,7 @@ import {
   CheckCircle2,
   XCircle,
   QrCode,
-} from 'lucide-react';
+} from '@/ds/icons';
 import { useProjects } from '@/hooks/useProjects';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -23,6 +22,7 @@ import { StatusBadge, EnquadramentoBadge } from '@/components/ui/Badge';
 import { Alert } from '@/components/ui/Alert';
 import { Loading, EmptyState } from '@/components/ui/States';
 import { formatKw } from '@/services/calcEngine';
+import { IconButton, Logo, VazioLinha } from '@/ds';
 
 export function ProjetoDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -45,7 +45,6 @@ export function ProjetoDetailPage() {
     return (
       <Card>
         <EmptyState
-          icon={<AlertTriangle className="h-12 w-12" />}
           title="Projeto não encontrado"
           message="O projeto solicitado não existe ou foi removido."
           action={<Button onClick={() => navigate('/app/meus-projetos')}>Voltar para Meus Projetos</Button>}
@@ -66,18 +65,15 @@ export function ProjetoDetailPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
-          >
+          <IconButton label="Voltar" tone="outline" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-5 w-5" />
-          </button>
+          </IconButton>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-slate-800">{project.code}</h1>
+              <h1 className="text-2xl font-bold text-fg">{project.code}</h1>
               <StatusBadge status={project.status} />
             </div>
-            <p className="text-sm text-slate-500">{project.data.name}</p>
+            <p className="text-sm text-muted">{project.data.name}</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -113,51 +109,51 @@ export function ProjetoDetailPage() {
           icon={<Calculator className="h-5 w-5" />}
         />
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          <div className="rounded-lg border border-slate-200 p-4">
-            <p className="text-xs text-slate-500">Potência instalada total</p>
-            <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(project.calcResult?.totalInstalledPower)}</p>
+          <div className="rounded-lg border border-line p-4">
+            <p className="text-xs text-muted">Potência instalada total</p>
+            <p className="mt-1 text-xl font-bold text-fg">{formatKw(project.calcResult?.totalInstalledPower)}</p>
           </div>
-          <div className="rounded-lg border border-neo-200 bg-neo-50 p-4">
-            <p className="text-xs text-neo-600">Demanda calculada</p>
-            <p className="mt-1 text-xl font-bold text-neo-700">{formatKw(project.calcResult?.calculatedDemand)}</p>
+          <div className="rounded-lg border border-accent/40 bg-accent-soft p-4">
+            <p className="text-xs text-accent-fg">Demanda calculada</p>
+            <p className="mt-1 text-xl font-bold text-accent-fg">{formatKw(project.calcResult?.calculatedDemand)}</p>
           </div>
-          <div className="rounded-lg border border-slate-200 p-4">
-            <p className="text-xs text-slate-500">Nº de unidades</p>
-            <p className="mt-1 text-xl font-bold text-slate-800">{project.calcResult?.unitCount}</p>
+          <div className="rounded-lg border border-line p-4">
+            <p className="text-xs text-muted">Nº de unidades</p>
+            <p className="mt-1 text-xl font-bold text-fg">{project.calcResult?.unitCount}</p>
           </div>
-          <div className="rounded-lg border border-slate-200 p-4">
-            <p className="text-xs text-slate-500">Demanda das unidades</p>
-            <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(project.calcResult?.unitDemand)}</p>
+          <div className="rounded-lg border border-line p-4">
+            <p className="text-xs text-muted">Demanda das unidades</p>
+            <p className="mt-1 text-xl font-bold text-fg">{formatKw(project.calcResult?.unitDemand)}</p>
           </div>
-          <div className="rounded-lg border border-slate-200 p-4">
-            <p className="text-xs text-slate-500">Demanda das áreas comuns</p>
-            <p className="mt-1 text-xl font-bold text-slate-800">{formatKw(project.calcResult?.serviceDemand)}</p>
+          <div className="rounded-lg border border-line p-4">
+            <p className="text-xs text-muted">Demanda das áreas comuns</p>
+            <p className="mt-1 text-xl font-bold text-fg">{formatKw(project.calcResult?.serviceDemand)}</p>
           </div>
-          <div className="rounded-lg border border-slate-200 p-4">
-            <p className="text-xs text-slate-500">Norma aplicada</p>
-            <p className="mt-1 text-lg font-bold text-slate-800">{project.calcResult?.normaAplicada}</p>
+          <div className="rounded-lg border border-line p-4">
+            <p className="text-xs text-muted">Norma aplicada</p>
+            <p className="mt-1 text-lg font-bold text-fg">{project.calcResult?.normaAplicada}</p>
           </div>
-          <div className="rounded-lg border border-slate-200 p-4">
-            <p className="text-xs text-slate-500">Enquadramento</p>
+          <div className="rounded-lg border border-line p-4">
+            <p className="text-xs text-muted">Enquadramento</p>
             <div className="mt-1"><EnquadramentoBadge enquadramento={project.calcResult?.enquadramento} /></div>
           </div>
-          <div className="rounded-lg border border-slate-200 p-4">
-            <p className="text-xs text-slate-500">Versão da norma</p>
-            <p className="mt-1 text-lg font-bold text-slate-800">{project.normaVersion}</p>
+          <div className="rounded-lg border border-line p-4">
+            <p className="text-xs text-muted">Versão da norma</p>
+            <p className="mt-1 text-lg font-bold text-fg">{project.normaVersion}</p>
           </div>
         </div>
 
         {project.calcResult?.needsSubstation && project.subestacao && (
-          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+          <div className="mt-4 rounded-lg border border-warning/30 bg-warning-soft p-4">
             <div className="flex items-center gap-2">
-              <Building2 className="h-5 w-5 text-amber-600" />
-              <p className="text-sm font-semibold text-amber-700">Dimensionamento da Subestação (DIS-NOR-053)</p>
+              <Building2 className="h-5 w-5 text-warning-fg" />
+              <p className="text-sm font-semibold text-warning-fg">Dimensionamento da Subestação (DIS-NOR-053)</p>
             </div>
             <div className="mt-2 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
-              <div><span className="text-slate-500">Transformador: </span><span className="font-medium text-slate-800">{project.subestacao.transformadorLabel}</span></div>
-              <div><span className="text-slate-500">Potência: </span><span className="font-medium text-slate-800">{project.subestacao.potenciaNominal} kVA</span></div>
-              <div><span className="text-slate-500">Quantidade: </span><span className="font-medium text-slate-800">{project.subestacao.quantidade}</span></div>
-              <div><span className="text-slate-500">Configuração: </span><span className="font-medium text-slate-800">{project.subestacao.configuracao}</span></div>
+              <div><span className="text-muted">Transformador: </span><span className="font-medium text-fg">{project.subestacao.transformadorLabel}</span></div>
+              <div><span className="text-muted">Potência: </span><span className="font-medium text-fg">{project.subestacao.potenciaNominal} kVA</span></div>
+              <div><span className="text-muted">Quantidade: </span><span className="font-medium text-fg">{project.subestacao.quantidade}</span></div>
+              <div><span className="text-muted">Configuração: </span><span className="font-medium text-fg">{project.subestacao.configuracao}</span></div>
             </div>
           </div>
         )}
@@ -179,51 +175,51 @@ export function ProjetoDetailPage() {
             { label: 'Responsável técnico', value: project.data.technicalResponsible },
           ].map((item) => (
             <div key={item.label}>
-              <p className="text-xs text-slate-500">{item.label}</p>
-              <p className="font-medium text-slate-800">{item.value}</p>
+              <p className="text-xs text-muted">{item.label}</p>
+              <p className="font-medium text-fg">{item.value}</p>
             </div>
           ))}
         </div>
         {project.data.observations && (
-          <div className="mt-3 rounded-lg bg-slate-50 p-3">
-            <p className="text-xs text-slate-500">Observações</p>
-            <p className="text-sm text-slate-700">{project.data.observations}</p>
+          <div className="mt-3 rounded-lg bg-surface-2 p-3">
+            <p className="text-xs text-muted">Observações</p>
+            <p className="text-sm text-fg-2">{project.data.observations}</p>
           </div>
         )}
       </Card>
 
       {/* Units */}
       <Card padding="none">
-        <div className="border-b border-slate-200 px-5 py-4">
+        <div className="border-b border-line px-5 py-4">
           <div className="flex items-center gap-2.5">
-            <Building2 className="h-5 w-5 text-neo-600" />
-            <h3 className="text-base font-semibold text-slate-800">Unidades Consumidoras</h3>
+            <Building2 className="h-5 w-5 text-accent-fg" />
+            <h3 className="text-base font-semibold text-fg">Unidades Consumidoras</h3>
           </div>
         </div>
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50/50">
-                <th className="px-5 py-3 font-semibold text-slate-600">Grupo</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">Quantidade</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">Potência instalada</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">Demanda</th>
+              <tr className="border-b border-line bg-surface-2/50">
+                <th className="px-5 py-3 font-semibold text-muted">Grupo</th>
+                <th className="px-5 py-3 font-semibold text-muted">Quantidade</th>
+                <th className="px-5 py-3 font-semibold text-muted">Potência instalada</th>
+                <th className="px-5 py-3 font-semibold text-muted">Demanda</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-line">
               {(project.units ?? []).length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-5 py-6 text-center text-sm text-slate-500">Nenhuma unidade cadastrada.</td>
+                  <td colSpan={4} className="p-4"><VazioLinha>Nenhuma unidade cadastrada neste projeto.</VazioLinha></td>
                 </tr>
               )}
               {(project.units ?? []).map((u) => {
                 const installed = (u.loads ?? []).reduce((s, l) => s + l.quantity * l.powerPerUnit * u.unitCount, 0) / 1000;
                 return (
                   <tr key={u.id}>
-                    <td className="px-5 py-3 font-medium text-slate-700">{u.name}</td>
-                    <td className="px-5 py-3 text-slate-600">{u.unitCount}</td>
-                    <td className="px-5 py-3 text-slate-600">{formatKw(installed)}</td>
-                    <td className="px-5 py-3 text-slate-600">{formatKw(installed * 0.7)}</td>
+                    <td className="px-5 py-3 font-medium text-fg-2">{u.name}</td>
+                    <td className="px-5 py-3 text-muted">{u.unitCount}</td>
+                    <td className="px-5 py-3 text-muted">{formatKw(installed)}</td>
+                    <td className="px-5 py-3 text-muted">{formatKw(installed * 0.7)}</td>
                   </tr>
                 );
               })}
@@ -235,33 +231,33 @@ export function ProjetoDetailPage() {
       {/* Service loads */}
       {(project.serviceLoads ?? []).length > 0 && (
         <Card padding="none">
-          <div className="border-b border-slate-200 px-5 py-4">
+          <div className="border-b border-line px-5 py-4">
             <div className="flex items-center gap-2.5">
-              <Wrench className="h-5 w-5 text-neo-600" />
-              <h3 className="text-base font-semibold text-slate-800">Cargas de Serviço</h3>
+              <Wrench className="h-5 w-5 text-accent-fg" />
+              <h3 className="text-base font-semibold text-fg">Cargas de Serviço</h3>
             </div>
           </div>
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/50">
-                  <th className="px-5 py-3 font-semibold text-slate-600">Equipamento</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Categoria</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Qtd.</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Potência</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Tipo</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Partida</th>
+                <tr className="border-b border-line bg-surface-2/50">
+                  <th className="px-5 py-3 font-semibold text-muted">Equipamento</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Categoria</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Qtd.</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Potência</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Tipo</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Partida</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-line">
                 {(project.serviceLoads ?? []).map((s) => (
                   <tr key={s.id}>
-                    <td className="px-5 py-3 font-medium text-slate-700">{s.name}</td>
-                    <td className="px-5 py-3 text-slate-600 capitalize">{s.category.replace('_', ' ')}</td>
-                    <td className="px-5 py-3 text-slate-600">{s.quantity}</td>
-                    <td className="px-5 py-3 text-slate-600">{formatKw((s.quantity * s.power) / 1000)}</td>
-                    <td className="px-5 py-3 text-slate-600">{s.motorType || '—'}</td>
-                    <td className="px-5 py-3 text-slate-600">{s.startType || '—'}</td>
+                    <td className="px-5 py-3 font-medium text-fg-2">{s.name}</td>
+                    <td className="px-5 py-3 text-muted capitalize">{s.category.replace('_', ' ')}</td>
+                    <td className="px-5 py-3 text-muted">{s.quantity}</td>
+                    <td className="px-5 py-3 text-muted">{formatKw((s.quantity * s.power) / 1000)}</td>
+                    <td className="px-5 py-3 text-muted">{s.motorType || '—'}</td>
+                    <td className="px-5 py-3 text-muted">{s.startType || '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -272,10 +268,10 @@ export function ProjetoDetailPage() {
 
       {/* History */}
       <Card padding="none">
-        <div className="border-b border-slate-200 px-5 py-4">
+        <div className="border-b border-line px-5 py-4">
           <div className="flex items-center gap-2.5">
-            <History className="h-5 w-5 text-neo-600" />
-            <h3 className="text-base font-semibold text-slate-800">Histórico do Projeto</h3>
+            <History className="h-5 w-5 text-accent-fg" />
+            <h3 className="text-base font-semibold text-fg">Histórico do Projeto</h3>
           </div>
         </div>
         <div className="p-5">
@@ -284,16 +280,16 @@ export function ProjetoDetailPage() {
               <div key={h.id} className="flex gap-3">
                 <div className="flex flex-col items-center">
                   <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold ${
-                    idx === project.history.length - 1 ? 'bg-neo-600 text-white' : 'bg-slate-100 text-slate-500'
+                    idx === project.history.length - 1 ? 'bg-primary text-on-primary' : 'bg-surface-2 text-muted'
                   }`}>
                     {idx + 1}
                   </div>
-                  {idx < project.history.length - 1 && <div className="w-px flex-1 bg-slate-200" />}
+                  {idx < project.history.length - 1 && <div className="w-px flex-1 bg-surface-3" />}
                 </div>
                 <div className="pb-4">
-                  <p className="text-sm font-medium text-slate-800">{h.action}</p>
-                  {h.detail && <p className="text-xs text-slate-500">{h.detail}</p>}
-                  <p className="text-xs text-slate-400">
+                  <p className="text-sm font-medium text-fg">{h.action}</p>
+                  {h.detail && <p className="text-xs text-muted">{h.detail}</p>}
+                  <p className="text-xs text-subtle">
                     {new Date(h.date).toLocaleDateString('pt-BR')} · {h.user}
                   </p>
                 </div>
@@ -306,101 +302,93 @@ export function ProjetoDetailPage() {
       {/* Atestado Modal */}
       {showAtestado && project.atestado && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 print:static print:p-0">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm print:hidden" onClick={() => setShowAtestado(false)} />
-          <div className="relative w-full max-w-2xl animate-scale-in rounded-xl bg-white shadow-xl print:shadow-none" ref={printRef}>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm print:hidden" onClick={() => setShowAtestado(false)} />
+          <div className="relative w-full max-w-2xl animate-scale-in rounded-xl bg-surface shadow-xl print:shadow-none" ref={printRef}>
             {/* Atestado content */}
             <div className="p-8">
               {/* Header */}
-              <div className="flex items-center justify-between border-b-2 border-neo-600 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-neo-600">
-                    <Zap className="h-7 w-7 text-white" fill="white" />
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold text-slate-800">Neoenergia Pernambuco</div>
-                    <div className="text-xs text-slate-500">Portal de Projetos Elétricos</div>
-                  </div>
-                </div>
+              <div className="flex items-center justify-between border-b-2 border-accent pb-4">
+                <Logo />
                 <div className="text-right">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-neo-600">Atestado</div>
-                  <div className="text-sm font-bold text-slate-800">{project.atestado.code}</div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-accent-fg">Atestado</div>
+                  <div className="text-sm font-bold text-fg">{project.atestado.code}</div>
                 </div>
               </div>
 
               {/* Title */}
               <div className="my-6 text-center">
-                <h2 className="text-xl font-bold text-slate-800">Atestado de Aprovação de Projeto Elétrico</h2>
-                <p className="mt-1 text-sm text-slate-500">Documento gerado eletronicamente pelo Portal de Projetos Elétricos</p>
+                <h2 className="text-xl font-bold text-fg">Atestado de Aprovação de Projeto Elétrico</h2>
+                <p className="mt-1 text-sm text-muted">Documento gerado eletronicamente pelo Portal de Projetos Elétricos</p>
               </div>
 
               {/* Data */}
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-xs text-slate-500">Código do Projeto</p>
-                  <p className="font-medium text-slate-800">{project.code}</p>
+                  <p className="text-xs text-muted">Código do Projeto</p>
+                  <p className="font-medium text-fg">{project.code}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Identificador Único</p>
-                  <p className="font-medium text-slate-800">{project.atestado.uniqueIdentifier}</p>
+                  <p className="text-xs text-muted">Identificador Único</p>
+                  <p className="font-medium text-fg">{project.atestado.uniqueIdentifier}</p>
                 </div>
                 <div className="col-span-2">
-                  <p className="text-xs text-slate-500">Consumidor / Projeto</p>
-                  <p className="font-medium text-slate-800">{project.data.name}</p>
+                  <p className="text-xs text-muted">Consumidor / Projeto</p>
+                  <p className="font-medium text-fg">{project.data.name}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Endereço</p>
-                  <p className="font-medium text-slate-800">{project.data.address}, {project.data.number} — {project.data.neighborhood}, {project.data.city}</p>
+                  <p className="text-xs text-muted">Endereço</p>
+                  <p className="font-medium text-fg">{project.data.address}, {project.data.number} — {project.data.neighborhood}, {project.data.city}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">CNPJ/CPF</p>
-                  <p className="font-medium text-slate-800">{project.data.document}</p>
+                  <p className="text-xs text-muted">CNPJ/CPF</p>
+                  <p className="font-medium text-fg">{project.data.document}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">ART/TRT</p>
-                  <p className="font-medium text-slate-800">{project.data.artNumber || '—'}</p>
+                  <p className="text-xs text-muted">ART/TRT</p>
+                  <p className="font-medium text-fg">{project.data.artNumber || '—'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Responsável Técnico</p>
-                  <p className="font-medium text-slate-800">{project.data.technicalResponsible}</p>
+                  <p className="text-xs text-muted">Responsável Técnico</p>
+                  <p className="font-medium text-fg">{project.data.technicalResponsible}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Potência Instalada</p>
-                  <p className="font-medium text-slate-800">{formatKw(project.calcResult?.totalInstalledPower)}</p>
+                  <p className="text-xs text-muted">Potência Instalada</p>
+                  <p className="font-medium text-fg">{formatKw(project.calcResult?.totalInstalledPower)}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Demanda Calculada</p>
-                  <p className="font-medium text-slate-800">{formatKw(project.calcResult?.calculatedDemand)}</p>
+                  <p className="text-xs text-muted">Demanda Calculada</p>
+                  <p className="font-medium text-fg">{formatKw(project.calcResult?.calculatedDemand)}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Enquadramento</p>
-                  <p className="font-medium text-slate-800">{project.calcResult?.enquadramento === 'baixa_tensao' ? 'Baixa Tensão' : 'Média Tensão'}</p>
+                  <p className="text-xs text-muted">Enquadramento</p>
+                  <p className="font-medium text-fg">{project.calcResult?.enquadramento === 'baixa_tensao' ? 'Baixa Tensão' : 'Média Tensão'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Norma Utilizada</p>
-                  <p className="font-medium text-slate-800">{project.calcResult?.normaAplicada} — {project.normaVersion}</p>
+                  <p className="text-xs text-muted">Norma Utilizada</p>
+                  <p className="font-medium text-fg">{project.calcResult?.normaAplicada} — {project.normaVersion}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Data de Emissão</p>
-                  <p className="font-medium text-slate-800">{new Date(project.atestado.issueDate).toLocaleDateString('pt-BR')}</p>
+                  <p className="text-xs text-muted">Data de Emissão</p>
+                  <p className="font-medium text-fg">{new Date(project.atestado.issueDate).toLocaleDateString('pt-BR')}</p>
                 </div>
               </div>
 
               {/* QR Code */}
-              <div className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6">
-                <div className="text-xs text-slate-500">
+              <div className="mt-6 flex items-center justify-between border-t border-line pt-6">
+                <div className="text-xs text-muted">
                   <p>Valide este documento em:</p>
-                  <p className="font-medium text-neo-600">{window.location.origin}/validar?codigo={project.atestado.uniqueIdentifier}</p>
+                  <p className="font-medium text-accent-fg">{window.location.origin}/validar?codigo={project.atestado.uniqueIdentifier}</p>
                 </div>
                 {qrUrl && <img src={qrUrl} alt="QR Code" className="h-24 w-24" />}
               </div>
 
-              <div className="mt-4 text-center text-xs text-slate-400">
+              <div className="mt-4 text-center text-xs text-subtle">
                 Documento gerado eletronicamente. A autenticidade pode ser verificada através do QR Code ou do portal público de validação.
               </div>
             </div>
 
             {/* Actions (hidden in print) */}
-            <div className="flex justify-end gap-3 border-t border-slate-200 px-6 py-4 print:hidden">
+            <div className="flex justify-end gap-3 border-t border-line px-6 py-4 print:hidden">
               <Button variant="outline" onClick={() => setShowAtestado(false)}>Fechar</Button>
               <Button icon={<Download className="h-4 w-4" />} onClick={handlePrint}>Baixar Atestado</Button>
             </div>

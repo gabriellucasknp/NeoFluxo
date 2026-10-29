@@ -1,33 +1,9 @@
-import {
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
-import { FolderOpen, Clock, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
+import { FolderOpen, Clock, CheckCircle2, XCircle } from '@/ds/icons';
 import { useProjects } from '@/hooks/useProjects';
-import { Card, CardHeader } from '@/components/ui/Card';
-import { formatKw } from '@/services/calcEngine';
-
-const STATUS_COLORS: Record<string, string> = {
-  Rascunho: '#94a3b8',
-  'Enviado para análise': '#3b82f6',
-  'Em análise': '#f59e0b',
-  Aprovado: '#10b981',
-  Reprovado: '#ef4444',
-};
-
-const ENQ_COLORS: Record<string, string> = {
-  'Baixa Tensão': '#0033A0',
-  'Média Tensão': '#8b5cf6',
-};
+import { Card } from '@/components/ui/Card';
+import { StatusBadge } from '@/components/ui/Badge';
+import { PageHeader, PieShare, PillBars, SectionHeader, StatCard, VazioLinha } from '@/ds';
+import type { ProjectStatus } from '@/types';
 
 export function AdminDashboardPage() {
   const { projects } = useProjects();
@@ -60,95 +36,92 @@ export function AdminDashboardPage() {
       return acc;
     }, [] as { name: string; value: number }[]);
 
-  const indicators = [
-    { label: 'Total de projetos', value: projects.length, icon: <FolderOpen className="h-5 w-5" />, color: 'text-neo-600 bg-neo-50' },
-    { label: 'Em análise', value: projects.filter((p) => p.status === 'em_analise' || p.status === 'enviado_analise').length, icon: <Clock className="h-5 w-5" />, color: 'text-amber-600 bg-amber-50' },
-    { label: 'Aprovados', value: projects.filter((p) => p.status === 'aprovado').length, icon: <CheckCircle2 className="h-5 w-5" />, color: 'text-success-600 bg-success-50' },
-    { label: 'Reprovados', value: projects.filter((p) => p.status === 'reprovado').length, icon: <XCircle className="h-5 w-5" />, color: 'text-danger-600 bg-danger-50' },
-  ];
+  const total = projects.length;
+  const semCalculo = projects.filter((p) => !p.calcResult?.enquadramento).length;
+  const maiorStatus = Math.max(1, ...statusData.map((d) => d.value));
+  const maiorMotivo = Math.max(1, ...rejectionReasons.map((d) => d.value));
+  const STATUS_DE: Record<string, ProjectStatus> = {
+    Rascunho: 'rascunho',
+    'Enviado para análise': 'enviado_analise',
+    'Em análise': 'em_analise',
+    Aprovado: 'aprovado',
+    Reprovado: 'reprovado',
+  };
+  const BARRA: Record<ProjectStatus, string> = {
+    rascunho: 'bg-muted/40',
+    enviado_analise: 'bg-info',
+    em_analise: 'bg-warning',
+    aprovado: 'bg-success',
+    reprovado: 'bg-danger',
+  };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-800">Painel Administrativo</h1>
-        <p className="text-sm text-slate-500">Visão geral do sistema e indicadores de desempenho.</p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader greeting="Administração" title="Painel administrativo" />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {indicators.map((ind) => (
-          <Card key={ind.label} className="flex items-center gap-4">
-            <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${ind.color}`}>
-              {ind.icon}
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-800">{ind.value}</p>
-              <p className="text-xs text-slate-500">{ind.label}</p>
-            </div>
-          </Card>
-        ))}
+        <StatCard label="Total de projetos" value={total} highlight icon={<FolderOpen className="h-5 w-5" />} />
+        <StatCard label="Em análise" value={projects.filter((p) => p.status === 'em_analise' || p.status === 'enviado_analise').length} icon={<Clock className="h-5 w-5" />} />
+        <StatCard label="Aprovados" value={projects.filter((p) => p.status === 'aprovado').length} icon={<CheckCircle2 className="h-5 w-5" />} />
+        <StatCard label="Reprovados" value={projects.filter((p) => p.status === 'reprovado').length} icon={<XCircle className="h-5 w-5" />} />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader title="Projetos por Status" icon={<TrendingUp className="h-5 w-5" />} />
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                {statusData.map((entry) => (
-                  <Cell key={entry.name} fill={STATUS_COLORS[entry.name] || '#94a3b8'} />
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <Card padding="lg">
+          <SectionHeader title="Projetos por status" subtitle={`${total} projetos no sistema`} />
+          {/* 5 estados não cabem numa pizza; cor de status é reservada e vai sempre com o nome */}
+          <ul className="mt-6 space-y-3.5">
+            {statusData.map((d) => (
+              <li key={d.name} className="grid grid-cols-[176px_1fr_32px] items-center gap-3">
+                <StatusBadge status={STATUS_DE[d.name]} />
+                <span className="h-2.5 overflow-hidden rounded-full bg-surface-3">
+                  <span className={`block h-full origin-left rounded-full ${BARRA[STATUS_DE[d.name]]}`} style={{ width: `${(d.value / maiorStatus) * 100}%` }} />
+                </span>
+                <span className="text-right font-display text-lg font-medium tabular text-fg">{d.value}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+
+        <Card padding="lg">
+          <SectionHeader title="Projetos por enquadramento" subtitle="Baixa Tensão até 75 kW" />
+          <div className="mt-6">
+            {enqData.length === 0 ? (
+              <VazioLinha>Nenhum projeto calculado ainda.</VazioLinha>
+            ) : (
+              <PieShare data={[...enqData.map((d) => ({ label: d.name, value: d.value })), ...(semCalculo ? [{ label: 'Sem cálculo ainda', value: semCalculo }] : [])]} size={180} />
+            )}
+          </div>
+        </Card>
+
+        <Card padding="lg">
+          <SectionHeader title="Aprovados × reprovados" subtitle="Projetos com parecer" />
+          <div className="mt-6">
+            <PillBars data={approvedRejected.map((d) => ({ label: d.name, value: d.value }))} height={180} />
+          </div>
+        </Card>
+
+        <Card padding="lg">
+          <SectionHeader title="Motivos de reprovação" subtitle="Do mais comum pro menos" />
+          <div className="mt-6">
+            {rejectionReasons.length === 0 ? (
+              <VazioLinha>Nenhuma reprovação registrada.</VazioLinha>
+            ) : (
+              <ol className="space-y-4">
+                {[...rejectionReasons].sort((x, y) => y.value - x.value).map((r) => (
+                  <li key={r.name}>
+                    <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
+                      <span className="text-fg-2">{r.name}</span>
+                      <span className="font-semibold tabular text-fg">{r.value}</span>
+                    </div>
+                    <span className="block h-2.5 overflow-hidden rounded-full bg-surface-3">
+                      <span className="block h-full rounded-full bg-danger" style={{ width: `${(r.value / maiorMotivo) * 100}%` }} />
+                    </span>
+                  </li>
                 ))}
-              </Pie>
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: '12px' }} />
-            </PieChart>
-          </ResponsiveContainer>
-        </Card>
-
-        <Card>
-          <CardHeader title="Projetos por Enquadramento" icon={<TrendingUp className="h-5 w-5" />} />
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={enqData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                {enqData.map((entry) => (
-                  <Cell key={entry.name} fill={ENQ_COLORS[entry.name] || '#94a3b8'} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: '12px' }} />
-            </PieChart>
-          </ResponsiveContainer>
-        </Card>
-
-        <Card>
-          <CardHeader title="Aprovados x Reprovados" icon={<TrendingUp className="h-5 w-5" />} />
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={approvedRejected}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
-              <Tooltip />
-              <Bar dataKey="value" fill="#0033A0" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
-
-        <Card>
-          <CardHeader title="Principais Motivos de Reprovação" icon={<TrendingUp className="h-5 w-5" />} />
-          {rejectionReasons.length === 0 ? (
-            <div className="flex h-[250px] items-center justify-center text-sm text-slate-400">
-              Nenhuma reprovação registrada.
-            </div>
-          ) : (
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={rejectionReasons} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis type="number" tick={{ fontSize: 12 }} allowDecimals={false} />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={120} />
-                <Tooltip />
-                <Bar dataKey="value" fill="#ef4444" radius={[0, 8, 8, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
+              </ol>
+            )}
+          </div>
         </Card>
       </div>
     </div>

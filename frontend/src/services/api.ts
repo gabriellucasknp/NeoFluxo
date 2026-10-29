@@ -33,10 +33,14 @@ export async function fetchApi<T>(
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  });
+  // Modo demonstração (build com VITE_MOCK=1): responde do back em memória, sem rede.
+  // Sem VITE_MOCK o Vite troca a condição por false e o mock nem entra no bundle.
+  const response = import.meta.env.VITE_MOCK
+    ? await (await import('./mock/backend')).mockFetch(endpoint, { ...options, headers })
+    : await fetch(url, {
+      ...options,
+      headers,
+    });
 
   /*
    * Token inválido ou expirado.
@@ -79,6 +83,22 @@ export async function fetchApi<T>(
 // AUTH
 // =====================================================
 
+/**
+ * O fetchApi joga "API Error 400: {json do ApiExceptionHandler}". Aqui sai só a frase pra tela:
+ * o primeiro erro de campo (details) ou o message do back.
+ */
+function mensagemDaApi(e: Error): string {
+  const m = e.message.match(/^API Error \d+: (.*)$/s);
+  if (!m) return e.message;
+  try {
+    const body = JSON.parse(m[1]);
+    const campo = body?.details && Object.values(body.details)[0];
+    return String(campo || body?.message || e.message);
+  } catch {
+    return e.message;
+  }
+}
+
 export const authService = {
   login: (email: string, password: string) =>
     fetchApi<LoginResponse>('/auth/login', {
@@ -91,8 +111,14 @@ export const authService = {
   me: () => fetchApi<LoginResponse['user']>('/auth/me'),
   register: (data: { name: string; email: string; password: string; role?: string; department?: string }) =>
     fetchApi<LoginResponse>('/auth/register', { method: 'POST', body: JSON.stringify({ ...data, role: data.role?.toUpperCase() }) }),
+  // demoToken só existe no modo demonstração (VITE_MOCK), que não manda e-mail
   forgotPassword: (email: string) =>
-    fetchApi<{ message: string }>('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) }),
+    fetchApi<{ message: string; demoToken?: string }>('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) })
+      .catch((e: Error) => { throw new Error(mensagemDaApi(e)); }),
+  // US-02: troca a senha com o token do link do e-mail
+  resetPassword: (token: string, password: string) =>
+    fetchApi<{ message: string }>('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token, password }) })
+      .catch((e: Error) => { throw new Error(mensagemDaApi(e)); }),
   verifyGoogleAuth: (_data: any): Promise<any> => Promise.reject(new Error('Login com Google indisponível no back Java')),
   completeGoogleProfile: (_data: any): Promise<any> => Promise.reject(new Error('Login com Google indisponível no back Java')),
 };
@@ -174,6 +200,9 @@ export const userService = {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
+
+  delete: (id: string) =>
+    fetchApi<void>(`/users/${id}`, { method: 'DELETE' }),
 };
 
 // =====================================================
@@ -210,6 +239,9 @@ export const transformerService = {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
+
+  delete: (id: string) =>
+    fetchApi<void>(`/transformers/${id}`, { method: 'DELETE' }),
 };
 
 // =====================================================
