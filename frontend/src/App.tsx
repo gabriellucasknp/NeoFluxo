@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { ProjectProvider } from '@/hooks/useProjects';
 import { AppLayout } from '@/layouts/AppLayout';
 import { LoginPage } from '@/pages/LoginPage';
+import { RedefinirSenhaPage } from '@/pages/RedefinirSenhaPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { NovoProjetoPage } from '@/pages/NovoProjetoPage';
 import { MeusProjetosPage } from '@/pages/MeusProjetosPage';
@@ -44,6 +45,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
+      <Route path="/redefinir-senha" element={<RedefinirSenhaPage />} />
       <Route path="/validar" element={<ValidarAtestadoPage />} />
       <Route path="/design-system" element={<DesignSystemPage />} />
       <Route

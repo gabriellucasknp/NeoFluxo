@@ -1,58 +1,16 @@
-import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { CheckCircle2, ShieldCheck, ArrowLeft } from '@/ds/icons';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/firebase/config';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { AuthShell } from '@/components/AuthShell';
 import { useAuth } from '@/hooks/useAuth';
 import { Alert } from '@/components/ui/Alert';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { authService } from '@/services/api';
 import type { User, UserRole } from '@/types';
-import { Logo, NeoFluxoMark, Segmented, Select as DsSelect, TextField } from '@/ds';
-
-// o 3D (three.js) só baixa no desktop, que é onde o painel azul existe
-const Logo3D = lazy(() => import('@/components/Logo3D'));
-
-function MarcaPlana() {
-  return (
-    <div className="flex h-full items-center justify-center text-on-panel/90">
-      <NeoFluxoMark className="h-40" />
-    </div>
-  );
-}
-
-/** Sem WebGL (ou se a cena quebrar), fica o N plano no lugar. */
-class SemWebGL extends Component<{ children: ReactNode }, { erro: boolean }> {
-  state = { erro: false };
-  static getDerivedStateFromError() {
-    return { erro: true };
-  }
-  render() {
-    return this.state.erro ? <MarcaPlana /> : this.props.children;
-  }
-}
-
-function Marca3D() {
-  const [desktop, setDesktop] = useState(() => window.matchMedia('(min-width: 1024px)').matches);
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
-    const on = () => setDesktop(mq.matches);
-    mq.addEventListener('change', on);
-    return () => mq.removeEventListener('change', on);
-  }, []);
-  if (!desktop) return null;
-  return (
-    <div aria-hidden className="h-full min-h-[240px] w-full">
-      <SemWebGL>
-        <Suspense fallback={<MarcaPlana />}>
-          <Logo3D />
-        </Suspense>
-      </SemWebGL>
-    </div>
-  );
-}
+import { Segmented, Select as DsSelect, TextField } from '@/ds';
 
 interface GoogleAccountData {
   uid: string;
@@ -65,6 +23,8 @@ interface GoogleAccountData {
 export function LoginPage() {
   const { login, register } = useAuth();
   const navigate = useNavigate();
+  // volta da tela de redefinição (US-02) com o aviso de sucesso
+  const senhaRedefinida = Boolean((useLocation().state as { senhaRedefinida?: boolean } | null)?.senhaRedefinida);
 
   // Mode: 'login' | 'register' | 'google-profile'
   const [mode, setMode] = useState<'login' | 'register' | 'google-profile'>('login');
@@ -73,7 +33,7 @@ export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState(senhaRedefinida ? 'Senha redefinida com sucesso. Entre com a nova senha.' : '');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -95,7 +55,10 @@ export function LoginPage() {
   const [forgotOpen, setForgotOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotMsg, setForgotMsg] = useState('');
+  const [forgotErro, setForgotErro] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
+  // só no modo demonstração (VITE_MOCK): não tem e-mail, então o link aparece no modal
+  const [forgotDemoToken, setForgotDemoToken] = useState('');
 
   /**
    * FLUXO GOOGLE AUTH:
@@ -293,12 +256,14 @@ export function LoginPage() {
   const handleForgotSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!forgotEmail) return;
+    setForgotErro('');
     setForgotLoading(true);
     try {
       const res = await authService.forgotPassword(forgotEmail);
       setForgotMsg(res.message);
-    } catch {
-      setForgotMsg('Link de recuperação enviado com sucesso para o e-mail informado.');
+      setForgotDemoToken(res.demoToken ?? '');
+    } catch (err: any) {
+      setForgotErro(err.message || 'Não foi possível enviar o link agora. Tente de novo em instantes.');
     } finally {
       setForgotLoading(false);
     }
@@ -312,38 +277,8 @@ export function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Painel azul (só desktop), no molde do login de Camelo: marca em cima, o N 3D no centro, recado curto embaixo.
-          select-none: arrastar o N pra girar não pode sair selecionando o texto do painel. */}
-      <aside className="relative hidden w-1/2 select-none flex-col overflow-hidden bg-panel p-12 lg:flex">
-        <div aria-hidden className="pointer-events-none absolute -right-28 -top-28 h-96 w-96 rounded-full" style={{ background: 'radial-gradient(circle, rgb(90 130 255 / 0.35), transparent 70%)' }} />
-        <div aria-hidden className="pointer-events-none absolute -bottom-32 -left-16 h-80 w-80 rounded-full" style={{ background: 'radial-gradient(circle, rgb(90 130 255 / 0.25), transparent 70%)' }} />
-        <div className="relative z-10">
-          <Logo onNav size="lg" />
-        </div>
-        {/* min-h-0 + bloco simples: o Canvas mede o PAI pra se dimensionar */}
-        <div className="relative z-10 flex min-h-0 flex-1 justify-center py-6">
-          <Marca3D />
-        </div>
-        <div className="relative z-10">
-          <h1 className="max-w-md font-display text-[2rem] font-semibold leading-tight tracking-tight text-on-panel">
-            Do memorial ao atestado, num lugar só.
-          </h1>
-          <p className="mt-3 max-w-md text-[15px] leading-relaxed text-on-panel/70">
-            A demanda sai calculada pela DIS-NOR-030, o enquadramento em BT ou MT na hora e o atestado com QR de validação.
-          </p>
-        </div>
-      </aside>
-
-      {/* Right panel — formulário dinâmico */}
-      <div className="relative flex w-full flex-col items-center bg-surface-2 px-6 pb-16 pt-16 lg:w-1/2 lg:pt-[max(5rem,12vh)]">
-        <ThemeToggle className="absolute right-4 top-4" />
-        <div className="w-full max-w-md">
-          {/* Mobile logo */}
-          <div className="mb-6 flex items-center gap-3 lg:hidden">
-            <Logo size="lg" />
-          </div>
-
+    <>
+      <AuthShell>
           {/* TAB SELECTOR (Apenas visível em modo login / register) */}
           {(mode === 'login' || mode === 'register') && (
             <div className="mb-8">
@@ -392,7 +327,7 @@ export function LoginPage() {
                 <div className="flex justify-end text-sm">
                   <button
                     type="button"
-                    onClick={() => { setForgotOpen(true); setForgotEmail(email); setForgotMsg(''); }}
+                    onClick={() => { setForgotOpen(true); setForgotEmail(email); setForgotMsg(''); setForgotErro(''); setForgotDemoToken(''); }}
                     className="font-medium text-accent-fg underline-offset-4 transition-colors hover:text-fg hover:underline"
                   >
                     Esqueci minha senha
@@ -698,8 +633,7 @@ export function LoginPage() {
             </div>
           )}
 
-        </div>
-      </div>
+      </AuthShell>
 
       {/* Forgot Password Modal (US-02) */}
       <Modal
@@ -721,15 +655,25 @@ export function LoginPage() {
       >
         <div className="space-y-4">
           <p className="text-sm text-muted">
-            Informe o e-mail corporativo cadastrado. Você receberá um link de verificação para cadastrar uma nova senha.
+            Informe o e-mail corporativo cadastrado. Você receberá um link para cadastrar uma nova senha, válido por 60 minutos.
           </p>
           {forgotMsg ? (
-            <Alert type="success">{forgotMsg}</Alert>
+            <>
+              <Alert type="success">{forgotMsg}</Alert>
+              {forgotDemoToken && (
+                <Link
+                  to={`/redefinir-senha?token=${encodeURIComponent(forgotDemoToken)}`}
+                  className="block text-sm font-medium text-accent-fg underline-offset-4 transition-colors hover:text-fg hover:underline"
+                >
+                  Demonstração: abrir o link de redefinição
+                </Link>
+              )}
+            </>
           ) : (
-            <TextField label="E-mail corporativo" type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="seu.nome@neoenergia.com" />
+            <TextField label="E-mail corporativo" type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="seu.nome@neoenergia.com" error={forgotErro || undefined} />
           )}
         </div>
       </Modal>
-    </div>
+    </>
   );
 }

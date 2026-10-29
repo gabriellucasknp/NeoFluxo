@@ -68,6 +68,8 @@ import {
   Tick02Icon,
   UserIcon,
   UserMultipleIcon,
+  ViewIcon,
+  ViewOffSlashIcon,
   WorkHistoryIcon,
   Wrench01Icon,
   Xls02Icon,
@@ -163,5 +165,7 @@ export const Wrench = cria(Wrench01Icon);
 export const X = cria(Cancel01Icon);
 export const XCircle = cria(CancelCircleIcon);
 export const Zap = cria(FlashIcon);
+export const Eye = cria(ViewIcon);
+export const EyeOff = cria(ViewOffSlashIcon);
 export const Palette = cria(PaintBoardIcon);
 export const BookOpen = cria(BookOpen01Icon);

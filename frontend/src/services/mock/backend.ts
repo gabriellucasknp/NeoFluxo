@@ -39,6 +39,8 @@ interface MockDb {
   reviews: Json[];
   demandFactors: DemandFactor[];
   transformers: Json[];
+  /** US-02: links de redefinição de senha (só o hash do token, como no back) */
+  resetTokens?: { hash: string; userId: string; expiresAt: string; usedAt: string | null }[];
 }
 
 // ---------------------------------------------------------------------------
@@ -232,6 +234,55 @@ function registrar(body: Json) {
   banco.users.push(u);
   salvar();
   return { token: tokenDe(u), user: userView(u) };
+}
+
+// ---------------------------------------------------------------------------
+// Recuperação de senha (US-02) — mesmas regras do PasswordResetService
+// ---------------------------------------------------------------------------
+
+const VALIDADE_RESET_MS = 60 * 60 * 1000;
+const MSG_RESET_NEUTRA = 'Se o e-mail estiver cadastrado, o link de recuperação foi enviado';
+const DICA_NOVO_LINK = 'Solicite um novo em "Esqueci minha senha".';
+
+/** A demonstração não manda e-mail: devolve o token em demoToken pra o modal abrir o link. */
+function pedirRedefinicao(body: Json) {
+  const email = String(body?.email ?? '').trim();
+  if (!email) throw new ApiErro(400, 'Erro de validação nos campos informados', { email: 'O e-mail é obrigatório' });
+  if (!EMAIL_RE.test(email)) throw new ApiErro(400, 'Erro de validação nos campos informados', { email: 'E-mail em formato inválido' });
+
+  const banco = carregar();
+  const u = banco.users.find((x) => x.email.toLowerCase() === email.toLowerCase());
+  if (!u || !u.active) return { message: MSG_RESET_NEUTRA };
+
+  const token = uuid().replace(/-/g, '') + uuid().replace(/-/g, '');
+  // pedido novo invalida os links anteriores ainda não usados
+  banco.resetTokens = (banco.resetTokens ?? []).filter((t) => t.userId !== u.id || t.usedAt);
+  banco.resetTokens.push({ hash: hashSenha(token), userId: u.id, expiresAt: new Date(Date.now() + VALIDADE_RESET_MS).toISOString(), usedAt: null });
+  salvar();
+  return { message: MSG_RESET_NEUTRA, demoToken: token };
+}
+
+function redefinirSenha(body: Json) {
+  const token = String(body?.token ?? '').trim();
+  const password = String(body?.password ?? '');
+  const erros: Record<string, string> = {};
+  if (!token) erros.token = `O link de redefinição é inválido. ${DICA_NOVO_LINK}`;
+  if (!password) erros.password = 'A senha é obrigatória';
+  else if (password.length < 6) erros.password = 'A senha deve ter no mínimo 6 caracteres';
+  if (Object.keys(erros).length) throw new ApiErro(400, 'Erro de validação nos campos informados', erros);
+
+  const banco = carregar();
+  const t = (banco.resetTokens ?? []).find((x) => x.hash === hashSenha(token));
+  if (!t) throw invalido(`Link de redefinição inválido. ${DICA_NOVO_LINK}`);
+  if (t.usedAt) throw invalido(`Este link já foi utilizado. ${DICA_NOVO_LINK}`);
+  if (Date.parse(t.expiresAt) <= Date.now()) throw invalido(`Este link expirou (vale 60 minutos). ${DICA_NOVO_LINK}`);
+  const u = porId(t.userId);
+  if (!u.active) throw invalido('Conta de usuário inativa. Contate o administrador do sistema.');
+
+  u.senhaHash = hashSenha(password);
+  t.usedAt = agora();
+  salvar();
+  return { message: 'Senha redefinida com sucesso' };
 }
 
 // ---------------------------------------------------------------------------
@@ -542,9 +593,8 @@ function rotear(metodo: string, caminho: string, headers: Record<string, string>
   if (raiz === 'auth') {
     if (metodo === 'POST' && a === 'login') return resposta(200, login(body));
     if (metodo === 'POST' && a === 'register') return resposta(201, registrar(body));
-    if (metodo === 'POST' && a === 'forgot-password') {
-      return resposta(200, { message: 'Se o e-mail estiver cadastrado, o link de recuperação foi enviado' });
-    }
+    if (metodo === 'POST' && a === 'forgot-password') return resposta(200, pedirRedefinicao(body));
+    if (metodo === 'POST' && a === 'reset-password') return resposta(200, redefinirSenha(body));
     if (metodo === 'GET' && a === 'me') {
       const u = usuarioDoToken(headers);
       if (!u) throw invalido('Usuário não autenticado');

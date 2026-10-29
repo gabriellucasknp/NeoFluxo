@@ -1,6 +1,6 @@
 // Design system do NeoFluxo: toda tela monta com estas peças (regra checada por scripts/check-ds.mjs).
 export { Button, IconButton, ArrowButton } from './Button';
-export { TextField, TextArea, SearchField } from './Field';
+export { TextField, TextArea, SearchField, PasswordField } from './Field';
 export { Select, type Option } from './Select';
 export { Modal, ConfirmDialog } from './Modal';
 export { Segmented, type Segment } from './Segmented';

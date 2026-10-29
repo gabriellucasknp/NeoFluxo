@@ -1,6 +1,7 @@
-import { forwardRef, useId, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from 'react';
+import { forwardRef, useId, useState, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Search, X } from './icons';
+import { Eye, EyeOff, Search, X } from './icons';
+import { IconButton } from './Button';
 import { spring } from './motion';
 
 /*
@@ -55,8 +56,8 @@ function Shell({ id, label, hint, error, required, children }: Base & { id: stri
   );
 }
 
-export const TextField = forwardRef<HTMLInputElement, Base & InputHTMLAttributes<HTMLInputElement>>(function TextField(
-  { label, hint, error, suffix, id, className = '', ...rest },
+export const TextField = forwardRef<HTMLInputElement, Base & { end?: ReactNode } & InputHTMLAttributes<HTMLInputElement>>(function TextField(
+  { label, hint, error, suffix, end, id, className = '', ...rest },
   ref,
 ) {
   const auto = useId();
@@ -69,14 +70,41 @@ export const TextField = forwardRef<HTMLInputElement, Base & InputHTMLAttributes
           id={fid}
           aria-invalid={!!error}
           aria-describedby={error || hint ? `${fid}-msg` : undefined}
-          className={`${BOX} h-11 px-4 ${suffix ? 'pr-14' : ''} ${error ? 'ring-2 ring-danger' : ''} ${className}`}
+          className={`${BOX} h-11 px-4 ${suffix || end ? 'pr-14' : ''} ${error ? 'ring-2 ring-danger' : ''} ${className}`}
           {...rest}
         />
         {suffix && <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm font-medium text-muted">{suffix}</span>}
+        {end && <span className="absolute inset-y-0 right-1 flex items-center">{end}</span>}
       </div>
     </Shell>
   );
 });
+
+/** Campo de senha: o mesmo TextField com o olho no fim pra mostrar/ocultar o que foi digitado. */
+export const PasswordField = forwardRef<HTMLInputElement, Omit<Base, 'suffix'> & Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>>(
+  function PasswordField({ className = '', ...rest }, ref) {
+    const [visivel, setVisivel] = useState(false);
+    return (
+      <TextField
+        ref={ref}
+        type={visivel ? 'text' : 'password'}
+        className={className}
+        {...rest}
+        end={
+          <IconButton
+            label={visivel ? 'Ocultar senha' : 'Mostrar senha'}
+            size="sm"
+            className="bg-transparent"
+            onClick={() => setVisivel((v) => !v)}
+            disabled={rest.disabled}
+          >
+            {visivel ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </IconButton>
+        }
+      />
+    );
+  },
+);
 
 export function TextArea({ label, hint, error, id, className = '', ...rest }: Base & TextareaHTMLAttributes<HTMLTextAreaElement>) {
   const auto = useId();
