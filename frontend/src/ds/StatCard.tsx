@@ -17,9 +17,18 @@ export function CountUp({ value, decimals = 0, className = '' }: { value: number
   const reduce = useReducedMotion();
   const [shown, setShown] = useState(reduce ? value : 0);
 
+  // valor que muda depois (cálculo ao vivo) anda do número da tela até o novo, sem voltar pro zero
+  const atual = useRef(shown);
   useEffect(() => {
     if (!seen || reduce) return setShown(value);
-    const c = animate(0, value, { duration: 1.1, ease: [0.22, 1, 0.36, 1], onUpdate: setShown });
+    const c = animate(atual.current, value, {
+      duration: 1.1,
+      ease: [0.22, 1, 0.36, 1],
+      onUpdate: (v) => {
+        atual.current = v;
+        setShown(v);
+      },
+    });
     return () => c.stop();
   }, [seen, value, reduce]);
 

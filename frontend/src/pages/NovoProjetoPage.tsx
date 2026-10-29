@@ -12,13 +12,11 @@ import {
   Trash2,
   ChevronDown,
   ChevronUp,
-  Zap,
   AlertTriangle,
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
   Send,
-  Loader2,
 } from '@/ds/icons';
 import { Stepper } from '@/components/ui/Stepper';
 import { Card, CardHeader } from '@/components/ui/Card';
@@ -26,6 +24,7 @@ import { Button } from '@/components/ui/Button';
 import { Input, Textarea, Select } from '@/components/ui/FormFields';
 import { Alert } from '@/components/ui/Alert';
 import { VazioLinha, VazioMedidor } from '@/ds';
+import { CalculoAoVivo, CalculoAoVivoBarra } from '@/components/CalculoAoVivo';
 import { StatusBadge, EnquadramentoBadge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import {
@@ -101,7 +100,6 @@ export function NovoProjetoPage() {
   const { user } = useAuth();
 
   const [step, setStep] = useState(0);
-  const [calculating, setCalculating] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submittedProjectCode, setSubmittedProjectCode] = useState('');
@@ -117,7 +115,28 @@ export function NovoProjetoPage() {
   const [units, setUnits] = useState<ConsumerUnitGroup[]>([]);
   const [serviceLoads, setServiceLoads] = useState<ServiceLoad[]>([]);
   const [subestacao, setSubestacao] = useState<SubestacaoConfig | undefined>(undefined);
-  const [calcResult, setCalcResult] = useState<CalcResult | null>(null);
+
+  // Cálculo ao vivo: deriva das cargas a cada mudança, nos 6 passos. Nunca fica um retrato velho
+  // (antes era tirado uma vez no passo 4 e não acompanhava quem voltava e mudava uma carga).
+  const liveCalc = useMemo(() => {
+    if (units.length === 0 && serviceLoads.length === 0) return null;
+    return calculateProjectDemand(units, serviceLoads);
+  }, [units, serviceLoads]);
+  const calcResult: CalcResult | null = liveCalc;
+
+  // passou de 75 kW: a subestação ganha o formulário em branco no passo do cálculo
+  useEffect(() => {
+    if (liveCalc?.needsSubstation && !subestacao) {
+      setSubestacao({
+        transformadorId: '',
+        transformadorLabel: '',
+        potenciaNominal: 0,
+        quantidade: 1,
+        configuracao: '',
+        observacoes: '',
+      });
+    }
+  }, [liveCalc?.needsSubstation, subestacao]);
 
   // Projeto existente: carrega do back (uma vez, quando a lista chega)
   const [carregado, setCarregado] = useState(false);
@@ -129,7 +148,6 @@ export function NovoProjetoPage() {
     setUnits(p.units ?? []);
     setServiceLoads(p.serviceLoads ?? []);
     setSubestacao(p.subestacao ?? undefined);
-    setCalcResult(p.calcResult ?? null);
     const pedido = Number(params.get('step'));
     setStep(pedido >= 1 && pedido <= 6 ? pedido - 1 : 0);
     setCarregado(true);
@@ -146,7 +164,6 @@ export function NovoProjetoPage() {
         if (Array.isArray(draft.units)) setUnits(draft.units);
         if (Array.isArray(draft.serviceLoads)) setServiceLoads(draft.serviceLoads);
         if (draft.subestacao !== undefined) setSubestacao(draft.subestacao);
-        if (draft.calcResult !== undefined) setCalcResult(draft.calcResult);
         if (typeof draft.step === 'number') setStep(draft.step);
       }
     } catch {
@@ -158,17 +175,12 @@ export function NovoProjetoPage() {
   useEffect(() => {
     if (editId) return;
     try {
-      const draft = { projectData, units, serviceLoads, subestacao, calcResult, step };
+      const draft = { projectData, units, serviceLoads, subestacao, step };
       localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
     } catch {
       // ignora erro de quota
     }
-  }, [projectData, units, serviceLoads, subestacao, calcResult, step, editId]);
-
-  const liveCalc = useMemo(() => {
-    if (units.length === 0 && serviceLoads.length === 0) return null;
-    return calculateProjectDemand(units, serviceLoads);
-  }, [units, serviceLoads]);
+  }, [projectData, units, serviceLoads, subestacao, step, editId]);
 
   const needsSubstation = liveCalc?.needsSubstation ?? false;
 
@@ -189,27 +201,6 @@ export function NovoProjetoPage() {
   const handleNext = () => {
     if (step === 0 && !validateStep1()) return;
 
-    if (step === 3) {
-      // Perform calculation with animation
-      setCalculating(true);
-      setTimeout(() => {
-        const result = calculateProjectDemand(units, serviceLoads);
-        setCalcResult(result);
-        if (result.needsSubstation && !subestacao) {
-          setSubestacao({
-            transformadorId: '',
-            transformadorLabel: '',
-            potenciaNominal: 0,
-            quantidade: 1,
-            configuracao: '',
-            observacoes: '',
-          });
-        }
-        setCalculating(false);
-        setStep(4);
-      }, 1500);
-      return;
-    }
 
     setStep((s) => Math.min(s + 1, baseSteps.length - 1));
   };
@@ -640,25 +631,6 @@ export function NovoProjetoPage() {
           )}
         </Card>
 
-        {/* Summary */}
-        {units.length > 0 && (
-          <Card className="bg-surface-2">
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <p className="text-xs text-muted">Total de unidades</p>
-                <p className="text-xl font-bold text-fg">{units.reduce((s, u) => s + u.unitCount, 0)}</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted">Potência instalada</p>
-                <p className="text-xl font-bold text-fg">{formatKw(liveCalc?.totalInstalledPower || 0)}</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted">Demanda parcial</p>
-                <p className="text-xl font-bold text-accent-fg">{formatKw(liveCalc?.calculatedDemand || 0)}</p>
-              </div>
-            </div>
-          </Card>
-        )}
       </div>
     );
   };
@@ -775,51 +747,15 @@ export function NovoProjetoPage() {
           )}
         </Card>
 
-        {serviceLoads.length > 0 && (
-          <Card className="bg-surface-2">
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              <div>
-                <p className="text-xs text-muted">Pot. instalada (serviço)</p>
-                <p className="text-lg font-semibold text-fg">{formatKw(liveCalc?.totalInstalledPower ? liveCalc.totalInstalledPower - (units.reduce((s, u) => s + u.loads.reduce((sum, l) => sum + l.quantity * l.powerPerUnit * u.unitCount, 0), 0) / 1000) : 0)}</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted">Demanda (serviço)</p>
-                <p className="text-lg font-semibold text-fg">{formatKw(liveCalc?.serviceDemand || 0)}</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted">Demanda total do projeto</p>
-                <p className="text-lg font-semibold text-accent-fg">{formatKw(liveCalc?.calculatedDemand || 0)}</p>
-              </div>
-            </div>
-          </Card>
-        )}
       </div>
     );
 
   const renderStep4 = () => {
-    if (calculating) {
-      return (
-        <Card className="py-16">
-          <div className="flex flex-col items-center justify-center text-center">
-            <div className="relative">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-accent-soft">
-                <Loader2 className="h-10 w-10 animate-spin text-accent-fg" />
-              </div>
-              <Zap className="absolute -right-2 -top-2 h-7 w-7 text-warning-fg" fill="currentColor" />
-            </div>
-            <h3 className="mt-6 text-lg font-semibold text-fg">Calculando demanda...</h3>
-            <p className="mt-1 text-sm text-muted">Aplicando fatores da DIS-NOR-030 e determinando enquadramento.</p>
-          </div>
-        </Card>
-      );
-    }
-
     if (!calcResult) {
       return (
-        <Card className="py-12 text-center">
-          <Calculator className="mx-auto h-12 w-12 text-subtle" />
-          <p className="mt-3 text-sm text-subtle">Clique em "Continuar" para realizar o cálculo.</p>
-        </Card>
+        <VazioMedidor title="Sem cargas, sem cálculo">
+          Volte aos passos 2 e 3 e adicione as unidades e as cargas de serviço: o resultado aparece aqui na hora.
+        </VazioMedidor>
       );
     }
 
@@ -1121,11 +1057,12 @@ export function NovoProjetoPage() {
     <div className="space-y-6">
       <PageHeader greeting="Projetista" title="Novo projeto" description="O sistema calcula automaticamente a demanda e o enquadramento normativo." />
 
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-start">
       <Card>
         <Stepper
-          steps={baseSteps}
+          // Média Tensão: a subestação é dimensionada dentro do passo 4, não vira um 7º passo
+          steps={needsSubstation ? baseSteps.map((l, i) => (i === 3 ? 'Cálculo e Subestação' : l)) : baseSteps}
           currentStep={step}
-          extraStep={needsSubstation && step >= 3 ? { label: 'Subestação', active: true } : null}
         />
         {stepRenderers[step]()}
 
@@ -1136,21 +1073,26 @@ export function NovoProjetoPage() {
               variant="outline"
               icon={<ArrowLeft className="h-4 w-4" />}
               onClick={handlePrev}
-              disabled={step === 0 || calculating}
+              disabled={step === 0}
             >
               Voltar
             </Button>
             <Button
               icon={step === 4 ? <Send className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
               onClick={handleNext}
-              disabled={calculating}
             >
-              {step === 0 ? 'Continuar' : step === 3 ? 'Calcular e Continuar' : step === 4 ? 'Revisar' : 'Continuar'}
+              {step === 4 ? 'Revisar' : 'Continuar'}
             </Button>
           </div>
         )}
         <p className="mt-4 text-center text-xs text-subtle">Rascunho salvo localmente</p>
       </Card>
+
+        <aside className="hidden xl:sticky xl:top-6 xl:block">
+          <CalculoAoVivo calc={liveCalc} />
+        </aside>
+      </div>
+      <CalculoAoVivoBarra calc={liveCalc} className="xl:hidden" />
 
       {/* Submit confirmation modal */}
       <Modal
