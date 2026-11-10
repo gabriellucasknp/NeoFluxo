@@ -7,7 +7,6 @@ O Portal de Projetos Elétricos é uma solução desenvolvida pela equipe **Neof
 
 | Nome Completo | Papel no Projeto | E-mail (Cesar School) |
 | :--- | :--- | :--- |
-| **Kaio Cerqueira** | Scrum Master | kcss@cesar.school |
 | **Mateus Xavier** | Product Owner | mxrr@cesar.school |
 | **Felipe Ulisses** | Desenvolvedor Front-End | fucaa@cesar.school |
 | **Jailson de Souza** | Desenvolvedor Front-End | jsj3@cesar.school |
@@ -363,6 +362,11 @@ A Entrega 03 contribuiu para a evolução do Portal de Projetos Elétricos ao im
 A US-01 teve impacto médio, enquanto a US-05 teve impacto alto por melhorar a precisão dos cálculos e apoiar decisões técnicas, tornando o MVP mais prático e confiável para projetos elétricos.
 ---
 ### Entrega 04: Implementação das funcionalidades de recuperação de acesso, gerenciamento de usuários e validação de atestados
+
+#### Histórias Implementadas
+
+![Histórias Implementadas — Post-its](https://github.com/user-attachments/assets/8e1ecfde-2255-40dd-b39f-b8a8e9f16e01)
+
 
 #### 1. Evolução do MVP
 
