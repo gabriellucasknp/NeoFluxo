@@ -1,22 +1,20 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { FolderOpen, Search, Filter, Zap, FolderPlus } from 'lucide-react';
+import { FolderPlus } from '@/ds/icons';
 import { useProjects } from '@/hooks/useProjects';
 import { useAuth } from '@/hooks/useAuth';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { StatusBadge, EnquadramentoBadge } from '@/components/ui/Badge';
-import { EmptyState } from '@/components/ui/States';
-import { formatKw } from '@/services/calcEngine';
-import type { ProjectStatus } from '@/types';
+import { PageHeader, SearchField, Segmented, VazioFiltro, VazioMedidor } from '@/ds';
+import { ProjetosTabela } from '@/components/ProjetosTabela';
 
 const statusFilters: { value: string; label: string }[] = [
   { value: 'all', label: 'Todos' },
-  { value: 'rascunho', label: 'Rascunho' },
+  { value: 'rascunho', label: 'Rascunhos' },
   { value: 'enviado_analise', label: 'Enviado para análise' },
   { value: 'em_analise', label: 'Em análise' },
-  { value: 'aprovado', label: 'Aprovado' },
-  { value: 'reprovado', label: 'Reprovado' },
+  { value: 'aprovado', label: 'Aprovados' },
+  { value: 'reprovado', label: 'Reprovados' },
 ];
 
 export function MeusProjetosPage() {
@@ -46,120 +44,58 @@ export function MeusProjetosPage() {
     });
   }, [myProjects, search, filter]);
 
+  const contagem = (v: string) => (v === 'all' ? myProjects.length : myProjects.filter((p) => p.status === v).length);
+  const filtroAtivo = filter !== 'all' ? statusFilters.find((f) => f.value === filter)?.label : search ? `Busca: ${search}` : null;
+  const limpar = () => {
+    setFilter('all');
+    setSearch('');
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800">Meus Projetos</h1>
-          <p className="text-sm text-slate-500">Gerencie todos os seus projetos elétricos.</p>
-        </div>
-        <Button icon={<FolderPlus className="h-4 w-4" />} onClick={() => navigate('/app/novo-projeto')}>
-          Novo Projeto
-        </Button>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        greeting={`${myProjects.length} ${myProjects.length === 1 ? 'projeto' : 'projetos'}`}
+        title="Meus projetos"
+        actions={
+          <Button icon={<FolderPlus className="h-4 w-4" />} arrow onClick={() => navigate('/app/novo-projeto')}>
+            Novo projeto
+          </Button>
+        }
+      />
 
-      {/* Filters */}
-      <Card padding="sm">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Buscar por código, nome ou endereço..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="input-base pl-9"
-            />
-          </div>
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-thin">
-            <Filter className="h-4 w-4 shrink-0 text-slate-400" />
-            {statusFilters.map((f) => (
-              <button
-                key={f.value}
-                onClick={() => setFilter(f.value)}
-                className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                  filter === f.value
-                    ? 'bg-neo-600 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
+      <Card padding="lg">
+        <div className="mb-5 flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:justify-between">
+          <SearchField value={search} onChange={setSearch} placeholder="Buscar por código, nome ou endereço" className="w-full max-w-md 2xl:max-w-sm" />
+          <Segmented label="Filtrar por status" size="sm" value={filter} onChange={setFilter} items={statusFilters.map((f) => ({ value: f.value, label: f.label, count: contagem(f.value) }))} />
         </div>
-      </Card>
 
-      {/* Table */}
-      <Card padding="none">
-        {filtered.length === 0 ? (
-          <EmptyState
-            icon={<FolderOpen className="h-12 w-12" />}
-            title="Nenhum projeto encontrado"
-            message="Tente ajustar os filtros ou crie um novo projeto."
-            action={<Button icon={<FolderPlus className="h-4 w-4" />} onClick={() => navigate('/app/novo-projeto')}>Novo Projeto</Button>}
-          />
+        {myProjects.length === 0 ? (
+          <VazioMedidor
+            title="Nenhum projeto ainda"
+            action={
+              <Button arrow onClick={() => navigate('/app/novo-projeto')}>
+                Começar memorial
+              </Button>
+            }
+          >
+            O primeiro memorial de cargas que você montar aparece aqui, com a demanda já calculada.
+          </VazioMedidor>
+        ) : filtered.length === 0 && filtroAtivo ? (
+          <VazioFiltro
+            filtro={filtroAtivo}
+            onLimpar={limpar}
+            title={filter === 'reprovado' ? 'Nenhum projeto reprovado' : 'Nada com esse filtro'}
+            action={
+              <Button variant="secondary" size="sm" onClick={limpar}>
+                Limpar filtro
+              </Button>
+            }
+          >
+            {filter === 'reprovado' ? 'Bom sinal. ' : ''}
+            {`Os seus ${myProjects.length} projetos estão nos outros filtros.`}
+          </VazioFiltro>
         ) : (
-          <div className="overflow-x-auto scrollbar-thin">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/50">
-                  <th className="px-5 py-3 font-semibold text-slate-600">Código</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Projeto</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Endereço</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Data</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Demanda</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Enquadramento</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Status</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600 text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filtered.map((p) => (
-                  <tr key={p.id} className="cursor-pointer transition-colors hover:bg-slate-50/70" onClick={() => navigate(`/app/projeto/${p.id}`)}>
-                    <td className="px-5 py-3 font-medium text-neo-700">{p.code}</td>
-                    <td className="px-5 py-3 text-slate-700">
-                      <div className="font-medium">{p.data.name}</div>
-                      <div className="text-xs text-slate-400">{p.code}</div>
-                    </td>
-                    <td className="px-5 py-3 text-slate-600">
-                      <div className="max-w-[180px] truncate">{p.data.address}, {p.data.number}</div>
-                      <div className="text-xs text-slate-400">{p.data.neighborhood}</div>
-                    </td>
-                    <td className="px-5 py-3 text-slate-600">{new Date(p.createdAt).toLocaleDateString('pt-BR')}</td>
-                    <td className="px-5 py-3">
-                      <span className="inline-flex items-center gap-1 font-medium text-slate-800">
-                        <Zap className="h-3.5 w-3.5 text-amber-500" />
-                        {formatKw(p.calcResult?.calculatedDemand)}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3"><EnquadramentoBadge enquadramento={p.calcResult?.enquadramento} /></td>
-                    <td className="px-5 py-3"><StatusBadge status={p.status} /></td>
-                    <td className="px-5 py-3 text-right">
-                      <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
-                        {(p.status === 'rascunho' || p.status === 'reprovado') && (
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => navigate(`/app/novo-projeto?id=${p.id}&step=${p.currentStep || 1}`)}
-                          >
-                            Continuar Edição
-                          </Button>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => navigate(`/app/projeto/${p.id}`)}
-                        >
-                          Detalhes
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ProjetosTabela projetos={filtered} />
         )}
       </Card>
     </div>

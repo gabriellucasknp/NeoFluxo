@@ -1,0 +1,20 @@
+// Design system do NeoFluxo: toda tela monta com estas peças (regra checada por scripts/check-ds.mjs).
+export { Button, IconButton, ArrowButton } from './Button';
+export { TextField, TextArea, SearchField, PasswordField } from './Field';
+export { Select, type Option } from './Select';
+export { Modal, ConfirmDialog } from './Modal';
+export { Segmented, type Segment } from './Segmented';
+export { PageHeader, SectionHeader } from './Headers';
+export { StatCard, RingStat, CountUp } from './StatCard';
+export { DemandGauge } from './DemandGauge';
+export { DataTable, type Column } from './Table';
+export { Badge, StatusBadge, TensionBadge, type Status } from './Badge';
+export { Alert, Dismissible, EmptyState, Skeleton, Spinner, Progress } from './Feedback';
+export { Logo, SideNav, UserMenu, MobileNav, type NavItem } from './Nav';
+export { NeoFluxoMark } from './Mark';
+export { Stepper } from './Stepper';
+export { Card } from './Card';
+export { PillBars, AreaTrend, PieShare, ChartTable } from './charts';
+export { Popover } from './Popover';
+export { spring, stagger, rise, pop } from './motion';
+export { VazioMedidor, VazioFiltro, VazioFluxo, VazioLinha } from './Vazios';

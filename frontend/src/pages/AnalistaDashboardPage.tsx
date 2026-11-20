@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ClipboardCheck, Clock, CheckCircle2, XCircle, ArrowRight } from 'lucide-react';
+import { ClipboardCheck, Clock, CheckCircle2, XCircle, ArrowRight } from '@/ds/icons';
 import { useProjects } from '@/hooks/useProjects';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -17,17 +17,17 @@ export function AnalistaDashboardPage() {
   const rejected = projects.filter((p) => p.status === 'reprovado');
 
   const indicators = [
-    { label: 'Aguardando análise', value: pending.length, icon: <Clock className="h-5 w-5" />, color: 'text-amber-600 bg-amber-50' },
-    { label: 'Analisados', value: analyzed.length, icon: <ClipboardCheck className="h-5 w-5" />, color: 'text-neo-600 bg-neo-50' },
-    { label: 'Aprovados', value: approved.length, icon: <CheckCircle2 className="h-5 w-5" />, color: 'text-success-600 bg-success-50' },
-    { label: 'Reprovados', value: rejected.length, icon: <XCircle className="h-5 w-5" />, color: 'text-danger-600 bg-danger-50' },
+    { label: 'Aguardando análise', value: pending.length, icon: <Clock className="h-5 w-5" />, color: 'text-warning-fg bg-warning-soft' },
+    { label: 'Analisados', value: analyzed.length, icon: <ClipboardCheck className="h-5 w-5" />, color: 'text-accent-fg bg-accent-soft' },
+    { label: 'Aprovados', value: approved.length, icon: <CheckCircle2 className="h-5 w-5" />, color: 'text-success-fg bg-success-soft' },
+    { label: 'Reprovados', value: rejected.length, icon: <XCircle className="h-5 w-5" />, color: 'text-danger-fg bg-danger-soft' },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-800">Painel do Analista</h1>
-        <p className="text-sm text-slate-500">Projetos aguardando análise técnica da Neoenergia.</p>
+        <h1 className="text-2xl font-bold text-fg">Painel do Analista</h1>
+        <p className="text-sm text-muted">Projetos aguardando análise técnica da Neoenergia.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -37,18 +37,18 @@ export function AnalistaDashboardPage() {
               {ind.icon}
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-800">{ind.value}</p>
-              <p className="text-xs text-slate-500">{ind.label}</p>
+              <p className="text-2xl font-bold text-fg">{ind.value}</p>
+              <p className="text-xs text-muted">{ind.label}</p>
             </div>
           </Card>
         ))}
       </div>
 
       <Card padding="none">
-        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <div className="flex items-center gap-2.5">
-            <ClipboardCheck className="h-5 w-5 text-neo-600" />
-            <h3 className="text-base font-semibold text-slate-800">Projetos para Análise</h3>
+            <ClipboardCheck className="h-5 w-5 text-accent-fg" />
+            <h3 className="text-base font-semibold text-fg">Projetos para Análise</h3>
           </div>
           <Button variant="ghost" size="sm" onClick={() => navigate('/app/analise')}>
             Ver todos
@@ -66,28 +66,28 @@ export function AnalistaDashboardPage() {
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/50">
-                  <th className="px-5 py-3 font-semibold text-slate-600">Código</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Projeto</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Projetista</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Demanda</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Enquadramento</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Norma</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Data</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600">Status</th>
-                  <th className="px-5 py-3 font-semibold text-slate-600 text-right">Ação</th>
+                <tr className="border-b border-line bg-surface-2/50">
+                  <th className="px-5 py-3 font-semibold text-muted">Código</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Projeto</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Projetista</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Demanda</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Enquadramento</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Norma</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Data</th>
+                  <th className="px-5 py-3 font-semibold text-muted">Status</th>
+                  <th className="px-5 py-3 font-semibold text-muted text-right">Ação</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-line">
                 {pending.map((p) => (
-                  <tr key={p.id} className="cursor-pointer transition-colors hover:bg-slate-50/70" onClick={() => navigate(`/app/analise/${p.id}`)}>
-                    <td className="px-5 py-3 font-medium text-neo-700">{p.code}</td>
-                    <td className="px-5 py-3 text-slate-700">{p.data.name}</td>
-                    <td className="px-5 py-3 text-slate-600">{p.projetistaName}</td>
-                    <td className="px-5 py-3 text-slate-600">{formatKw(p.calcResult?.calculatedDemand)}</td>
+                  <tr key={p.id} className="cursor-pointer transition-colors hover:bg-surface-2/70" onClick={() => navigate(`/app/analise/${p.id}`)}>
+                    <td className="px-5 py-3 font-medium text-accent-fg">{p.code}</td>
+                    <td className="px-5 py-3 text-fg-2">{p.data.name}</td>
+                    <td className="px-5 py-3 text-muted">{p.projetistaName}</td>
+                    <td className="px-5 py-3 text-muted">{formatKw(p.calcResult?.calculatedDemand)}</td>
                     <td className="px-5 py-3"><EnquadramentoBadge enquadramento={p.calcResult?.enquadramento} /></td>
-                    <td className="px-5 py-3 text-slate-600">{p.calcResult?.normaAplicada}</td>
-                    <td className="px-5 py-3 text-slate-600">{new Date(p.createdAt).toLocaleDateString('pt-BR')}</td>
+                    <td className="px-5 py-3 text-muted">{p.calcResult?.normaAplicada}</td>
+                    <td className="px-5 py-3 text-muted">{new Date(p.createdAt).toLocaleDateString('pt-BR')}</td>
                     <td className="px-5 py-3"><StatusBadge status={p.status} /></td>
                     <td className="px-5 py-3 text-right">
                       <Button variant="ghost" size="sm">Analisar</Button>

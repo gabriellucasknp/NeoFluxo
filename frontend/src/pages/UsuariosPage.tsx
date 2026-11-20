@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from '@/ds/icons';
 import { mockUsers } from '@/data/mockData';
 import { userService } from '@/services/api';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input, Select } from '@/components/ui/FormFields';
+import { ConfirmDialog, PageHeader } from '@/ds';
+import { Alert } from '@/components/ui/Alert';
 import type { User, UserRole } from '@/types';
 
 const roleLabels: Record<UserRole, string> = {
@@ -52,66 +54,68 @@ export function UsuariosPage() {
     setEditing(null);
   };
 
-  const deleteUser = async (id: string) => {
-    if (!window.confirm('Tem certeza que deseja desativar/excluir este usuário?')) return;
+  const [excluir, setExcluir] = useState<string | null>(null);
+  const [erroExcluir, setErroExcluir] = useState('');
+  const deleteUser = (id: string) => setExcluir(id);
+  const confirmarExclusao = async () => {
+    if (!excluir) return;
     try {
-      await userService.delete(id);
+      await userService.delete(excluir);
+      setErroExcluir('');
       fetchUsers();
     } catch (err: any) {
-      alert(err.message || 'Erro ao excluir usuário');
+      setErroExcluir(err.message || 'Não foi possível excluir.');
     }
+    setExcluir(null);
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800">Usuários</h1>
-          <p className="text-sm text-slate-500">Gestão de usuários e permissões do sistema.</p>
-        </div>
-        <Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>Novo Usuário</Button>
-      </div>
+      <PageHeader greeting="Administração" title="Usuários" description="Gestão de usuários e permissões do sistema." actions={<>
+<Button icon={<Plus className="h-4 w-4" />} onClick={openCreate}>Novo Usuário</Button>
+      </>} />
+      {erroExcluir && <Alert type="error">{erroExcluir}</Alert>}
 
       <Card padding="none">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50/50">
-                <th className="px-5 py-3 font-semibold text-slate-600">Nome</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">E-mail</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">Perfil</th>
-                <th className="px-5 py-3 font-semibold text-slate-600">Departamento</th>
-                <th className="px-5 py-3 font-semibold text-slate-600 text-right">Ações</th>
+              <tr className="border-b border-line bg-surface-2/50">
+                <th className="px-5 py-3 font-semibold text-muted">Nome</th>
+                <th className="px-5 py-3 font-semibold text-muted">E-mail</th>
+                <th className="px-5 py-3 font-semibold text-muted">Perfil</th>
+                <th className="px-5 py-3 font-semibold text-muted">Departamento</th>
+                <th className="px-5 py-3 font-semibold text-muted text-right">Ações</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-line">
               {users.map((u) => (
                 <tr key={u.id}>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neo-600 text-xs font-semibold text-white">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-on-primary">
                         {u.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
                       </div>
-                      <span className="font-medium text-slate-700">{u.name}</span>
+                      <span className="font-medium text-fg-2">{u.name}</span>
                     </div>
                   </td>
-                  <td className="px-5 py-3 text-slate-600">{u.email}</td>
+                  <td className="px-5 py-3 text-muted">{u.email}</td>
                   <td className="px-5 py-3">
                     <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
-                      u.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                      u.role === 'analista' ? 'bg-blue-100 text-blue-700' :
-                      'bg-slate-100 text-slate-600'
+                      u.role === 'admin' ? 'bg-accent-soft text-accent-fg' :
+                      u.role === 'analista' ? 'bg-info-soft text-info-fg' :
+                      'bg-surface-2 text-muted'
                     }`}>
                       {roleLabels[u.role]}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-slate-600">{u.department || '—'}</td>
+                  <td className="px-5 py-3 text-muted">{u.department || '—'}</td>
                   <td className="px-5 py-3 text-right">
                     <div className="flex justify-end gap-1">
-                      <button onClick={() => { setEditing({ ...u }); setShowModal(true); }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
+                      <button onClick={() => { setEditing({ ...u }); setShowModal(true); }} className="rounded-lg p-1.5 text-subtle hover:bg-surface-2 hover:text-muted">
                         <Edit2 className="h-4 w-4" />
                       </button>
-                      <button onClick={() => deleteUser(u.id)} className="rounded-lg p-1.5 text-slate-400 hover:bg-danger-50 hover:text-danger-600">
+                      <button onClick={() => deleteUser(u.id)} className="rounded-lg p-1.5 text-subtle hover:bg-danger-soft hover:text-danger-fg">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -147,6 +151,15 @@ export function UsuariosPage() {
           </div>
         )}
       </Modal>
+      <ConfirmDialog
+        open={!!excluir}
+        onClose={() => setExcluir(null)}
+        onConfirm={confirmarExclusao}
+        title="Excluir este usuário?"
+        description="A pessoa perde o acesso ao portal. Os projetos que ela criou continuam no sistema."
+        confirmLabel="Excluir usuário"
+        danger
+      />
     </div>
   );
 }

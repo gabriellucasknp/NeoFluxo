@@ -38,6 +38,14 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_FLYWAY_ENABLED: "true"
       APP_CORS_ALLOWED_ORIGINS: "http://localhost:5173,http://localhost:4173"
+      # E-mail da recuperação de senha (US-02): valores vêm do .env da raiz (ver .env.example).
+      # Sem MAIL_USERNAME o back sobe e o link de redefinição aparece no log do backend.
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      APP_FRONTEND_URL: ${APP_FRONTEND_URL:-http://localhost:5173}
     depends_on:
       db:
         condition: service_healthy

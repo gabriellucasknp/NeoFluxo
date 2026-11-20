@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'motion/react';
 import {
   LayoutDashboard,
   FolderPlus,
@@ -13,10 +14,14 @@ import {
   Building2,
   Menu,
   X,
-} from 'lucide-react';
+  Palette,
+  BookOpen,
+  ArrowUpRight,
+} from '@/ds/icons';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import type { UserRole } from '@/types';
+import { IconButton, Logo, spring } from '@/ds';
 
 interface NavItem {
   to: string;
@@ -42,73 +47,87 @@ const navItems: NavItem[] = [
 
 export function Sidebar() {
   const { user } = useAuth();
+  const { pathname } = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const visibleItems = navItems.filter((item) =>
-    user && item.roles.includes(user.role),
-  );
+  const visibleItems = navItems.filter((item) => user && item.roles.includes(user.role));
 
   const groups: { label: string; items: NavItem[] }[] = [
     { label: 'Projetista', items: visibleItems.filter((i) => ['/app/dashboard', '/app/novo-projeto', '/app/meus-projetos'].includes(i.to)) },
-    { label: 'Análise Técnica', items: visibleItems.filter((i) => ['/app/analise', '/validar'].includes(i.to)) },
+    { label: 'Análise técnica', items: visibleItems.filter((i) => ['/app/analise', '/validar'].includes(i.to)) },
     { label: 'Administração', items: visibleItems.filter((i) => i.to.startsWith('/app/admin')) },
   ];
 
   const homeLink = user?.role === 'analista' ? '/app/analise' : user?.role === 'admin' ? '/app/admin/dashboard' : '/app/dashboard';
+  // item ativo = o de caminho mais longo que casa com a URL (a fila /app/analise/:id ainda acende "Fila de análise")
+  const ativo = [...visibleItems].sort((a, b) => b.to.length - a.to.length).find((i) => pathname === i.to || pathname.startsWith(i.to + '/'))?.to;
 
-  const sidebarContent = (
-    <div className="flex h-full flex-col">
-      <div className="flex h-16 items-center border-b border-slate-200 px-5">
-        <NavLink to={homeLink}>
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neo-600">
-              <ShieldCheck className="h-5 w-5 text-white" />
-            </div>
-            <div className="leading-tight">
-              <div className="text-sm font-bold text-slate-800">Portal de Projetos</div>
-              <div className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
-                Neoenergia PE
-              </div>
-            </div>
-          </div>
+  // Menu azul cheio com a aba da cor da página que "sai" dele (refs 7 e 13); a aba desliza até o item ativo.
+  const conteudo = (layoutId: string) => (
+    <div className="flex h-full flex-col bg-nav py-6 pl-4 text-on-nav">
+      <div className="mb-8 pl-2 pr-4">
+        <NavLink to={homeLink} onClick={() => setMobileOpen(false)}>
+          <Logo onNav />
         </NavLink>
       </div>
-      <nav className="flex-1 overflow-y-auto px-3 py-4 scrollbar-thin">
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin" aria-label="Menu principal">
         {groups.map((group) =>
           group.items.length > 0 ? (
-            <div key={group.label} className="mb-4">
-              <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                {group.label}
-              </p>
-              {group.items.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setMobileOpen(false)}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'bg-neo-50 text-neo-700'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
-                    }`
-                  }
-                >
-                  {item.icon}
-                  {item.label}
-                </NavLink>
-              ))}
+            <div key={group.label} className="mb-5">
+              <p className="mb-1.5 px-4 text-[11px] font-semibold text-on-nav/60">{group.label}</p>
+              <ul className="space-y-1">
+                {group.items.map((item) => {
+                  const on = item.to === ativo;
+                  return (
+                    <li key={item.to} className="relative">
+                      {on && (
+                        <motion.span layoutId={layoutId} transition={spring.layout} className="absolute inset-0 z-0 rounded-l-full bg-canvas">
+                          <span className="absolute -top-5 right-0 h-5 w-5 rounded-br-[20px] shadow-[8px_8px_0_8px_rgb(var(--canvas))]" />
+                          <span className="absolute -bottom-5 right-0 h-5 w-5 rounded-tr-[20px] shadow-[8px_-8px_0_8px_rgb(var(--canvas))]" />
+                        </motion.span>
+                      )}
+                      <NavLink
+                        to={item.to}
+                        onClick={() => setMobileOpen(false)}
+                        className={`relative z-10 flex h-11 items-center gap-3 rounded-l-full pl-4 pr-4 text-sm font-medium transition-colors duration-300 ${
+                          on ? 'text-accent-fg' : 'text-on-nav/80 hover:bg-white/10 hover:text-on-nav'
+                        }`}
+                      >
+                        {item.icon}
+                        {item.label}
+                      </NavLink>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           ) : null,
         )}
       </nav>
-      <div className="border-t border-slate-200 p-3">
-        <NavLink
-          to="/validar"
-          target="_blank"
-          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
-        >
+      {/* propostas do grupo, não telas do produto: abrem em outra aba e dizem que são proposta */}
+      <div className="mb-3 mr-4 rounded-tile bg-white/10 p-1.5">
+        <p className="px-3 pb-1 pt-1.5 text-[11px] font-medium text-on-nav/60">Propostas de identidade</p>
+        {[
+          { href: '/design-system', label: 'Ver design system', icon: <Palette className="h-4.5 w-4.5" /> },
+          { href: '/manual-da-marca/', label: 'Ver manual da marca', icon: <BookOpen className="h-4.5 w-4.5" /> },
+        ].map((l) => (
+          <a
+            key={l.href}
+            href={l.href}
+            target="_blank"
+            rel="noreferrer"
+            className="group flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium text-on-nav/85 transition-colors hover:bg-white/10 hover:text-on-nav"
+          >
+            {l.icon}
+            <span className="flex-1">{l.label}</span>
+            <ArrowUpRight className="h-3.5 w-3.5 opacity-60" />
+          </a>
+        ))}
+      </div>
+      <div className="pr-4">
+        <NavLink to="/validar" target="_blank" className="flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium text-on-nav/80 transition-colors hover:bg-white/10 hover:text-on-nav">
           <ShieldCheck className="h-4.5 w-4.5" />
-          Validação Pública de Atestado
+          Validação pública
         </NavLink>
       </div>
     </div>
@@ -116,37 +135,31 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile menu button */}
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="fixed left-4 top-4 z-30 rounded-lg bg-neo-600 p-2 text-white lg:hidden"
-      >
+      <IconButton label="Abrir menu" tone="solid" className="fixed left-4 top-3.5 z-30 lg:hidden" onClick={() => setMobileOpen(true)}>
         <Menu className="h-5 w-5" />
-      </button>
+      </IconButton>
 
-      {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white lg:block">
-        {sidebarContent}
-      </aside>
+      <aside className="hidden w-64 shrink-0 lg:block">{conteudo('aba-app')}</aside>
 
-      {/* Mobile sidebar overlay */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
-          <div
-            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-            onClick={() => setMobileOpen(false)}
-          />
-          <aside className="absolute left-0 top-0 h-full w-64 bg-white shadow-xl animate-slide-in">
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="absolute right-3 top-4 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100"
+      <AnimatePresence>
+        {mobileOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <motion.div className="absolute inset-0 bg-black/45" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMobileOpen(false)} />
+            <motion.aside
+              className="absolute inset-y-0 left-0 w-72 overflow-hidden rounded-r-card"
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={spring.soft}
             >
-              <X className="h-5 w-5" />
-            </button>
-            {sidebarContent}
-          </aside>
-        </div>
-      )}
+              {conteudo('aba-app-celular')}
+              <IconButton label="Fechar menu" tone="onColor" size="sm" className="absolute right-4 top-6" onClick={() => setMobileOpen(false)}>
+                <X className="h-4 w-4" />
+              </IconButton>
+            </motion.aside>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
